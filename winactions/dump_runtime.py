@@ -573,7 +573,7 @@ def hot_phase(view, pid, ranges, guard, seconds, out_dir_ref=['.']):
                     if ht:
                         k32.SuspendThread(ht)
                     try:
-                        ctx_raw = read_mem(h, rbp, 0x1000) or b''
+                        ctx_raw = read_mem(view.h, rbp, 0x1000) or b''
                         tag_dir = out_dir_ref[0]
                         cn = 'live_ctx_%x.bin' % rbp
                         with open(os.path.join(tag_dir, cn), 'wb') as f:
@@ -585,7 +585,7 @@ def hot_phase(view, pid, ranges, guard, seconds, out_dir_ref=['.']):
                             if sl + 8 <= len(ctx_raw):
                                 ptr = _s.unpack_from('<Q', ctx_raw, sl)[0]
                                 if 0x140000000 <= ptr < 0x143000000:
-                                    buf = read_mem(h, ptr, 0x8000) or b''
+                                    buf = read_mem(view.h, ptr, 0x8000) or b''
                                     fn = 'live_ip_%x_slot%x.bin' % (rbp, sl)
                                     with open(os.path.join(tag_dir, fn), 'wb') as f:
                                         f.write(buf)
