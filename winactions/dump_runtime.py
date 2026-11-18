@@ -1735,7 +1735,7 @@ STUB11_SZ = 0x1C0
 
 
 def _build_stub11(orig_va, tag, probe_base, slots_va, lo_va, hi_va,
-                  count_va, buf_va):
+                  count_va, buf_va, ent_cnt_va=None):
     """v24.1 表项桩：只在 IP 处字节「像明文」时落盘（u16@IP<0x800 且
     i32@IP+2 ∈ [-0x80000,0x80000)），双写：顺序轨迹 + IP 直接映射槽表。
     记录 64 字节：+0 IP  +8 [IP]  +0x10 [IP+8]  +0x18 tag  +0x20 rbp
@@ -1762,6 +1762,9 @@ def _build_stub11(orig_va, tag, probe_base, slots_va, lo_va, hi_va,
     B += bytes.fromhex('50515253')                       # rax rcx rdx rbx
     B += bytes.fromhex('555657')                         # rbp rsi rdi
     B += bytes.fromhex('41504151415241534154415541564157')  # r8..r15
+    if ent_cnt_va:
+        B.extend(b'\x48\xb8' + struct.pack('<Q', ent_cnt_va))
+        B.extend(b'\x48\xff\x00')                       # inc qword [ent_cnt]
     counter(probe_base)                                  # 进入计数
     B += imm64(b'\x48\xa1', count_va)                    # mov rax,[count]
     B += b'\x48\x3d' + struct.pack('<I', TRACE11_MAX)    # cmp rax,MAX
@@ -1926,7 +1929,8 @@ def table_hook_trace(exe, seconds, out_dir='.'):
             if inabs:
                 tables.append([va, 0, 'abs'])
             elif inrva:
-                tables.append([va, 0, 'rva'])
+                print('      （RVA 形态——v24.4 实证钩它会让 VM 停摆，本轮跳过）',
+                      flush=True)
         if len(tables) >= 3:
             break
         time.sleep(0.5)
@@ -1958,7 +1962,7 @@ def table_hook_trace(exe, seconds, out_dir='.'):
         return None
 
     alloc = None
-    for hint in (0x150000000, 0x160000000, 0x170000000, 0x180000000, None):
+    for hint in (0x100000000, 0x110000000, 0x160000000, 0x170000000, None):
         alloc = k32.VirtualAllocEx(ctypes.c_void_p(h), ctypes.c_void_p(hint),
                                    ctypes.c_size_t(0x4000000),
                                    MEM_COMMIT | MEM_RESERVE,
@@ -1993,8 +1997,9 @@ def table_hook_trace(exe, seconds, out_dir='.'):
         for ei, e0 in enumerate(ents):
             orig = e0 if form == 'abs' else base + e0      # 原_handler VA
             sv = stub_va + k * STUB11_SZ
+            ent_cnt_va = probe_va + 0x10000 + k * 8        # 每表项命中计数
             st = _build_stub11(orig, (ti << 20) | ei, pb, slots_va, lo, hi,
-                               count_va, buf_va)
+                               count_va, buf_va, ent_cnt_va)
             blob_stubs += st + b'\xcc' * (STUB11_SZ - len(st))
             # 表里写什么：绝对表写桩 VA；RVA 表写 (桩VA-base)
             ptrs.append(sv if form == 'abs' else sv - base)
@@ -2089,6 +2094,40 @@ def table_hook_trace(exe, seconds, out_dir='.'):
           '（op 自证 %d，rel 合理 %d，来源快照=%s）'
           % (n, len(ips), len(ctxs), len(insns), ok_op, ok_rel,
              bool(snap_slots)), flush=True)
+    # 每表项命中计数 → 定位自旋 handler
+    ent_hits = {}
+    k2 = 0
+    for ti, (tva, nn, fm) in enumerate(tables):
+        for ei in range(nn):
+            v = struct.unpack('<Q', read_mem(h, probe_va + 0x10000 + k2 * 8, 8)
+                              or b'\0' * 8)[0]
+            if v:
+                ent_hits[(ti, ei)] = v
+            k2 += 1
+    top = sorted(ent_hits.items(), key=lambda kv: -kv[1])[:20]
+    print('[*] 表项命中 top20: %s'
+          % [('%d:%d' % (ti, ei), hex(cnt)) for (ti, ei), cnt in top], flush=True)
+    # dump top10 handler 代码（各 0x400 字节）
+    k3 = 0
+    idx_by_k = {}
+    for ti, (tva, nn, fm) in enumerate(tables):
+        for ei in range(nn):
+            idx_by_k[k3] = (ti, ei)
+            k3 += 1
+    for (ti, ei), cnt in top[:10]:
+        sv = stubs[idx_by_k.index((ti, ei))][2] if (ti, ei) in idx_by_k.values() else None
+        orig = None
+        for t_i, e_i, s_v, o_v in stubs:
+            if t_i == ti and e_i == ei:
+                orig = o_v
+                break
+        if orig:
+            code = read_mem_safe(h, orig, 0x400) or b''
+            fn2 = os.path.join(out_dir, 'handler_%d_%d.bin' % (ti, ei))
+            with open(fn2, 'wb') as f2:
+                f2.write(code)
+            print('    handler 表%d项%d %#x 命中 %d → %s'
+                  % (ti, ei, orig, cnt, fn2), flush=True)
     with open(os.path.join(out_dir, 'vm_trace.json'), 'w') as f:
         json.dump({'n': n, 'mode': 'table-plain', 'rec_size': REC11_SZ,
                    'fmt': '[ip,[ip],[ip+8],tag,rbp,orig,0,0]',
@@ -2218,7 +2257,7 @@ def vm_hook_trace(exe, seconds, out_dir='.'):
         return None
 
     alloc = None
-    for hint in (0x150000000, 0x160000000, 0x170000000, 0x180000000, None):
+    for hint in (0x100000000, 0x110000000, 0x160000000, 0x170000000, None):
         alloc = k32.VirtualAllocEx(ctypes.c_void_p(h), ctypes.c_void_p(hint),
                                    ctypes.c_size_t(0x4000000),
                                    MEM_COMMIT | MEM_RESERVE,

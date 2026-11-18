@@ -241,6 +241,7 @@ jobs:
             vm_trace.json
             trace.log
             lic_bytecode*.bin
+            handler_*.bin
             hot_trace.json
             rip_hits.json
             vm_trace.json
