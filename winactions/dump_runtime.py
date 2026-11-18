@@ -1184,8 +1184,42 @@ def _build_stub(count_va, buf_va, shell_va, back_va):
     return bytes(b)
 
 
+def _build_stub2(count_va, buf_va, shell_va):
+    """通用桩：挂在各派发器的 `jmp rsi` 上，记录 (ctx, op, handler) 后 jmp rsi"""
+    b = bytearray()
+    b += bytes.fromhex('9c')                       # pushfq
+    b += bytes.fromhex('50515253')                 # push rax rcx rdx rbx
+    b += bytes.fromhex('415041514152')             # push r8 r9 r10
+    b += b'\x48\xa1' + struct.pack('<Q', count_va)  # mov rax,[count]
+    b += b'\x48\x3d' + struct.pack('<I', 2600000)   # cmp rax, MAX
+    jae_pos = len(b)
+    b += bytes.fromhex('0f83') + b'\x00\x00\x00\x00'
+    b += bytes.fromhex('4889c3')                   # mov rbx,rax
+    b += bytes.fromhex('486bdb18')                 # imul rbx,rbx,24
+    b += bytes.fromhex('49b8') + struct.pack('<Q', buf_va)   # mov r8,buf
+    b += bytes.fromhex('4901d8')                   # add r8,rbx
+    b += bytes.fromhex('4889ea')                   # mov rdx,rbp
+    b += bytes.fromhex('498910')                   # mov [r8],rdx
+    b += bytes.fromhex('498bd7')                   # mov rdx,r15
+    b += bytes.fromhex('48c1ea03')                 # shr rdx,3
+    b += bytes.fromhex('49895008')                 # mov [r8+8],rdx
+    b += bytes.fromhex('49897010')                 # mov [r8+0x10],rsi
+    b += bytes.fromhex('48ffc0')                   # inc rax
+    b += b'\x48\xa3' + struct.pack('<Q', count_va)  # mov [count],rax
+    end_pos = len(b)
+    b += bytes.fromhex('415a41594158')             # pop r10 r9 r8
+    b += bytes.fromhex('5b5a5958')                 # pop rbx rdx rcx rax
+    b += bytes.fromhex('9d')                       # popfq
+    b += bytes.fromhex('4883c408')                 # add rsp,8（丢弃 call 的返回地址）
+    b += bytes.fromhex('ffe6')                     # jmp rsi
+    off = end_pos - (jae_pos + 6)
+    b[jae_pos + 2:jae_pos + 6] = struct.pack('<i', off)
+    return bytes(b)
+
+
 def vm_hook_trace(exe, seconds, out_dir='.'):
-    """v14：inline hook 派发器，抓逐条 VM 指令轨迹 (ip, op, handler)"""
+    """v15：扫描 .vmp 里所有派发器（jmp rsi 前有 movsxd rcx,[rbx]），
+    在各自 `jmp rsi` 处下 5 字节 hook，记录 (ctx, op, handler) 后 jmp rsi。"""
     import ctypes
     k32 = ctypes.WinDLL('kernel32', use_last_error=True)
     k32.VirtualAllocEx.restype = ctypes.c_void_p
@@ -1197,19 +1231,20 @@ def vm_hook_trace(exe, seconds, out_dir='.'):
     MEM_COMMIT = 0x1000
     MEM_RESERVE = 0x2000
     PAGE_EXECUTE_READWRITE = 0x40
+    VMPSIZE = 0xDAC000
 
     proc = launch(exe)
     pid = getattr(proc, 'pid', proc)
     if not isinstance(pid, int):
         print('!! 启动失败: %r' % (proc,))
         return None
-    print('[*] pid=%d，等待 VM 启动…' % pid, flush=True)
+    print('[*] pid=%d' % pid, flush=True)
     h = k32.OpenProcess(PROCESS_VM_READ | PROCESS_VM_WRITE |
-                        PROCESS_VM_OPERATION | PROCESS_QUERY_INFORMATION |
-                        0x0400, False, pid)
+                        PROCESS_VM_OPERATION | 0x0400 | 0x0010, False, pid)
     if not h:
-        print('!! OpenProcess 失败')
+        print('!! OpenProcess 失败 err=%d' % ctypes.get_last_error())
         return None
+
     mods = []
     t0m = time.time()
     while time.time() - t0m < 30:
@@ -1218,94 +1253,94 @@ def vm_hook_trace(exe, seconds, out_dir='.'):
             break
         time.sleep(0.2)
     if not mods:
-        print('!! 拿不到模块列表（进程可能已退出或权限不足）')
+        print('!! 拿不到模块列表')
         return None
-    main = max(mods, key=lambda m: m[1])
-    base, size, name = main
-    print('[*] 主模块 %s base=%#x size=%#x' % (name, base, size), flush=True)
-    hook = base + HOOK_OFF
-    vlo, vhi = base + 0x19d4000, base + 0x2780000
+    base, size, name = max(mods, key=lambda m: m[1])
+    print('[*] 主模块 %s base=%#x' % (name, base), flush=True)
 
-    # 等 VM 跑起来（某线程 rbp 落 .vmp）
-    t0 = time.time()
-    while time.time() - t0 < 25:
-        for tid, rip, rsp, rbp in thread_contexts(pid):
-            if vlo <= rbp < vhi:
-                print('[*] VM 已启动: tid=%d rbp=%#x rip=%#x（%.1fs）'
-                      % (tid, rbp, rip, time.time() - t0), flush=True)
-                break
-        else:
-            time.sleep(0.05)
-            continue
-        break
+    # 等 .vmp 解密（派发器字节可读）
+    vmp = None
+    for _ in range(80):
+        blob = read_mem_safe(h, base + 0x19d4000, VMPSIZE)
+        if blob and blob.find(b'\x48\x63\x0b') != -1:
+            vmp = blob
+            break
+        time.sleep(0.25)
+    if not vmp:
+        print('!! .vmp 未解密，放弃')
+        return None
+    print('[*] .vmp 已就绪（%d 字节）' % len(vmp), flush=True)
+
+    sites = []
+    k = 0
+    while True:
+        k = vmp.find(b'\xff\xe6', k)
+        if k == -1:
+            break
+        if b'\x48\x63\x0b' in vmp[max(0, k - 0x60):k]:
+            sites.append(base + 0x19d4000 + k)
+        k += 1
+    print('[*] 派发器候选 %d 处: %s' % (len(sites), [hex(x) for x in sites]),
+          flush=True)
+    if not sites:
+        return None
 
     alloc = None
-    for hint in (0x100000000, 0x110000000, 0x150000000, 0x160000000,
-                 0x10000000, None):
+    for hint in (0x100000000, 0x110000000, 0x150000000, 0x160000000, None):
         alloc = k32.VirtualAllocEx(ctypes.c_void_p(h), ctypes.c_void_p(hint),
                                    ctypes.c_size_t(0x4000000),
                                    MEM_COMMIT | MEM_RESERVE,
                                    PAGE_EXECUTE_READWRITE)
-        if not alloc:
-            continue
-        # rel32 只能覆盖 ±2GB：桩必须落在 hook 附近
-        if abs((alloc + 0x100) - hook) < 0x7FF00000:
+        if alloc:
             break
-        print('[!] %#x 离 hook 太远，换地址' % alloc, flush=True)
-        alloc = None
     if not alloc:
         print('!! VirtualAllocEx 失败')
         return None
     count_va, shell_va, buf_va = alloc, alloc + 0x100, alloc + 0x1000
-    print('[*] 缓冲区 %#x（count=%#x shell=%#x buf=%#x）'
-          % (alloc, count_va, shell_va, buf_va), flush=True)
-
-    stub = _build_stub(count_va, buf_va, shell_va, hook + HOOK_BACK)
+    stub = _build_stub2(count_va, buf_va, shell_va)
     wrote = ctypes.c_size_t(0)
     k32.WriteProcessMemory(ctypes.c_void_p(h), ctypes.c_void_p(shell_va),
                            stub, len(stub), ctypes.byref(wrote))
 
-    old = b''
-    for _ in range(40):
-        old = read_mem(h, hook, 8) or b''
-        if old[:3] == b'\x48\x8b\x31':
-            break
-        time.sleep(0.25)
-    print('[*] hook 点原字节: %s' % old[:8].hex(), flush=True)
-    if old[:3] != b'\x48\x8b\x31':
-        print('!! hook 点不是 mov rsi,[rcx]（%s），放弃' % old[:8].hex())
-        return None
-    oldprot = ctypes.c_uint32(0)
-    k32.VirtualProtectEx(ctypes.c_void_p(h), ctypes.c_void_p(hook & ~0xFFF),
-                         ctypes.c_size_t(0x1000), PAGE_EXECUTE_READWRITE,
-                         ctypes.byref(oldprot))
-    rel = shell_va - (hook + 5)
-    patch = b'\xe8' + struct.pack('<i', rel)
-    k32.WriteProcessMemory(ctypes.c_void_p(h), ctypes.c_void_p(hook), patch,
-                           len(patch), ctypes.byref(wrote))
-    print('[*] 已下 hook: %#x -> %#x（原 %s）'
-          % (hook, shell_va, old[:5].hex()), flush=True)
+    patches = {}
+    for site in sites:
+        old = read_mem(h, site, 5)
+        if not old or old[:2] != b'\xff\xe6':
+            print('    site %#x 不是 jmp rsi（%s），跳过'
+                  % (site, old.hex() if old else 'None'))
+            continue
+        op2 = ctypes.c_uint32(0)
+        k32.VirtualProtectEx(ctypes.c_void_p(h), ctypes.c_void_p(site & ~0xFFF),
+                             ctypes.c_size_t(0x1000), PAGE_EXECUTE_READWRITE,
+                             ctypes.byref(op2))
+        p = b'\xe8' + struct.pack('<i', shell_va - (site + 5))
+        ok = k32.WriteProcessMemory(ctypes.c_void_p(h), ctypes.c_void_p(site),
+                                    p, 5, ctypes.byref(wrote))
+        if ok:
+            patches[site] = old
+            print('    hook %#x 已下' % site, flush=True)
+        else:
+            print('    hook %#x 失败 err=%d' % (site, ctypes.get_last_error()))
 
     t0 = time.time()
     last = 0
     repatch = 0
     while time.time() - t0 < seconds:
         time.sleep(0.5)
-        cur = read_mem(h, hook, 5) or b''
-        if cur[:1] != b'\xe8':        # 被还原就重下（保护器可能把页改回 RX，需重新赋权）
-            op2 = ctypes.c_uint32(0)
-            k32.VirtualProtectEx(ctypes.c_void_p(h),
-                                 ctypes.c_void_p(hook & ~0xFFF),
-                                 ctypes.c_size_t(0x1000),
-                                 PAGE_EXECUTE_READWRITE,
-                                 ctypes.byref(op2))
-            okw = k32.WriteProcessMemory(ctypes.c_void_p(h),
-                                         ctypes.c_void_p(hook), patch, 5,
-                                         ctypes.byref(wrote))
-            repatch += 1
-            if not okw and repatch <= 3:
-                print('    [!] 重下 hook 失败 err=%d'
-                      % ctypes.get_last_error(), flush=True)
+        for site, old in list(patches.items()):
+            cur = read_mem(h, site, 5) or b''
+            if cur[:1] != b'\xe8':
+                op2 = ctypes.c_uint32(0)
+                k32.VirtualProtectEx(ctypes.c_void_p(h),
+                                     ctypes.c_void_p(site & ~0xFFF),
+                                     ctypes.c_size_t(0x1000),
+                                     PAGE_EXECUTE_READWRITE, ctypes.byref(op2))
+                k32.WriteProcessMemory(ctypes.c_void_p(h),
+                                       ctypes.c_void_p(site),
+                                       b'\xe8' + struct.pack('<i',
+                                           shell_va - (site + 5)),
+                                       5, ctypes.byref(wrote))
+                repatch += 1
         cnt = struct.unpack('<Q', read_mem(h, count_va, 8) or b'\0' * 8)[0]
         if cnt != last:
             print('    [trace] %d 条' % cnt, flush=True)
@@ -1316,22 +1351,21 @@ def vm_hook_trace(exe, seconds, out_dir='.'):
     print('[*] 期间重下 hook %d 次' % repatch, flush=True)
     cnt = struct.unpack('<Q', read_mem(h, count_va, 8) or b'\0' * 8)[0]
     cnt = min(cnt, 2600000)
-    print('[*] 轨迹共 %d 条，导出…' % cnt, flush=True)
     raw = read_mem(h, buf_va, cnt * 24) or b''
     n = len(raw) // 24
     out = []
     for i in range(n):
-        ip, op, hd = struct.unpack_from('<QQQ', raw, i * 24)
-        out.append([ip, op, hd])
+        ctx, op, hd = struct.unpack_from('<QQQ', raw, i * 24)
+        out.append([ctx, op, hd])
     with open(os.path.join(out_dir, 'vm_trace.json'), 'w') as f:
-        json.dump({'n': n, 'fmt': '[ip,op,handler]', 'trace': out[:400000]}, f)
-    print('[*] 已写 vm_trace.json（%d 条，前 40 万条）' % min(n, 400000),
-          flush=True)
+        json.dump({'n': n, 'fmt': '[ctx,op,handler]', 'sites':
+                   [hex(x) for x in patches], 'trace': out[:400000]}, f)
+    print('[*] 已写 vm_trace.json（%d 条）' % min(n, 400000), flush=True)
 
-    # 还原
-    if len(old) >= 5:
-        k32.WriteProcessMemory(ctypes.c_void_p(h), ctypes.c_void_p(hook),
-                               old[:5], 5, ctypes.byref(wrote))
+    for site, old in patches.items():
+        if len(old) >= 5:
+            k32.WriteProcessMemory(ctypes.c_void_p(h), ctypes.c_void_p(site),
+                                   old[:5], 5, ctypes.byref(wrote))
     return n
 
 
