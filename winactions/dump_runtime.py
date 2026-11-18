@@ -2063,6 +2063,7 @@ def table_hook_trace(exe, seconds, out_dir='.'):
     tick = 0
     snap = (0, b'')
     snap_slots = b''
+    snap_ent = b''
     while time.time() - t0 < seconds:
         time.sleep(0.5)
         tick += 1
@@ -2077,6 +2078,7 @@ def table_hook_trace(exe, seconds, out_dir='.'):
             sb = read_mem_safe(h, slots_va, SLOT_COUNT * REC11_SZ)
             if sb and sb.count(b'\x00') < len(sb) - 8:
                 snap_slots = sb
+            snap_ent = read_mem(h, probe_va + 0x10000, 661 * 8) or snap_ent
         code = ctypes.c_ulong(0)
         oka = k32.GetExitCodeProcess(ctypes.c_void_p(h), ctypes.byref(code))
         pr = _read_probes(read_mem, h, count_va, len(tables))
@@ -2122,12 +2124,16 @@ def table_hook_trace(exe, seconds, out_dir='.'):
           % (n, len(ips), len(ctxs), len(insns), ok_op, ok_rel,
              bool(snap_slots)), flush=True)
     # 每表项命中计数 → 定位自旋 handler
+    ent_blob = snap_ent if snap_ent else b''
     ent_hits = {}
     k2 = 0
     for ti, (tva, nn, fm) in enumerate(tables):
         for ei in range(nn):
-            v = struct.unpack('<Q', read_mem(h, probe_va + 0x10000 + k2 * 8, 8)
-                              or b'\0' * 8)[0]
+            if k2 * 8 + 8 <= len(ent_blob):
+                v = struct.unpack_from('<Q', ent_blob, k2 * 8)[0]
+            else:
+                v = struct.unpack('<Q', read_mem(h, probe_va + 0x10000 + k2 * 8, 8)
+                                  or b'\0' * 8)[0]
             if v:
                 ent_hits[(ti, ei)] = v
             k2 += 1
