@@ -190,6 +190,8 @@ jobs:
             stream_*.bin
             ctx.bin
             live_*.bin
+            lic_*.bin
+            lic_trace.json
             hot_trace.json
             rip_hits.json
             dump.log

@@ -617,6 +617,49 @@ def hot_phase(view, pid, ranges, guard, seconds, out_dir_ref=['.']):
         finally:
             k32.ResumeThread(h)
 
+    # v12：授权字符串指针盯梢。enc1 解密后含 LicenseInfo/regcode/skey/VerifyDate/
+    # OfflineReg.exe 等，VM 处理授权时寄存器必然指向这块池子 —— 命中即现场取证
+    LIC_POOL = (0x1406b3300, 0x1406b3b00)
+    lic_hits = []
+    lic_files = set()
+
+    def lic_watch(tid, h, cs):
+        try:
+            k32.SuspendThread(h)
+        except Exception:
+            return
+        try:
+            names = ('rax', 'rcx', 'rdx', 'rbx', 'rsp', 'rbp', 'rsi', 'rdi',
+                     'r8', 'r9', 'r10', 'r11', 'r12', 'r13', 'r14', 'r15', 'rip')
+            regs = {}
+            for idx, nm in enumerate(names):
+                regs[nm] = struct.unpack_from('<Q', cs, 0x78 + idx * 8)[0]
+            rbp = regs['rbp']
+            hit = {k: v for k, v in regs.items()
+                   if LIC_POOL[0] <= v < LIC_POOL[1]}
+            if not hit:
+                return
+            tag = len(lic_hits)
+            lic_hits.append({'tid': tid, 't': round(time.time() - t0h, 5),
+                             'regs': {k: hex(v) for k, v in regs.items()},
+                             'hit': {k: hex(v) for k, v in hit.items()}})
+            base = out_dir_ref[0]
+            if rbp and (rbp not in lic_files):
+                lic_files.add(rbp)
+                for nm, va, sz in (('ctx', rbp, 0x400),
+                                   ('stk', regs['rsp'] - 0x800, 0x2000)):
+                    buf = read_mem(view.h, va, sz) or b''
+                    with open(os.path.join(base, 'lic_%s_%x_%d.bin'
+                                           % (nm, rbp, tag)), 'wb') as f:
+                        f.write(buf)
+            print('    [LIC] tid=%d rbp=%#x rip=%#x 命中 %s'
+                  % (tid, rbp, regs['rip'],
+                     {k: hex(v) for k, v in hit.items()}), flush=True)
+        except Exception as e:
+            print('    [LIC] 失败: %s' % e, flush=True)
+        finally:
+            k32.ResumeThread(h)
+
     refresh()
     t0h = time.time()
     t_end = t0h + seconds
@@ -633,6 +676,13 @@ def hot_phase(view, pid, ranges, guard, seconds, out_dir_ref=['.']):
                   % (len(trace), len(pages), k), flush=True)
         except Exception as e:
             print('[*] hot_trace 写失败: %s' % e, flush=True)
+        if lic_hits:
+            try:
+                with open(os.path.join(out_dir_ref[0], 'lic_trace.json'), 'w') as f:
+                    json.dump(lic_hits, f, indent=1)
+                print('[*] 授权池命中 %d 次' % len(lic_hits), flush=True)
+            except Exception as e:
+                print('[*] lic_trace 写失败: %s' % e, flush=True)
         if rip_hits:
             top = sorted(rip_hits.items(), key=lambda x: -x[1])[:24]
             print('[*] VM 执行期 RIP 直方图（top24）:', flush=True)
@@ -655,6 +705,7 @@ def hot_phase(view, pid, ranges, guard, seconds, out_dir_ref=['.']):
                 continue
             rip = struct.unpack_from('<Q', buf, CTX_RIP)[0]
             rbp = struct.unpack_from('<Q', buf, CTX_RBP)[0]
+            lic_watch(tid, h, buf)
             if rbp < 0x10000 or not any(lo <= rbp < hi for lo, hi in guard):
                 continue
             rip_hits[rip] = rip_hits.get(rip, 0) + 1
