@@ -1931,7 +1931,7 @@ def table_hook_trace(exe, seconds, out_dir='.'):
             elif inrva:
                 print('      （RVA 形态——v24.4 实证钩它会让 VM 停摆，本轮跳过）',
                       flush=True)
-        if len(tables) >= 3:
+        if tables:                     # v24.9：回到 v24.2 的早钩时机（661 表一变 abs 就钩）
             break
         time.sleep(0.5)
 
