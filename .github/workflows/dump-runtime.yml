@@ -36,6 +36,10 @@ on:
         description: 'inline hook 派发器，抓逐条 VM 指令轨迹（true/false）'
         required: false
         default: 'false'
+      fakelic:
+        description: '启动前写一份假 LicenseInfo（差分实验用，true/false）'
+        required: false
+        default: 'true'
       pkg_tag:
         description: '安装包缓存标签（换版本时改）'
         required: false
@@ -76,12 +80,14 @@ jobs:
           $dep = Pick "${{ github.event.inputs.deep }}" 'true'
           $tag = Pick "${{ github.event.inputs.pkg_tag }}" '6201829'
           $trc = Pick "${{ github.event.inputs.trace }}" 'false'
+          $fl = Pick "${{ github.event.inputs.fakelic }}" 'true'
           "seconds=$sec" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
           "rounds=$rnd"  | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
           "relaunch=$rel"| Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
           "deep=$dep"    | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
           "tag=$tag"     | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
           "trace=$trc"   | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          "fakelic=$fl"  | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
           Write-Host "seconds=$sec rounds=$rnd relaunch=$rel deep=$dep tag=$tag"
 
       - name: 环境诊断（虚拟化 / 权限 / 会话）
@@ -139,6 +145,22 @@ jobs:
           if (-not $exe) { throw "包里没有 DiskGenius.exe" }
           Write-Host "EXE: $($exe.FullName)  $('{0:N0}' -f $exe.Length) 字节"
           "exe=$($exe.FullName)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+
+      # ---- 差分实验：先写一份假授权，看授权路径会不会被激活 ----
+      - name: 写假 LicenseInfo（差分实验）
+        if: steps.cfg.outputs.fakelic == 'true'
+        shell: pwsh
+        continue-on-error: true
+        run: |
+          $k = 'HKCU:\Software\Eassos\DiskGenius\LicenseInfo'
+          New-Item -Path $k -Force | Out-Null
+          Set-ItemProperty -Path $k -Name user       -Value 'probe'
+          Set-ItemProperty -Path $k -Name email      -Value 'probe@probe.test'
+          Set-ItemProperty -Path $k -Name regcode    -Value 'AAAA-BBBB-CCCC-DDDD-EEEE'
+          Set-ItemProperty -Path $k -Name regver     -Value '6'
+          Set-ItemProperty -Path $k -Name VerifyDate -Value '20991231'
+          Get-ItemProperty $k | Format-List
+          Write-Host "已写入假授权"
 
       # ---- v14：inline hook 逐条追踪（trace=true 时走这条，替代采样） ----
       - name: 逐条 VM 指令追踪（inline hook）

@@ -1064,6 +1064,14 @@ def selftest():
     if len(s9) > STUB9_SZ:
         fails.append('stub9 超过槽长')
 
+    s10 = _build_stub10(0x141e81f2a, 7, 0x10000100, 0x400000, 0x140000000,
+                        0x142ff3000, 0x100000000, 0x100800000)
+    print('  stub10(压缩): %d 字节，尾 %s' % (len(s10), s10[-2:].hex()))
+    if len(s10) > STUB10_SZ:
+        fails.append('stub10 超过槽长 %d' % len(s10))
+    if s10[-2:] != b'\xff\xe6' or b'\x48\xbe' not in s10[-12:]:
+        fails.append('stub10 尾部不是 mov rsi,orig; jmp rsi')
+
     if fails:
         print('\n[FAIL]')
         for f in fails:
@@ -1539,6 +1547,105 @@ def _build_stub8(copy_va, probe_base, lo_va, hi_va, count_va, buf_va):
     return bytes(b)
 
 
+STUB10_SZ = 0x180
+REC10_SZ = 64           # +0 IP, +8 bytes0, +16 bytes8, +24 tag, +32 r15, +40 orig, +48 rbp, +56 q1
+REC10_MAX = 400000      # 25.6 MB
+SEEN_SLOTS = 0x10000    # IP 去重表：64K 槽 * 8B = 512KB
+
+
+def _build_stub10(orig_va, tag, probe_base, seen_va, lo_va, hi_va, count_va, buf_va):
+    """v23 表项桩：只记 64 字节/条，且同一个 IP 只记一次（64K 槽直接映射去重）。
+    记录：+0 IP  +8 [IP]  +16 [IP+8]  +24 tag  +32 r15  +40 orig  +48 rbp  +56 表基址"""
+    b = bytearray()
+    holes = []
+
+    def jcc(op, kind):
+        pos = len(b)
+        b.extend(op + b'\x00\x00\x00\x00')
+        holes.append((pos, kind))
+        return pos
+
+    def counter(va):
+        b.extend(b'\x48\xb8' + struct.pack('<Q', va))
+        b.extend(b'\x48\xff\x00')
+
+    b += b'\x9c'
+    b += bytes.fromhex('50515253555657')
+    b += bytes.fromhex('4150415141524153415441554156')
+    b += bytes.fromhex('4157')
+    counter(probe_base)                                   # 进入
+    b += b'\x48\xa1' + struct.pack('<Q', count_va)
+    b += bytes.fromhex('4889c3')                          # mov rbx,rax
+    b += b'\x48\x3d' + struct.pack('<I', REC10_MAX)
+    jcc(bytes.fromhex('0f83'), 'out')
+    b += bytes.fromhex('4889ea')                          # mov rdx,rbp
+    b += b'\x49\xb9' + struct.pack('<Q', lo_va)
+    b += bytes.fromhex('4c39ca')
+    jcc(bytes.fromhex('0f82'), 'fin')                     # ctx 不在镜像内
+    b += b'\x49\xb9' + struct.pack('<Q', hi_va)
+    b += bytes.fromhex('4c39ca')
+    jcc(bytes.fromhex('0f83'), 'fin')
+    b += bytes.fromhex('488b95bc000000')                  # mov rdx,[rbp+0xBC]  = IP
+    b += bytes.fromhex('4c8d5210')                        # lea r10,[rdx+0x10]
+    b += b'\x49\xb9' + struct.pack('<Q', hi_va)
+    b += bytes.fromhex('4d39ca')
+    jcc(bytes.fromhex('0f87'), 'fin')                     # IP+16 越界
+    b += b'\x49\xb9' + struct.pack('<Q', lo_va)
+    b += bytes.fromhex('4c39ca')
+    jcc(bytes.fromhex('0f82'), 'fin')                     # IP 越界
+    # IP 去重：r9 = (IP>>2 & 0xFFFF)*8
+    b += bytes.fromhex('4c89d1')                          # mov rcx,r10
+    b += b'\x49\xb9' + struct.pack('<Q', seen_va)
+    b += bytes.fromhex('4c89d0')                          # mov rax,r10
+    b += bytes.fromhex('48c1e802')                        # shr rax,2
+    b += bytes.fromhex('48' + '25' + struct.pack('<I', 0xFFFF).hex())  # and eax,0xFFFF
+    b += bytes.fromhex('48c1e003')                        # shl rax,3
+    b += bytes.fromhex('4901c1')                          # add r9,rax
+    b += bytes.fromhex('4d3911')                          # cmp [r9],r10
+    b += bytes.fromhex('488b15') + struct.pack('<i', 0)   # 占位：mov rdx,[rip+0] -> 不用
+    b = b[:-7]
+    b += bytes.fromhex('740f')                            # je +0x0f -> 跳到 fin（下面回填）
+    je_pos = len(b) - 2
+    b += bytes.fromhex('4d8911')                          # mov [r9],r10
+    counter(probe_base + 8)
+    # 写记录
+    b += b'\x48\x8b\x3d' + struct.pack('<i', 0)          # 占位
+    b = b[:-7]
+    b += bytes.fromhex('4889d8')                          # mov rax,rbx
+    b += bytes.fromhex('48c1e006')                        # shl rax,6   (x64)
+    b += b'\x48\xbf' + struct.pack('<Q', buf_va)          # mov rdi,buf
+    b += bytes.fromhex('4801c7')                          # add rdi,rax
+    b += bytes.fromhex('4c8917')                          # mov [rdi],r10   (IP)
+    b += bytes.fromhex('4d8b02')                          # mov r8,[r10]
+    b += bytes.fromhex('4c894708')                        # mov [rdi+8],r8
+    b += bytes.fromhex('4d8b4208')                        # mov r8,[r10+8]
+    b += bytes.fromhex('4c894710')                        # mov [rdi+0x10],r8
+    b += bytes.fromhex('48c74718') + struct.pack('<I', tag & 0xFFFFFFFF)   # tag
+    b += bytes.fromhex('4c897f20')                        # mov [rdi+0x20],r15
+    b += bytes.fromhex('48c74728') + struct.pack('<I', orig_va & 0xFFFFFFFF)
+    b += b'\x48\xb8' + struct.pack('<Q', orig_va)         # 高位也写上（上面 4 字节是低 32 位）
+    b += bytes.fromhex('48894728')                        # mov [rdi+0x28],rax
+    b += bytes.fromhex('48896f30')                        # mov [rdi+0x30],rbp
+    b += bytes.fromhex('488b8df5000000')                  # mov rcx,[rbp+0xF5]
+    b += bytes.fromhex('48894f38')                        # mov [rdi+0x38],rcx
+    b += bytes.fromhex('488d4301')                        # lea rax,[rbx+1]
+    b += b'\x48\xa3' + struct.pack('<Q', count_va)
+    fin_pos = len(b)
+    b += bytes.fromhex('415f415e415d415c415b415a41594158')
+    b += bytes.fromhex('5f5e5d5b5a5958')
+    b += bytes.fromhex('9d')
+    b += bytes.fromhex('48be') + struct.pack('<Q', orig_va)
+    b += bytes.fromhex('ffe6')
+    out_pos = fin_pos     # out 与 fin 同址（记录未写也不影响跳转）
+    for pos, kind in holes:
+        b[pos + 2:pos + 6] = struct.pack('<i', out_pos - (pos + 6))
+    # je 回填：从 je 结尾跳到 fin
+    rel = fin_pos - (je_pos + 2)
+    b[je_pos + 1] = rel & 0xFF
+    assert len(b) <= STUB10_SZ, 'stub10 超长 %d' % len(b)
+    return bytes(b)
+
+
 STUB9_SZ = 0x140
 
 
@@ -1725,10 +1832,11 @@ def table_hook_trace(exe, seconds, out_dir='.'):
         return None
     count_va = alloc
     probe_va = alloc + 0x100
+    seen_va = alloc + 0x100000
     stub_va = alloc + 0x200000
-    buf_va = alloc + 0x600000
-    print('[*] 缓冲: count=%#x stub=%#x buf=%#x（每桩 %d 字节）'
-          % (count_va, stub_va, buf_va, STUB9_SZ), flush=True)
+    buf_va = alloc + 0x800000
+    print('[*] 缓冲: count=%#x seen=%#x stub=%#x buf=%#x（每桩 %d 字节，每条 %d 字节）'
+          % (count_va, seen_va, stub_va, buf_va, STUB10_SZ, REC10_SZ), flush=True)
 
     wrote = ctypes.c_size_t(0)
     originals = {}       # table_va -> (原 entries bytes, n)
@@ -1745,13 +1853,14 @@ def table_hook_trace(exe, seconds, out_dir='.'):
         blob_stubs = bytearray()
         ptrs = []
         for ei, orig in enumerate(ents):
-            sv = stub_va + k * STUB9_SZ
-            st = _build_stub9(orig, (ti << 20) | ei, pb, lo, hi, count_va, buf_va)
-            blob_stubs += st + b'\xcc' * (STUB9_SZ - len(st))
+            sv = stub_va + k * STUB10_SZ
+            st = _build_stub10(orig, (ti << 20) | ei, pb, seen_va, lo, hi,
+                               count_va, buf_va)
+            blob_stubs += st + b'\xcc' * (STUB10_SZ - len(st))
             ptrs.append(sv)
             stubs.append((ti, ei, sv, orig))
             k += 1
-        args = [ctypes.c_void_p(h), ctypes.c_void_p(stub_va + (k - n) * STUB9_SZ),
+        args = [ctypes.c_void_p(h), ctypes.c_void_p(stub_va + (k - n) * STUB10_SZ),
                 bytes(blob_stubs), len(blob_stubs), ctypes.byref(wrote)]
         if not k32.WriteProcessMemory(*args):
             print('   写桩失败表 %#x err=%d' % (tva, ctypes.get_last_error()))
@@ -1785,25 +1894,26 @@ def table_hook_trace(exe, seconds, out_dir='.'):
         if tick <= 2 or tick % 8 == 0:
             print('    [hb %.1fs] 存活 探针 %s' % (time.time() - t0, pr), flush=True)
         cnt = struct.unpack('<Q', read_mem(h, count_va, 8) or b'\0' * 8)[0]
-        if cnt >= REC_MAX:
+        if cnt >= REC10_MAX:
             break
 
-    cnt = min(struct.unpack('<Q', read_mem(h, count_va, 8) or b'\0' * 8)[0], REC_MAX)
-    raw = read_mem(h, buf_va, cnt * REC_SZ) or b''
-    n = len(raw) // REC_SZ
-    out = [list(struct.unpack_from('<22Q', raw, i * REC_SZ)) for i in range(n)]
-    keys = {tuple(e[:18]) for e in out}
+    cnt = min(struct.unpack('<Q', read_mem(h, count_va, 8) or b'\0' * 8)[0], REC10_MAX)
+    raw = read_mem(h, buf_va, cnt * REC10_SZ) or b''
+    n = len(raw) // REC10_SZ
+    out = [list(struct.unpack_from('<8Q', raw, i * REC10_SZ)) for i in range(n)]
+    ips = {e[0] for e in out}
     tags = {}
     for e in out:
-        tags[e[20]] = tags.get(e[20], 0) + 1
-    print('[*] 轨迹 %d 条，去重 %d，tag 分布(前10) %s'
-          % (n, len(keys), sorted(tags.items(), key=lambda kv: -kv[1])[:10]), flush=True)
+        tags[e[3]] = tags.get(e[3], 0) + 1
+    print('[*] 轨迹 %d 条（去重后），不同 IP %d，tag 种类 %d，tag top10 %s'
+          % (n, len(ips), len(tags),
+             sorted(tags.items(), key=lambda kv: -kv[1])[:10]), flush=True)
     with open(os.path.join(out_dir, 'vm_trace.json'), 'w') as f:
-        json.dump({'n': n, 'mode': 'table', 'reg_order': REG_ORDER,
-                   'rec_size': REC_SZ, 'dead_at': dead_at,
+        json.dump({'n': n, 'mode': 'table-compact', 'rec_size': REC10_SZ,
+                   'fmt': '[ip, [ip], [ip+8], tag, r15, orig, rbp, [rbp+0xF5]]',
+                   'dead_at': dead_at, 'n_ip': len(ips),
                    'tables': [(hex(va), nn) for va, nn in tables],
-                   'distinct': len(keys), 'tag_hist': tags,
-                   'trace': out}, f)
+                   'tag_hist': tags, 'trace': out}, f)
 
     for tva, (raw0, nn) in originals.items():
         op = ctypes.c_uint32(0)
