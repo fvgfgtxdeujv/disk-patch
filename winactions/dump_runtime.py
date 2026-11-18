@@ -1065,7 +1065,7 @@ def selftest():
         fails.append('stub9 超过槽长')
 
     s11 = _build_stub11(0x141e81f2a, 7, 0x10000100, 0x100100000, 0x1419d4000,
-                        0x142780000, 0x100000000, 0x102400000)
+                        0x142780000, 0x100000000, 0x102200000)
     print('  stub11(明文自检): %d 字节，尾 %s' % (len(s11), s11[-2:].hex()))
     if len(s11) > STUB11_SZ:
         fails.append('stub11 超过槽长 %d' % len(s11))
@@ -1728,18 +1728,19 @@ def _build_stub9(orig_va, tag, probe_base, lo_va, hi_va, count_va, buf_va):
     return bytes(b)
 
 
-REC11_SZ = 32           # v24 记录：[IP, [IP], [IP+8], tag]
-TRACE11_MAX = 200000    # 顺序轨迹 200k 条（6.4MB）
-SLOT_COUNT = 0x100000   # IP 直接映射槽表：1M 槽 × 32B = 32MB
-STUB11_SZ = 0x180
+REC11_SZ = 64           # v24.1 记录：[IP,[IP],[IP+8],tag,rbp,orig,0,0]
+TRACE11_MAX = 150000    # 顺序轨迹 150k 条（9.6MB）
+SLOT_COUNT = 0x80000    # IP 直接映射槽表：512K 槽 × 64B = 32MB
+STUB11_SZ = 0x1C0
 
 
 def _build_stub11(orig_va, tag, probe_base, slots_va, lo_va, hi_va,
                   count_va, buf_va):
-    """v24 表项桩：只在 IP 处字节「像明文」时落盘（u16@IP<0x800 且
+    """v24.1 表项桩：只在 IP 处字节「像明文」时落盘（u16@IP<0x800 且
     i32@IP+2 ∈ [-0x80000,0x80000)），双写：顺序轨迹 + IP 直接映射槽表。
-    槽下标 = ((IP-lo)>>4) & 0xFFFFF，后写覆盖 → 每 IP 留一条最新明文。
-    记录 32 字节，原 handler 烤进桩尾。r10 作比较寄存器，r9 专存 [IP+8]。"""
+    记录 64 字节：+0 IP  +8 [IP]  +0x10 [IP+8]  +0x18 tag  +0x20 rbp
+    +0x28 orig  +0x30 0  +0x38 0。槽下标=((IP-lo)>>4)&0x7FFFF，后写覆盖。
+    r10 作比较寄存器，r9 专存 [IP+8]，原 handler 烤进桩尾。"""
     B = bytearray()
     holes = []          # (pos, kind)
 
@@ -1756,7 +1757,7 @@ def _build_stub11(orig_va, tag, probe_base, slots_va, lo_va, hi_va,
     def imm64(prefix, v):
         return prefix + struct.pack('<Q', v)
 
-    # ---- 保存：pushfq + rax rcx rdx rbx rbp rsi rdi + r8..r15（15 个 + flags）----
+    # ---- 保存：pushfq + rax rcx rdx rbx rbp rsi rdi + r8..r15 ----
     B += b'\x9c'
     B += bytes.fromhex('50515253')                       # rax rcx rdx rbx
     B += bytes.fromhex('555657')                         # rbp rsi rdi
@@ -1797,28 +1798,38 @@ def _build_stub11(orig_va, tag, probe_base, slots_va, lo_va, hi_va,
     B += b'\x48\x81\xf9' + struct.pack('<I', 0x100000)   # cmp rcx,0x100000
     jcc(b'\x0f\x83', 'fin')
     counter(probe_base + 8)                              # 明文命中计数
-    # 槽写入：idx=((IP-lo)>>4)&0xFFFFF
+    # 槽写入：idx=((IP-lo)>>4)&0x7FFFF，×64
     B += bytes.fromhex('4889d0')                         # mov rax,rdx
     B += imm64(b'\x49\xba', lo_va)                       # mov r10,lo
     B += bytes.fromhex('4c29d0')                         # sub rax,r10
     B += bytes.fromhex('48c1e804')                       # shr rax,4
-    B += b'\x48\x25' + struct.pack('<I', SLOT_COUNT - 1) # and rax,0xFFFFF
-    B += bytes.fromhex('48c1e005')                       # shl rax,5
+    B += b'\x48\x25' + struct.pack('<I', SLOT_COUNT - 1) # and rax,0x7FFFF
+    B += bytes.fromhex('48c1e006')                       # shl rax,6
     B += imm64(b'\x48\xbf', slots_va)                    # mov rdi,slots
     B += bytes.fromhex('4801c7')                         # add rdi,rax
     B += bytes.fromhex('488917')                         # mov [rdi],rdx
     B += bytes.fromhex('4c894708')                       # mov [rdi+8],r8
     B += bytes.fromhex('4c894f10')                       # mov [rdi+0x10],r9
     B += b'\x48\xc7\x47\x18' + struct.pack('<I', tag & 0xFFFFFFFF)
-    # 顺序轨迹追加（同样 32 字节）
+    B += bytes.fromhex('48896f20')                       # mov [rdi+0x20],rbp
+    B += imm64(b'\x48\xb8', orig_va)                     # mov rax,orig
+    B += bytes.fromhex('48894728')                       # mov [rdi+0x28],rax
+    B += bytes.fromhex('48c7473000000000')               # mov qword [rdi+0x30],0
+    B += bytes.fromhex('48c7473800000000')               # mov qword [rdi+0x38],0
+    # 顺序轨迹追加（同样 64 字节）
     B += bytes.fromhex('4889d8')                         # mov rax,rbx
-    B += bytes.fromhex('48c1e005')                       # shl rax,5
+    B += bytes.fromhex('48c1e006')                       # shl rax,6
     B += imm64(b'\x48\xbf', buf_va)
-    B += bytes.fromhex('4801c7')
+    B += bytes.fromhex('4801c7')                         # add rdi,rax
     B += bytes.fromhex('488917')
     B += bytes.fromhex('4c894708')
     B += bytes.fromhex('4c894f10')
     B += b'\x48\xc7\x47\x18' + struct.pack('<I', tag & 0xFFFFFFFF)
+    B += bytes.fromhex('48896f20')
+    B += imm64(b'\x48\xb8', orig_va)
+    B += bytes.fromhex('48894728')
+    B += bytes.fromhex('48c7473000000000')
+    B += bytes.fromhex('48c7473800000000')
     B += bytes.fromhex('488d4301')                       # lea rax,[rbx+1]
     B += imm64(b'\x48\xa3', count_va)                    # mov [count],rax
     fin_pos = len(B)
@@ -1953,9 +1964,9 @@ def table_hook_trace(exe, seconds, out_dir='.'):
         return None
     count_va = alloc
     probe_va = alloc + 0x100
-    slots_va = alloc + 0x100000            # 1M 槽 × 32B = 32MB
+    slots_va = alloc + 0x100000            # 512K 槽 × 64B = 32MB
     stub_va = alloc + 0x2100000
-    buf_va = alloc + 0x2400000             # 顺序轨迹 200k × 32B
+    buf_va = alloc + 0x2200000             # 顺序轨迹 150k × 64B
     print('[*] 缓冲: count=%#x slots=%#x stub=%#x buf=%#x'
           % (count_va, slots_va, stub_va, buf_va), flush=True)
 
@@ -2002,6 +2013,7 @@ def table_hook_trace(exe, seconds, out_dir='.'):
     dead_at = None
     tick = 0
     snap = (0, b'')
+    snap_slots = b''
     while time.time() - t0 < seconds:
         time.sleep(0.5)
         tick += 1
@@ -2013,6 +2025,9 @@ def table_hook_trace(exe, seconds, out_dir='.'):
                 raw0 = read_mem(h, buf_va, c0 * REC11_SZ)
                 if raw0:
                     snap = (len(raw0) // REC11_SZ, raw0)
+            sb = read_mem_safe(h, slots_va, SLOT_COUNT * REC11_SZ)
+            if sb and sb.count(b'\x00') < len(sb) - 8:
+                snap_slots = sb
         code = ctypes.c_ulong(0)
         oka = k32.GetExitCodeProcess(ctypes.c_void_p(h), ctypes.byref(code))
         pr = _read_probes(read_mem, h, count_va, len(tables))
@@ -2033,32 +2048,34 @@ def table_hook_trace(exe, seconds, out_dir='.'):
         raw, cnt = snap[1], snap[0]
         print('[*] 进程已退出，改用最后快照（%d 条）' % cnt, flush=True)
     n = len(raw) // REC11_SZ
-    out = [list(struct.unpack_from('<4Q', raw, i * REC11_SZ)) for i in range(n)]
+    out = [list(struct.unpack_from('<8Q', raw, i * REC11_SZ)) for i in range(n)]
     ips = {e[0] for e in out if e[0]}
+    ctxs = {e[4] for e in out if e[0]}
     tags = {}
     for e in out:
         if e[0]:
             tags[e[3]] = tags.get(e[3], 0) + 1
-    # 槽表解码（32MB 分块读）
-    sblob = read_mem_safe(h, slots_va, SLOT_COUNT * REC11_SZ) or b''
+    # 槽表解码（优先用快照，其次现场读）
+    sblob = snap_slots or (read_mem_safe(h, slots_va, SLOT_COUNT * REC11_SZ) or b'')
     insns = []
     for i in range(len(sblob) // REC11_SZ):
-        ip, b0, b1, tg = struct.unpack_from('<4Q', sblob, i * REC11_SZ)
+        ip, b0, b1, tg, rb, og, p0, p1 = struct.unpack_from('<8Q', sblob, i * REC11_SZ)
         if not ip:
             continue
         bb = struct.pack('<QQ', b0, b1)
         op = struct.unpack_from('<H', bb, 0)[0]
         rel = struct.unpack_from('<i', bb, 2)[0]
-        insns.append([ip, op, rel, op == (tg & 0xFFFFF), tg & 0xFFFFF])
-    ok_op = sum(1 for _, o, r, m, _ in insns if m)
-    ok_rel = sum(1 for ip, o, r, m, _ in insns
-                 if m and -0x80000 <= r < 0x80000)
-    print('[*] 顺序轨迹 %d 条（不同 IP %d）；槽表 %d 条明文（op 自证 %d，rel 合理 %d）'
-          % (n, len(ips), len(insns), ok_op, ok_rel), flush=True)
+        insns.append([ip, op, rel, op == (tg & 0xFFFFF), tg & 0xFFFFF, rb])
+    ok_op = sum(1 for e in insns if e[3])
+    ok_rel = sum(1 for e in insns if e[3] and -0x80000 <= e[2] < 0x80000)
+    print('[*] 顺序轨迹 %d 条（不同 IP %d，不同 ctx %d）；槽表 %d 条明文'
+          '（op 自证 %d，rel 合理 %d，来源快照=%s）'
+          % (n, len(ips), len(ctxs), len(insns), ok_op, ok_rel,
+             bool(snap_slots)), flush=True)
     with open(os.path.join(out_dir, 'vm_trace.json'), 'w') as f:
         json.dump({'n': n, 'mode': 'table-plain', 'rec_size': REC11_SZ,
-                   'fmt': '[ip, [ip], [ip+8], tag]',
-                   'dead_at': dead_at, 'n_ip': len(ips),
+                   'fmt': '[ip,[ip],[ip+8],tag,rbp,orig,0,0]',
+                   'dead_at': dead_at, 'n_ip': len(ips), 'n_ctx': len(ctxs),
                    'tables': [(hex(va), nn) for va, nn in tables],
                    'tag_hist': tags, 'trace': out,
                    'insns': insns, 'insns_ok_op': ok_op, 'insns_ok_rel': ok_rel}, f)
