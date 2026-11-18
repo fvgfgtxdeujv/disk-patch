@@ -113,3 +113,16 @@ OfflineReg.dat      \OfflineReg.exe  Options.ini
 * 追踪到执行形态：单实例 `ctx=0x1420c0e5f`、22 个 IP、16 条一循环的空闲循环。
 
 详见 `reports/REPORT_table_dbi.md`。
+
+## 7. v24.x 追加实证（2026-11-19，run 44330944428→44336822374）
+
+* **handler 547 = 派发器本体**（代码级）：`op=u16@[ctx+0xBC]`、表=`[ctx+0xF5]`、
+  `IP+=i32@[IP+2]`、handler 指针经魔数 `0x3a71cbe0` 混淆、缓存于 `ctx+8`。
+  详见 `reports/REPORT_table_dbi.md` §9。
+* ctx 槽位图（代码级）：`+0xBC`=IP、`+0xF5`=表基址、`+8`=下一 handler 缓存、
+  `+0x6D`=解密密钥、`+0xA4/+0x13B/+0x119/+0x11B/+0x121/+0x178`=变异累加器。
+* 三态行为：早钩 661 表→205M 派发/s 自旋（tag 547，IP 冻结于 3 条 op297 分支）；
+  迟钩→0 派发+崩溃；钩 49/1096 表→VM 停摆（这些表被非派发路径引用）。
+* 字节码区 `0x142150000..0x142190000` 钩前后差异 85%；3 条分支指令常驻明文，
+  分支目标静态为密文。
+* handler 主体入口=4 条 `jmp rel32` 链，运行期 dump：handlerbody_{0,297,446,478,545,547}.bin。
