@@ -1,0 +1,106 @@
+# -*- coding: utf-8 -*-
+"""
+local_selftest.py —— 在 Linux/macOS 上验证 dump_ctx 的扫描核心
+
+不需要 Windows：构造一块合成内存镜像（代码段 + handler 表 + VM 上下文 + 干扰结构），
+检查 scan_buffer 能不能把真正的 ctx 排在第一位、且不把干扰结构当成 ctx。
+"""
+import os
+import struct
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import dump_ctx as D
+
+CODE_LO = 0x180000000
+CODE_HI = 0x180100000
+IMG_LO = 0x30000000
+IMG_SIZE = 0x40000        # 256KB 合成镜像
+
+
+def build_image():
+    buf = bytearray(IMG_SIZE)
+
+    def put64(addr, v):
+        o = addr - IMG_LO
+        struct.pack_into('<Q', buf, o, v)
+
+    def put_bytes(addr, b):
+        o = addr - IMG_LO
+        buf[o:o + len(b)] = b
+
+    # 两张 handler 表（各 32 项，全落在代码段）
+    t1 = IMG_LO + 0x1000
+    t2 = IMG_LO + 0x2000
+    for i in range(32):
+        put64(t1 + i * 8, CODE_LO + 0x100 + i * 0x40)
+        put64(t2 + i * 8, CODE_LO + 0x900 + i * 0x40)
+
+    # 真 ctx
+    ctx = IMG_LO + 0x8000
+    put64(ctx + 0x0, IMG_LO + 0x10000)      # 字节流指针
+    put64(ctx + 0x8, t1)                    # 表指针 1（0x4 与 0x8 会重叠，只取其一）
+    put64(ctx + 0xF5, t2)                   # 表指针 2
+    put64(ctx + 0x92, IMG_LO + 0x10000)     # IP
+    put_bytes(IMG_LO + 0x10000, b'\x20\x10\x00\x00' + b'\x00' * 12)
+
+    # 干扰 1：两个代码段指针但指向的不是表（指向代码中的孤立地址）
+    dec1 = IMG_LO + 0x9000
+    put64(dec1 + 0x8, CODE_LO + 0x1234)
+    put64(dec1 + 0xF5, CODE_LO + 0x5678)
+
+    # 干扰 2：表项全是同一个地址（假表）
+    ft = IMG_LO + 0x3000
+    for i in range(32):
+        put64(ft + i * 8, CODE_LO + 0x200)
+    dec2 = IMG_LO + 0xA000
+    put64(dec2 + 0x8, ft)
+
+    # 干扰 3：全零结构
+    dec3 = IMG_LO + 0xB000
+    put64(dec3 + 0x8, 0)
+
+    return bytes(buf), ctx, t1, t2, (dec1, dec2, dec3)
+
+
+def main():
+    buf, ctx, t1, t2, decoys = build_image()
+    hits = D.scan_buffer(buf, IMG_LO, CODE_LO, CODE_HI, min_score=4)
+
+    ok = 0
+    fail = 0
+
+    def check(name, cond, extra=''):
+        nonlocal ok, fail
+        if cond:
+            ok += 1
+            print('   [PASS] %-32s %s' % (name, extra))
+        else:
+            fail += 1
+            print('   [FAIL] %-32s %s' % (name, extra))
+
+    print('[*] 合成镜像 %d KB，候选 %d 个' % (len(buf) // 1024, len(hits)))
+    check('找到候选', len(hits) > 0, '%d 个' % len(hits))
+    if not hits:
+        return 1
+
+    top = hits[0]
+    check('第一名就是真 ctx', top['va'] == ctx, '0x%X vs 期望 0x%X' % (top['va'], ctx))
+    check('认出两张表', len(top['tables']) >= 2,
+          'slots=%s' % ','.join(sorted(top['tables'])))
+    if top['tables']:
+        check('表地址正确(0x8)', top['tables'].get('0x8') == '0x%X' % t1,
+              top['tables'].get('0x8', '?'))
+        check('表地址正确(0xF5)', top['tables'].get('0xF5') == '0x%X' % t2,
+              top['tables'].get('0xF5', '?'))
+
+    va_set = {h['va'] for h in hits[:6]}
+    check('干扰结构未被当 ctx', not (va_set & set(decoys)),
+          'decoys=%s' % ','.join('0x%X' % d for d in decoys))
+
+    print('\n[*] 结果: %d passed, %d failed' % (ok, fail))
+    return 0 if fail == 0 else 1
+
+
+if __name__ == '__main__':
+    sys.exit(main())

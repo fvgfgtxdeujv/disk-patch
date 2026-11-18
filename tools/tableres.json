@@ -1,0 +1,11394 @@
+{
+ "code_base": 5399330816,
+ "resolved": [
+  {
+   "at": "0x141D345C0",
+   "table_reg": "rbx",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D356F4",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D36731",
+   "table_reg": "rsi",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D370B5",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D3776A",
+   "table_reg": "r15",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D37932",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D37C99",
+   "table_reg": "r14",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D381FB",
+   "table_reg": "r13",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D3AFC4",
+   "table_reg": "r8",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D3FE0F",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D49269",
+   "table_reg": "rcx",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x141D4B311",
+   "table_reg": "r9",
+   "slot": "0x1F4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D4B9BF",
+   "table_reg": "rsi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D4C0A3",
+   "table_reg": "rdi",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D4C70D",
+   "table_reg": "rdx",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D4CA6A",
+   "table_reg": "r10",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D4D34E",
+   "table_reg": "rbx",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D4DCCB",
+   "table_reg": "r13",
+   "slot": "0x1F4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D4DEA2",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D4E3FA",
+   "table_reg": "r15",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D4E7ED",
+   "table_reg": "rbx",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D4F5ED",
+   "table_reg": "rcx",
+   "slot": "0x1F4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D50DD7",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D51557",
+   "table_reg": "r8",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D51A22",
+   "table_reg": "r10",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D51BC5",
+   "table_reg": "r10",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D524CC",
+   "table_reg": "rdx",
+   "slot": "0x1F4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D527F2",
+   "table_reg": "r11",
+   "slot": "0x55",
+   "ip_slot": true
+  },
+  {
+   "at": "0x141D57FF8",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D58670",
+   "table_reg": "r13",
+   "slot": "0x1F4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D59368",
+   "table_reg": "r12",
+   "slot": "0x1F4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D59747",
+   "table_reg": "r10",
+   "slot": "0x55",
+   "ip_slot": true
+  },
+  {
+   "at": "0x141D59D82",
+   "table_reg": "rdi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D5D2DA",
+   "table_reg": "rax",
+   "slot": "0x120",
+   "ip_slot": true
+  },
+  {
+   "at": "0x141D5D54E",
+   "table_reg": "r9",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D5D781",
+   "table_reg": "r11",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D5DB8D",
+   "table_reg": "rdx",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D5E0E2",
+   "table_reg": "rdi",
+   "slot": "0x55",
+   "ip_slot": true
+  },
+  {
+   "at": "0x141D61072",
+   "table_reg": "rcx",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D6169F",
+   "table_reg": "rcx",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D6208C",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D62DE3",
+   "table_reg": "r12",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D638A3",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D6418C",
+   "table_reg": "r12",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D64981",
+   "table_reg": "r11",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D65B93",
+   "table_reg": "rdi",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D66D07",
+   "table_reg": "rdi",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D67E65",
+   "table_reg": "r15",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D682F9",
+   "table_reg": "rbx",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D68BA4",
+   "table_reg": "rbx",
+   "slot": "0x1F4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D68E5E",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D69CE7",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D6D5A7",
+   "table_reg": "rdi",
+   "slot": "0x1F4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D6DDA0",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D6E79E",
+   "table_reg": "r14",
+   "slot": "0x1F4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D6EAD4",
+   "table_reg": "rdx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D6F9D3",
+   "table_reg": "rcx",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D71D38",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D72460",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D72DB2",
+   "table_reg": "r8",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D732A6",
+   "table_reg": "r13",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D73624",
+   "table_reg": "rcx",
+   "slot": "0x55",
+   "ip_slot": true
+  },
+  {
+   "at": "0x141D74DC9",
+   "table_reg": "r15",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D75A40",
+   "table_reg": "rsi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D75E1B",
+   "table_reg": "rsi",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D76F59",
+   "table_reg": "r14",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D775E3",
+   "table_reg": "rsi",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D78356",
+   "table_reg": "r10",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D7957A",
+   "table_reg": "rsi",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D79CC1",
+   "table_reg": "r13",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D7A1B8",
+   "table_reg": "r10",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D7DBB7",
+   "table_reg": "r11",
+   "slot": "0x1F4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D7F812",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D7FA65",
+   "table_reg": "rsi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D8118E",
+   "table_reg": "r15",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D81958",
+   "table_reg": "rcx",
+   "slot": "0x1F4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D81AAA",
+   "table_reg": "r12",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D82081",
+   "table_reg": "rax",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D83C2A",
+   "table_reg": "rsi",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D83DFB",
+   "table_reg": "r13",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D855A3",
+   "table_reg": "r14",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D8649E",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D8714C",
+   "table_reg": "r15",
+   "slot": "0x55",
+   "ip_slot": true
+  },
+  {
+   "at": "0x141D8B33B",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D8C5D7",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D8CA60",
+   "table_reg": "r9",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D8CE4F",
+   "table_reg": "rsi",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D8D01F",
+   "table_reg": "r9",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D8DE7A",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D8EE21",
+   "table_reg": "rsi",
+   "slot": "0x55",
+   "ip_slot": true
+  },
+  {
+   "at": "0x141D8F291",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D8F4D5",
+   "table_reg": "rdx",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D8FBE9",
+   "table_reg": "r15",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D9253C",
+   "table_reg": "rdx",
+   "slot": "0x17A",
+   "ip_slot": true
+  },
+  {
+   "at": "0x141D92AA1",
+   "table_reg": "r14",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D934B3",
+   "table_reg": "rax",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D9370B",
+   "table_reg": "r12",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D93D92",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D947B3",
+   "table_reg": "rdx",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D94D2A",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D9657C",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D97A1F",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D990FA",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D99A16",
+   "table_reg": "r9",
+   "slot": "0x120",
+   "ip_slot": true
+  },
+  {
+   "at": "0x141D9A0B4",
+   "table_reg": "r12",
+   "slot": "0x17A",
+   "ip_slot": true
+  },
+  {
+   "at": "0x141D9A3BB",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D9A704",
+   "table_reg": "r9",
+   "slot": "0x1F4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141D9BC3E",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141DA474C",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141DA4FE1",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141DA9C8D",
+   "table_reg": "rbx",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141DAA52B",
+   "table_reg": "r13",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141DC9A75",
+   "table_reg": "rdi",
+   "slot": "0x110",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141DCBEE3",
+   "table_reg": "rbx",
+   "slot": "0x1F4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141DCCF85",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141DD0D8A",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141DD1008",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141DD1227",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141DD1C56",
+   "table_reg": "rsi",
+   "slot": "0x1F4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141DD3773",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141DD3F45",
+   "table_reg": "r13",
+   "slot": "0x120",
+   "ip_slot": true
+  },
+  {
+   "at": "0x141DE7948",
+   "table_reg": "rax",
+   "slot": "0x1F4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141DE9E48",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141DF1B6E",
+   "table_reg": "r10",
+   "slot": "0x1F4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141DF45C5",
+   "table_reg": "rbx",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x141DF4A01",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141DF563C",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141DF5C0E",
+   "table_reg": "r11",
+   "slot": "0x1F4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141DF7562",
+   "table_reg": "rdi",
+   "slot": "0x1F4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141DF7C33",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141E06B58",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141E4A2E5",
+   "table_reg": "r9",
+   "slot": "0x1F4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141E5A482",
+   "table_reg": "rax",
+   "slot": "0x1F4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141E64ED3",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141E652DD",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141E668D2",
+   "table_reg": "rdi",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x141E66E0C",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141E67C46",
+   "table_reg": "rsi",
+   "slot": "0x1F4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141E6AB71",
+   "table_reg": "r12",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141E73EC7",
+   "table_reg": "r14",
+   "slot": "0x1F4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141E757F7",
+   "table_reg": "r13",
+   "slot": "0x1F4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141E75C9F",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141E797B5",
+   "table_reg": "r9",
+   "slot": "0x1F4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141E79EDE",
+   "table_reg": "rcx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141E90CDD",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141E91323",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141E9195A",
+   "table_reg": "rdi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141E92FC2",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141E94D6D",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141EAC5DD",
+   "table_reg": "rax",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141EBC8D1",
+   "table_reg": "r11",
+   "slot": "0x1F4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141EBF701",
+   "table_reg": "r9",
+   "slot": "0x1F4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141EBF8DF",
+   "table_reg": "rcx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141EBFCAC",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141EC04C2",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141EC0AFA",
+   "table_reg": "rdx",
+   "slot": "0x1F4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141ECAA18",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141ECAD0C",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141ECAEF1",
+   "table_reg": "r9",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141EDE19C",
+   "table_reg": "r14",
+   "slot": "0x1F4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141EEA065",
+   "table_reg": "rcx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141EF7F7C",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141EF8132",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141EFAE9E",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141F0F671",
+   "table_reg": "r13",
+   "slot": "0x1F4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141F0F92B",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141F0FE5D",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141F18B2B",
+   "table_reg": "r9",
+   "slot": "0x1F4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141F19EF5",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141F1A0BA",
+   "table_reg": "rbx",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x141F1AB56",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141F1C50C",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141F1C922",
+   "table_reg": "r12",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x141F1CAF4",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141F29793",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141F30194",
+   "table_reg": "r12",
+   "slot": "0x1F4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141F30A98",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141F3B4BA",
+   "table_reg": "rbx",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x141F3CA1D",
+   "table_reg": "rcx",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x141F3CBC7",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141F3D532",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141F4DD98",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141F4DEA9",
+   "table_reg": "rsi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141F4E3F3",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141F4E5C7",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141F4EEC2",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141F4F187",
+   "table_reg": "r9",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141F4FF12",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141F50244",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141F59F50",
+   "table_reg": "rax",
+   "slot": "0x1F4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141F5B1DA",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141F5B83B",
+   "table_reg": "r9",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x141F5BA98",
+   "table_reg": "r10",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x141F7B44B",
+   "table_reg": "r10",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141F7B694",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141F7BE52",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141F7C149",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141F977B3",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141F97BE9",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FBC2DA",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FBC46D",
+   "table_reg": "rcx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FBC94A",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FC0DC5",
+   "table_reg": "rax",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x141FC140E",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FC17AF",
+   "table_reg": "rbx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FC1D77",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FC2262",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FC24E7",
+   "table_reg": "r10",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FC2D5C",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FC46DB",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FC4A8C",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FC5293",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FC5626",
+   "table_reg": "rdi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FC61EA",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FC738F",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FC77CC",
+   "table_reg": "r10",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FC81EF",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FC8C9D",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FC93D0",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FC97F1",
+   "table_reg": "r13",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x141FC9CBB",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FCA819",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FCAC0E",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FCB09A",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FCBD6C",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FCC4F0",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FCCA01",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FCCE11",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FCD24A",
+   "table_reg": "r10",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FCD2C8",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FCD760",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FCDF9A",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FCE4D5",
+   "table_reg": "rax",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FCE97C",
+   "table_reg": "rax",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FCF479",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FD0235",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FD044E",
+   "table_reg": "r13",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FD0876",
+   "table_reg": "rax",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FD0C84",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FD1170",
+   "table_reg": "rax",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FD1353",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FD188A",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FD1C74",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FD2405",
+   "table_reg": "rdi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FD29D9",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FD2F00",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FD3320",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FD3885",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FD39A2",
+   "table_reg": "rdi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FD3DFA",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FD3F40",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FD4DAB",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FD5202",
+   "table_reg": "r10",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FD5531",
+   "table_reg": "rbx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FD59D5",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FD5D3B",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FD60EB",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FD694C",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FD7687",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FD7B73",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FD8415",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FD8BF4",
+   "table_reg": "rax",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FD90CB",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FD9AFF",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FD9D83",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FDE797",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FDF56E",
+   "table_reg": "rdi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FDF906",
+   "table_reg": "r9",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x141FE0D89",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FE125D",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FE197C",
+   "table_reg": "rax",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FE2386",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FE283C",
+   "table_reg": "r10",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FE2BFE",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FE2DC2",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FE3519",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FE39C8",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FE3FC1",
+   "table_reg": "rsi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FE5761",
+   "table_reg": "r9",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FEABF7",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FEB057",
+   "table_reg": "rax",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FEB554",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FEB729",
+   "table_reg": "rcx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FEB7D9",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FEBBEA",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FEC029",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FEC682",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FECA9D",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FED261",
+   "table_reg": "r10",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x141FEE139",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FEE8C4",
+   "table_reg": "rax",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FEECAB",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FEF5FA",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FEFB03",
+   "table_reg": "r10",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FF08F4",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FF0DAE",
+   "table_reg": "r10",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FF1C6A",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FF1FD0",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FF2444",
+   "table_reg": "rbx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FF25DB",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FF2B70",
+   "table_reg": "r10",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FF2F55",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FF341F",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FF3D74",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FF4292",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FF4626",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FF483E",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FF4EED",
+   "table_reg": "r10",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FF54FC",
+   "table_reg": "rdx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FF5998",
+   "table_reg": "rdi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FF633B",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FF6792",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FF6D31",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FF71C4",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FF7B49",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FF84F7",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FF8AC5",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FF93A3",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FF97E8",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FF9E84",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FFA20D",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FFA378",
+   "table_reg": "rax",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x141FFAC86",
+   "table_reg": "rbx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FFAD34",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FFB2B5",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FFB66B",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FFBBCC",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FFC074",
+   "table_reg": "r10",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FFC501",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FFC951",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FFCE12",
+   "table_reg": "r8",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x141FFD6D0",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FFDA99",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FFE3B4",
+   "table_reg": "rbx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FFE835",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FFEBDD",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FFF2EF",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FFF75C",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FFFC34",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FFFD39",
+   "table_reg": "r12",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x141FFFFA5",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420006B0",
+   "table_reg": "rbx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142000AD3",
+   "table_reg": "rbx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420012C9",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142001EFE",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142002845",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142002BE5",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142002F4A",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420036B5",
+   "table_reg": "r10",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142003DFF",
+   "table_reg": "r10",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14200439D",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420046BF",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420052AD",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142005643",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420057D9",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420063EC",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142006C9E",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14200705E",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142007499",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420078DE",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142008406",
+   "table_reg": "r10",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142008824",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142008E00",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420096D1",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142009B3D",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142009F1F",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14200A398",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14200A75F",
+   "table_reg": "rbx",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x14200B261",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14200B66F",
+   "table_reg": "r10",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14200BB6B",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14200C3C0",
+   "table_reg": "r10",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x14200CA49",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14200CFA6",
+   "table_reg": "rax",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14200D470",
+   "table_reg": "r8",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x14200D951",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14200DAE3",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14200DFFA",
+   "table_reg": "rbx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14200E72C",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14200F7AC",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420110F6",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142011FF6",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420123A2",
+   "table_reg": "r15",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x142012CDB",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420131FE",
+   "table_reg": "r10",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x142013595",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142013D0D",
+   "table_reg": "rax",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142014194",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14201469B",
+   "table_reg": "rdx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142014B9E",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14201537D",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142015788",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14201600E",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420161C8",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420165CF",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142016766",
+   "table_reg": "r9",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142016BDD",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142016F86",
+   "table_reg": "r8",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x142017651",
+   "table_reg": "rax",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142018972",
+   "table_reg": "rdi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142019320",
+   "table_reg": "rdi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142019623",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420199DE",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142019E79",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14201A1F0",
+   "table_reg": "rdi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14201B0DD",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14201BA99",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14201C5C5",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14201CB7B",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14201D6E5",
+   "table_reg": "rbx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14201DB10",
+   "table_reg": "rax",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14201DF6F",
+   "table_reg": "rax",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14201E5B5",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14201EA4F",
+   "table_reg": "rax",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x14201F3EA",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14201F750",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14201FDBC",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420205DA",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142020BED",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142020FD6",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142022E73",
+   "table_reg": "rsi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142023551",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420236EE",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142023DFE",
+   "table_reg": "r12",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420242D4",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142024679",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142024BB5",
+   "table_reg": "rax",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142024F59",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420253BC",
+   "table_reg": "r10",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142026429",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142026D8A",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14202758D",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142027D64",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420286DC",
+   "table_reg": "rdi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142029029",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420294DD",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142029DA1",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14202ABC3",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14202BC6A",
+   "table_reg": "r11",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x14202BFBB",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14202C813",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14202D160",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14202D9D9",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14202DEB8",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14202E417",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14202E7E3",
+   "table_reg": "rax",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14202EBCD",
+   "table_reg": "rbx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14202F0DA",
+   "table_reg": "rbx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14202F5D5",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14202F9CA",
+   "table_reg": "rdi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14202FE69",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420307FF",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142030AD8",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14203127B",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142031655",
+   "table_reg": "rdi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142031C1C",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142031D97",
+   "table_reg": "rcx",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x142032268",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142032646",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420329EE",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142032DFF",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14203398D",
+   "table_reg": "r13",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x142033D9B",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142034101",
+   "table_reg": "rax",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14203448C",
+   "table_reg": "rbx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142034D6D",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142034EF3",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142035443",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142035807",
+   "table_reg": "rdi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14203597F",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142035E62",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420369B4",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142036E86",
+   "table_reg": "rbx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420377B3",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142037B9F",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14203802B",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420381ED",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14203835B",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142038A4E",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142038EE4",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14203919D",
+   "table_reg": "r10",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142039C3B",
+   "table_reg": "rdi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14203A293",
+   "table_reg": "rdi",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x14203B5C4",
+   "table_reg": "rdx",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x14203B87F",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14203BC3C",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14203C4A7",
+   "table_reg": "r10",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14203D369",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14203DA8A",
+   "table_reg": "r10",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14203E197",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14203E782",
+   "table_reg": "rax",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14203EAA0",
+   "table_reg": "rbx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14203EFD9",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14203F1BA",
+   "table_reg": "r10",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14203F350",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142040012",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420407C7",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142041A71",
+   "table_reg": "rbx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420424BE",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142042A37",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142043218",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420439EB",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142043E74",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420442CE",
+   "table_reg": "r8",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1420446B8",
+   "table_reg": "rax",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142044840",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420453B4",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142045AA5",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142045F02",
+   "table_reg": "rsi",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x142046293",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142046727",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142046BB0",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142046F13",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14204734B",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142047A50",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142047FA3",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142048333",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420487AF",
+   "table_reg": "rdi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14204AA0D",
+   "table_reg": "rdi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14204AD9E",
+   "table_reg": "r10",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14204B5E9",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14204BA4E",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14204BD71",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14204C22A",
+   "table_reg": "rbx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14204C813",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14204C9CC",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14204CE81",
+   "table_reg": "rax",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14204D5E0",
+   "table_reg": "r9",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14204DA71",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14204E0B5",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14204E5BE",
+   "table_reg": "rax",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14204EA41",
+   "table_reg": "r10",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14204F865",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14205023C",
+   "table_reg": "rax",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142050F03",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142051390",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142051D5D",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142052CC6",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14205320F",
+   "table_reg": "rbx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142053674",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142053B9B",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142053F13",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142054AD5",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142054EA2",
+   "table_reg": "r10",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142055058",
+   "table_reg": "rdx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142055535",
+   "table_reg": "rdi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142055BDB",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420564CA",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420567E8",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142057301",
+   "table_reg": "rdi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420576AF",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142057B3A",
+   "table_reg": "rdi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142058788",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142058C08",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14205996F",
+   "table_reg": "rbx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14205A56B",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14205A994",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14205B2E0",
+   "table_reg": "rdi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14205BC93",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14205BE31",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14205C30C",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14205C431",
+   "table_reg": "r13",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14205C90E",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14205D0A0",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14205DDBA",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14205E109",
+   "table_reg": "r8",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x14205E568",
+   "table_reg": "rdx",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x14205EECB",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14205F8AE",
+   "table_reg": "r11",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x14205FCB6",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420600C1",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142060B78",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142060E76",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420614A7",
+   "table_reg": "r9",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420619FA",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142062955",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420634B9",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142063783",
+   "table_reg": "rbx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420641D9",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14206466E",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142064E88",
+   "table_reg": "rbx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142065CBD",
+   "table_reg": "rbx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142066849",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14206737E",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14206773A",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142067C3D",
+   "table_reg": "rax",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x14206816D",
+   "table_reg": "r15",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x14206832D",
+   "table_reg": "rsi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142068792",
+   "table_reg": "rdi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14206895C",
+   "table_reg": "rdx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142068AFE",
+   "table_reg": "r8",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x142069927",
+   "table_reg": "rbx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142069C98",
+   "table_reg": "rax",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14206A149",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14206AA8B",
+   "table_reg": "rdi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14206B318",
+   "table_reg": "r9",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x14206B83D",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14206BA1B",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14206C5E7",
+   "table_reg": "rcx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14206CE04",
+   "table_reg": "rsi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14206D18D",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14206DFDE",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14206E801",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14206EC63",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14206F5A8",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14206FA0B",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14206FDA6",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142070C89",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142070EAC",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142071173",
+   "table_reg": "r10",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142071480",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142071C7B",
+   "table_reg": "rdi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142072153",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142072544",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142072976",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142072A7B",
+   "table_reg": "r9",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142073412",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142073D52",
+   "table_reg": "r10",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142074105",
+   "table_reg": "rdi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142074A11",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142075964",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142075D3C",
+   "table_reg": "rbx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142076918",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142076D59",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142077D4F",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420781CA",
+   "table_reg": "rax",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14207899D",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142078CF9",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142079140",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420795CC",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14207A061",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14207A652",
+   "table_reg": "rax",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14207A9EA",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14207B5F5",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14207BA5C",
+   "table_reg": "rdi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14207BED6",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14207C2F0",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14207C728",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14207CC11",
+   "table_reg": "r8",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x14207DC2E",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14207E071",
+   "table_reg": "rax",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14207EBB0",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14207F06C",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14207F17C",
+   "table_reg": "r9",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14207FD64",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142080CE1",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142081346",
+   "table_reg": "r9",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x142081D0C",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142081FDA",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14208243F",
+   "table_reg": "rdi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14208283E",
+   "table_reg": "rbx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420835D3",
+   "table_reg": "r14",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x14208437D",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142085B8D",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420863B9",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142086751",
+   "table_reg": "r10",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142086BD2",
+   "table_reg": "rdi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142086E13",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420872A1",
+   "table_reg": "r10",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142087695",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14208773F",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142087D18",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14208815C",
+   "table_reg": "rdi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420888EB",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142088E33",
+   "table_reg": "rdi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420890C3",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142089683",
+   "table_reg": "rax",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x142089BC1",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14208A1A9",
+   "table_reg": "rdx",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x14208A572",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14208A9AA",
+   "table_reg": "rdi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14208B5DE",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14208D590",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14208E6B8",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14208E989",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14208EEB2",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14208F19C",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14208F5E3",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14208FA9B",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142090CA3",
+   "table_reg": "rax",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142090E8D",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142091E00",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142092C37",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142092FFB",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142093549",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142094360",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420946AD",
+   "table_reg": "rdi",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x142095854",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142095CA4",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142096006",
+   "table_reg": "rdi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420969AE",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142096BC2",
+   "table_reg": "r13",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142097078",
+   "table_reg": "rdi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420975A2",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14209797E",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420984E3",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142098827",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142099887",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142099A29",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142099F38",
+   "table_reg": "rcx",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x14209A893",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14209BB04",
+   "table_reg": "rax",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14209C01D",
+   "table_reg": "r10",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14209C581",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14209C930",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14209CE57",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14209D460",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14209D64C",
+   "table_reg": "r9",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14209DEC6",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14209F142",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14209F30A",
+   "table_reg": "rdx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14209F6E4",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14209FB40",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14209FDF1",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420A0B8C",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420A128A",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420A1682",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420A1B91",
+   "table_reg": "r10",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420A2393",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420A2745",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420A2C8C",
+   "table_reg": "rax",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420A32C9",
+   "table_reg": "rbx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420A36EC",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420A3BA2",
+   "table_reg": "rbx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420A3DA9",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420A4715",
+   "table_reg": "rdi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420A4B7D",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420A4D52",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420A52D9",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420A5C71",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420A627F",
+   "table_reg": "rax",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420A6745",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420A7680",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420A7FAC",
+   "table_reg": "rdi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420A83BC",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420A8BC5",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420A8D99",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420A9304",
+   "table_reg": "r12",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1420A9560",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420AA3B3",
+   "table_reg": "rax",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420AB8E0",
+   "table_reg": "r10",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420ABDB6",
+   "table_reg": "rsi",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1420AC2A9",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420ACF15",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420ADB4A",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420AE3AA",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420AEA2B",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420AEB35",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420AF51C",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420AFFAA",
+   "table_reg": "rsi",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1420B08AD",
+   "table_reg": "rbx",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1420B0DD8",
+   "table_reg": "r10",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420B16D0",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420B1A2B",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420B1E49",
+   "table_reg": "rcx",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1420B2506",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420B2DC4",
+   "table_reg": "r14",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1420B3DDF",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420B440E",
+   "table_reg": "r12",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420B4841",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420B4B28",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420B5175",
+   "table_reg": "rdx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420B58E4",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420B5BF4",
+   "table_reg": "r10",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420B5FFC",
+   "table_reg": "r10",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420B63E1",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420B69D3",
+   "table_reg": "rbx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420B6DD7",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420B72DA",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420B766D",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420B7F4C",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420B83D8",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420B880A",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420B925B",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420B9BB6",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420BACA0",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420BB081",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420BB923",
+   "table_reg": "rsi",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1420BBCC4",
+   "table_reg": "r13",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420BC224",
+   "table_reg": "r10",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420BC646",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420BCD15",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420BD269",
+   "table_reg": "rax",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420BDC3C",
+   "table_reg": "rbx",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1420BE1E0",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420BE590",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420BE89F",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420BED51",
+   "table_reg": "r9",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420BF175",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420BF64E",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420BF933",
+   "table_reg": "rax",
+   "slot": "0x120",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1420BFD19",
+   "table_reg": "rax",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420C0BF9",
+   "table_reg": "r10",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420C106B",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420C1B9D",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420C23E8",
+   "table_reg": "rdi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420C2AF3",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420C343E",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420C4400",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420C4764",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420C4B88",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420C4E52",
+   "table_reg": "r12",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420C521A",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420C56B0",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420C5DD9",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420C6870",
+   "table_reg": "r10",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420C6D29",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420C7196",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420C7543",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420C7E97",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420C833A",
+   "table_reg": "rax",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420C8774",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420C9177",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420C96BF",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420C9AE6",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420CA024",
+   "table_reg": "r10",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420CA47D",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420CA936",
+   "table_reg": "rax",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420CB2ED",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420CB71E",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420CBB23",
+   "table_reg": "rbx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420CC08C",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420CC430",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420CC92B",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420CCD0D",
+   "table_reg": "rdx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420CD0F2",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420CE181",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420CED90",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420CF19E",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420CF527",
+   "table_reg": "rax",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420CFDE5",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420D0514",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420D0E22",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420D173A",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420D1B5F",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420D24DD",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420D3227",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420D36EC",
+   "table_reg": "r13",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420D3C73",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420D4B04",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420D5A26",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420D5EB0",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420D614C",
+   "table_reg": "r12",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420D651D",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420D6903",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420D732C",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420D7DF8",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420D9712",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420D9BFE",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420DABC0",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420DBEAB",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420DC3FC",
+   "table_reg": "rax",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420DC83F",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420DCCF0",
+   "table_reg": "rdi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420DD200",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420DD5AD",
+   "table_reg": "rax",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420DDA1F",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420DE2F0",
+   "table_reg": "r10",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420DE6FE",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420DEECB",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420E002F",
+   "table_reg": "rdx",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1420E0848",
+   "table_reg": "rbx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420E095F",
+   "table_reg": "r13",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420E0E96",
+   "table_reg": "r13",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1420E1026",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420E1911",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420E1A32",
+   "table_reg": "rdi",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1420E1CB1",
+   "table_reg": "r13",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420E223A",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420E272A",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420E2AC0",
+   "table_reg": "r14",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1420E3078",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420E343C",
+   "table_reg": "rdx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420E3976",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420E41BE",
+   "table_reg": "r14",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420E46BC",
+   "table_reg": "rbx",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1420E5087",
+   "table_reg": "rax",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1420E544A",
+   "table_reg": "r13",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420E58E9",
+   "table_reg": "rax",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1420E5E20",
+   "table_reg": "r9",
+   "slot": "0x92",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1420E6063",
+   "table_reg": "r12",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420E6805",
+   "table_reg": "rsi",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420E76DA",
+   "table_reg": "rcx",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420E8850",
+   "table_reg": "r11",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420E8950",
+   "table_reg": "r12",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420E91BD",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420E94F7",
+   "table_reg": "r15",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1420E99AC",
+   "table_reg": "r8",
+   "slot": "0x4",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14210FBB9",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14211326C",
+   "table_reg": "rsi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14211B68F",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14212A289",
+   "table_reg": "r10",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14212B9BF",
+   "table_reg": "rcx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14212BB41",
+   "table_reg": "r9",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14212CFD8",
+   "table_reg": "r10",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142133164",
+   "table_reg": "rdi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421360C7",
+   "table_reg": "rdx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142137FB2",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421394AE",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142139650",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142139A79",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14213B508",
+   "table_reg": "r8",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14213C1F9",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14213F234",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142145627",
+   "table_reg": "r9",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x142146A6C",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142147042",
+   "table_reg": "r12",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14215DEA9",
+   "table_reg": "rbx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14215E51C",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14215EC9A",
+   "table_reg": "r14",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421635EE",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14216886A",
+   "table_reg": "r14",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142168A5E",
+   "table_reg": "rdx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14216CD35",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14216D5EA",
+   "table_reg": "rbx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14216E487",
+   "table_reg": "rsi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14216E7D9",
+   "table_reg": "r11",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142170169",
+   "table_reg": "rdi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421706E2",
+   "table_reg": "rbx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14217086C",
+   "table_reg": "rsi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142174802",
+   "table_reg": "rbx",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x142175FB7",
+   "table_reg": "r11",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142176641",
+   "table_reg": "r10",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14217681C",
+   "table_reg": "rsi",
+   "slot": "0x120",
+   "ip_slot": true
+  },
+  {
+   "at": "0x14217839A",
+   "table_reg": "r13",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142179B88",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142179D6F",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14217A717",
+   "table_reg": "r13",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142186097",
+   "table_reg": "rbx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142187CE3",
+   "table_reg": "r9",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14218837A",
+   "table_reg": "rsi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14218895D",
+   "table_reg": "r10",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x14218B34F",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14218C002",
+   "table_reg": "rdi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14218C4D4",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14218D481",
+   "table_reg": "r12",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14218ECD6",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14219046A",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142194328",
+   "table_reg": "rax",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142194954",
+   "table_reg": "r12",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142194F8D",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142195551",
+   "table_reg": "rax",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142195CCC",
+   "table_reg": "r14",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14219634D",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14219B2E4",
+   "table_reg": "r12",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14219D947",
+   "table_reg": "rsi",
+   "slot": "0x120",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1421A00B6",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421A21C9",
+   "table_reg": "rcx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421A28B2",
+   "table_reg": "r14",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1421A3693",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421A3DAE",
+   "table_reg": "r9",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421A5710",
+   "table_reg": "r9",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421A6866",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421A6CDA",
+   "table_reg": "rdi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421A88DD",
+   "table_reg": "rcx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421ABE74",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421AC530",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421ACA6C",
+   "table_reg": "r11",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421AD3B0",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421ADABF",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421B1C64",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421B285E",
+   "table_reg": "rbx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421B2E5E",
+   "table_reg": "r14",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421B3471",
+   "table_reg": "rbx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421B48E8",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421B4A11",
+   "table_reg": "rcx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421B5BCB",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421B62CB",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421B973D",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421B9C98",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421BA779",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421BAD94",
+   "table_reg": "r9",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421BB3A7",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421BBA2D",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421BC0D5",
+   "table_reg": "rbx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421BC5FE",
+   "table_reg": "r10",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421BD315",
+   "table_reg": "r14",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421BDE8B",
+   "table_reg": "rdi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421BF958",
+   "table_reg": "r15",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1421BFFF6",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421C0171",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421C1330",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421C1C74",
+   "table_reg": "r10",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421C2333",
+   "table_reg": "r12",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421C252D",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421C2968",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421C31D0",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421C3731",
+   "table_reg": "rbx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421C4907",
+   "table_reg": "r12",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421C4ACC",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421C56BE",
+   "table_reg": "r12",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1421C5C5C",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421C69DE",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421C7005",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421C89A2",
+   "table_reg": "r13",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1421C8E7C",
+   "table_reg": "rbx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421CA42C",
+   "table_reg": "r8",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421CA90F",
+   "table_reg": "r11",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421CAEF2",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421CB3E1",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421CBC77",
+   "table_reg": "r9",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421CCF81",
+   "table_reg": "r14",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421CD907",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421CDF19",
+   "table_reg": "rdi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421CE1F4",
+   "table_reg": "rax",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421CF31A",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421CF4AA",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421CFCD4",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421CFEC8",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421D2026",
+   "table_reg": "r12",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1421D2742",
+   "table_reg": "r11",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1421D3DAD",
+   "table_reg": "r12",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421D3F6F",
+   "table_reg": "r12",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421D45BD",
+   "table_reg": "r8",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421D4ABF",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421D54B4",
+   "table_reg": "r14",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1421D5BD9",
+   "table_reg": "rbx",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1421D6CAE",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421D6E50",
+   "table_reg": "rsi",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1421D7029",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421D763F",
+   "table_reg": "r9",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421D83A2",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421D8E11",
+   "table_reg": "r9",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1421D93EC",
+   "table_reg": "rdi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421DA0A6",
+   "table_reg": "rax",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421DA261",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421DA389",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421DAB23",
+   "table_reg": "r13",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421DB102",
+   "table_reg": "rax",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421DB7DB",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421DC2A1",
+   "table_reg": "r11",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421DDCE3",
+   "table_reg": "rdx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421DF78F",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421E0CE6",
+   "table_reg": "rcx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421E323E",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421E3F7A",
+   "table_reg": "r8",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421E4160",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421E4645",
+   "table_reg": "r14",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421E4C46",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421E4E2D",
+   "table_reg": "r13",
+   "slot": "0x120",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1421E4EE4",
+   "table_reg": "rdx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421E55F4",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421E597E",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421E5B45",
+   "table_reg": "r15",
+   "slot": "0x120",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1421E61EF",
+   "table_reg": "r12",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421E637B",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421E6F1B",
+   "table_reg": "rdi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421E74DF",
+   "table_reg": "r12",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421E8BB2",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421EA5E3",
+   "table_reg": "rcx",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1421EB9E0",
+   "table_reg": "r13",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421EBBC8",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421EC51B",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421EC85C",
+   "table_reg": "r11",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1421ED62D",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421EDC80",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421EE262",
+   "table_reg": "r11",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1421F0352",
+   "table_reg": "rdi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421F0939",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421F0AC6",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421F1197",
+   "table_reg": "r9",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1421F1C65",
+   "table_reg": "r11",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421F2BC6",
+   "table_reg": "r8",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421F3030",
+   "table_reg": "r11",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421F4D30",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421F5F98",
+   "table_reg": "r8",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421F6829",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421F9652",
+   "table_reg": "rdi",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1421FA2C2",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421FA91C",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421FAE86",
+   "table_reg": "rdi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421FB026",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421FBC96",
+   "table_reg": "r10",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421FC67B",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421FE2A6",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421FECAC",
+   "table_reg": "rbx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421FF392",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421FF50D",
+   "table_reg": "rax",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1421FFADC",
+   "table_reg": "rax",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1421FFF89",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14220053E",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142201A38",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422021A0",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422022BD",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142202DCD",
+   "table_reg": "r12",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422032DB",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142203D9F",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422056DA",
+   "table_reg": "r11",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142205FC7",
+   "table_reg": "rbx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142206EAD",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422086B0",
+   "table_reg": "r13",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14220AA4B",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14220B8B2",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14220C09F",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14220CB07",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14220E39C",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14220EAA7",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14220EC83",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14220F17F",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14220F7C8",
+   "table_reg": "rbx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14220F9BB",
+   "table_reg": "r12",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142210980",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142210BAC",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422123A4",
+   "table_reg": "rdi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422132BC",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142214104",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142215C89",
+   "table_reg": "r10",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422163E1",
+   "table_reg": "r13",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14221AE82",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14221B4FC",
+   "table_reg": "r11",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14221CEF5",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14221E869",
+   "table_reg": "r14",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14221F353",
+   "table_reg": "rax",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142220D81",
+   "table_reg": "r8",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142220FBC",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142221788",
+   "table_reg": "rdi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14222650A",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142226FFA",
+   "table_reg": "rax",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142227CA0",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422285F0",
+   "table_reg": "r12",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142228725",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14222A22B",
+   "table_reg": "r8",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14222C3DD",
+   "table_reg": "rdi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14222C7BB",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14222E39C",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14222FAB0",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142230064",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422308F6",
+   "table_reg": "rdi",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1422315B9",
+   "table_reg": "r12",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1422320B5",
+   "table_reg": "r13",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x142232E20",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422332A3",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142233479",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142233FDF",
+   "table_reg": "rax",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x142234215",
+   "table_reg": "r9",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422355FD",
+   "table_reg": "r9",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142235C92",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142236989",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142237C91",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14223820D",
+   "table_reg": "rbx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422386C9",
+   "table_reg": "r14",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142238889",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142239621",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14223A65F",
+   "table_reg": "r12",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14223B5E3",
+   "table_reg": "rax",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14223C0B2",
+   "table_reg": "r12",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14223D348",
+   "table_reg": "r11",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14223DB62",
+   "table_reg": "rbx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14223E5A9",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142241B09",
+   "table_reg": "r13",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x142241FE3",
+   "table_reg": "r10",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142242687",
+   "table_reg": "r10",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142243578",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422447AF",
+   "table_reg": "r14",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1422455E9",
+   "table_reg": "rdx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142245DAB",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422479D8",
+   "table_reg": "r13",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1422484A9",
+   "table_reg": "r9",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142248980",
+   "table_reg": "r9",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142248FCA",
+   "table_reg": "r9",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14224A03F",
+   "table_reg": "r14",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14224A2EE",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14224B33F",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14224B941",
+   "table_reg": "rax",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14224C46B",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14224CC23",
+   "table_reg": "r8",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14224D88A",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14224E390",
+   "table_reg": "r12",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14224ED75",
+   "table_reg": "rcx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14224F2C4",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422502D2",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142250EEE",
+   "table_reg": "r14",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422513B4",
+   "table_reg": "r10",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14225295D",
+   "table_reg": "rbx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422538CB",
+   "table_reg": "r9",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14225532A",
+   "table_reg": "r9",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142257B13",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142258AA7",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142258D6D",
+   "table_reg": "r14",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142259C63",
+   "table_reg": "r12",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14225A2E7",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14225AC1A",
+   "table_reg": "rax",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14225C3D5",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14225C939",
+   "table_reg": "r12",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14225DA5D",
+   "table_reg": "rdi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14225E177",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14225EE8C",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422600EB",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142260AC0",
+   "table_reg": "r11",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142260FC6",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422625BC",
+   "table_reg": "r9",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142262C8C",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14226396D",
+   "table_reg": "rbx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14226595E",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142266E30",
+   "table_reg": "r12",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142268E31",
+   "table_reg": "r14",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422695D1",
+   "table_reg": "r9",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14226985B",
+   "table_reg": "r14",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x142269F11",
+   "table_reg": "rax",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14226B1AF",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14226B7F2",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14226B9C1",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14226C5FC",
+   "table_reg": "r13",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x14226CD33",
+   "table_reg": "rbx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14226D197",
+   "table_reg": "rbx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14226E424",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14226E892",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14226F4E5",
+   "table_reg": "rax",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14226F694",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142270240",
+   "table_reg": "r9",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142270792",
+   "table_reg": "r11",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142271356",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142272A63",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14227329B",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142273A73",
+   "table_reg": "r9",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x142274F33",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422756F8",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422760B9",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142276770",
+   "table_reg": "r9",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142276E8E",
+   "table_reg": "rax",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142277DA6",
+   "table_reg": "rdx",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1422782CA",
+   "table_reg": "r10",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422789BE",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422790A7",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142279C0F",
+   "table_reg": "r14",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14227C533",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14227CBA3",
+   "table_reg": "r10",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14227D488",
+   "table_reg": "r14",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14227D99A",
+   "table_reg": "r14",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14227DEF6",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14227ED01",
+   "table_reg": "r12",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14227F44C",
+   "table_reg": "r11",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14227F623",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14227FDD2",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14228027B",
+   "table_reg": "r10",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142280A9F",
+   "table_reg": "rdi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14228117D",
+   "table_reg": "rbx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14228130F",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422832FA",
+   "table_reg": "rdi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14228520C",
+   "table_reg": "r11",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14228562E",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142287539",
+   "table_reg": "r14",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422876D8",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142288005",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142288B42",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14228C236",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14228C7B1",
+   "table_reg": "r11",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14228D03D",
+   "table_reg": "rbx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14228D1C6",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14228DDFE",
+   "table_reg": "r8",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14228FD40",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14228FF52",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422900DC",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14229050F",
+   "table_reg": "r14",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142290A37",
+   "table_reg": "r9",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14229240B",
+   "table_reg": "rax",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142294572",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142295997",
+   "table_reg": "r14",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x14229604B",
+   "table_reg": "r9",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142297466",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422986A3",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142298F7C",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142299115",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142299DFD",
+   "table_reg": "r8",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x14229A2D4",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14229AE70",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14229BE70",
+   "table_reg": "r11",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14229D298",
+   "table_reg": "r11",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14229F235",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422A2A75",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422A3071",
+   "table_reg": "rax",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422A3E90",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422A4E50",
+   "table_reg": "rcx",
+   "slot": "0x120",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1422A59A7",
+   "table_reg": "r11",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422A60A9",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422A6CE9",
+   "table_reg": "r10",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422A781A",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422AA486",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422AAB6C",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422ABCF5",
+   "table_reg": "r13",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422AC365",
+   "table_reg": "rax",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422ADB0B",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422AE233",
+   "table_reg": "rbx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422AE77B",
+   "table_reg": "rdi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422AEFFE",
+   "table_reg": "rdi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422AF95C",
+   "table_reg": "r12",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422AFF48",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422B27BC",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422B311C",
+   "table_reg": "r9",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422B42FE",
+   "table_reg": "r8",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422B4D1E",
+   "table_reg": "rdi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422B525A",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422B5472",
+   "table_reg": "r12",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422B6E6E",
+   "table_reg": "r9",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422B738C",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422B757C",
+   "table_reg": "rdx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422B92CB",
+   "table_reg": "r9",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422B945B",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422B9591",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422BB6C9",
+   "table_reg": "r9",
+   "slot": "0x120",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1422BD3F2",
+   "table_reg": "r11",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422BE2FB",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422C086A",
+   "table_reg": "r11",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422C241A",
+   "table_reg": "r15",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1422C25E2",
+   "table_reg": "r13",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422C35DE",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422C383A",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422C3EAC",
+   "table_reg": "r8",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422C441F",
+   "table_reg": "r14",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422C4992",
+   "table_reg": "rax",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422C4B86",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422C5358",
+   "table_reg": "r14",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422C5DB9",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422C5F8B",
+   "table_reg": "r9",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422C65EF",
+   "table_reg": "r10",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422C6780",
+   "table_reg": "rsi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422C6F2D",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422C758B",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422C7F70",
+   "table_reg": "r11",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422C8FE5",
+   "table_reg": "r9",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422C9CA0",
+   "table_reg": "rdi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422CA25F",
+   "table_reg": "rdi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422CA57E",
+   "table_reg": "r13",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422CAD3E",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422CD518",
+   "table_reg": "r11",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422CE058",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422CE535",
+   "table_reg": "r12",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422CFE6C",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422D0043",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422D107E",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422D3456",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422D5888",
+   "table_reg": "rcx",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1422D6AC4",
+   "table_reg": "r13",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1422D6CE2",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422D8352",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422D84DC",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422D8BC5",
+   "table_reg": "r14",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422D9F3F",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422DB4E8",
+   "table_reg": "rbx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422DDEB4",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422DE2F3",
+   "table_reg": "r10",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422DE7AD",
+   "table_reg": "rbx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422DED1F",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422DEE38",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422DF648",
+   "table_reg": "r9",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422DFD0B",
+   "table_reg": "r10",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422E23A6",
+   "table_reg": "r14",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422E2AD4",
+   "table_reg": "rdi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422E3470",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422E6078",
+   "table_reg": "r14",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422E684E",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422E6954",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422E76E7",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422E80E9",
+   "table_reg": "r12",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422E8AAF",
+   "table_reg": "r10",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422E8C84",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422E9BD3",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422EA204",
+   "table_reg": "r11",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422EC73E",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422EDA4A",
+   "table_reg": "r11",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422EF10C",
+   "table_reg": "r8",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422EF63E",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422EFD2F",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422F1085",
+   "table_reg": "r9",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422F1785",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422F1F37",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422F2DB4",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422F325E",
+   "table_reg": "r14",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422F33DC",
+   "table_reg": "rcx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422F3EEB",
+   "table_reg": "r9",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422F3FFD",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422F4718",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422F4D46",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422F5705",
+   "table_reg": "rdi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422F58A6",
+   "table_reg": "rcx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422F6047",
+   "table_reg": "r12",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422F650E",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422F7897",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422F7F2B",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422F8119",
+   "table_reg": "r12",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422F8649",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422F8808",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422F8D7A",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422F8F8F",
+   "table_reg": "rsi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422F9E61",
+   "table_reg": "rax",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422FB116",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422FBA9C",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422FCE04",
+   "table_reg": "rax",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422FDB3C",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422FE1AA",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422FE940",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422FEDE1",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1422FFBC4",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14230084E",
+   "table_reg": "r12",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142300C0C",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142301DD3",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142301F7C",
+   "table_reg": "r12",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142302FF1",
+   "table_reg": "rbx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14230394C",
+   "table_reg": "rbx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142303E5A",
+   "table_reg": "rax",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142304915",
+   "table_reg": "r9",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142304ACC",
+   "table_reg": "rsi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423050CA",
+   "table_reg": "r9",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142305260",
+   "table_reg": "rcx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142305904",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142305B1F",
+   "table_reg": "r9",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142305C63",
+   "table_reg": "r13",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142306D3B",
+   "table_reg": "r13",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142307B59",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423081B5",
+   "table_reg": "r8",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142308DBF",
+   "table_reg": "rdx",
+   "slot": "0x120",
+   "ip_slot": true
+  },
+  {
+   "at": "0x14230A9D7",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14230CB34",
+   "table_reg": "r10",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14230CE91",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14230FB8B",
+   "table_reg": "r11",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14230FF9E",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14231050F",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142310691",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142310F9B",
+   "table_reg": "r8",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423115A3",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14231213A",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14231230C",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423135F5",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142313BA0",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142314C40",
+   "table_reg": "rax",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142315847",
+   "table_reg": "r10",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142315A7D",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142316002",
+   "table_reg": "r9",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423168C4",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142317CCD",
+   "table_reg": "r10",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142318642",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142318E4B",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423199A2",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14231A3FA",
+   "table_reg": "rax",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14231A8C2",
+   "table_reg": "r12",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14231ADBE",
+   "table_reg": "r9",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14231C0BA",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14231C8AF",
+   "table_reg": "rbx",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x14231CA72",
+   "table_reg": "r9",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14231CB3E",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14231D1B6",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14231ED19",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14231F2E2",
+   "table_reg": "rax",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14232141E",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142321A6D",
+   "table_reg": "r15",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x142322062",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142322D84",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423238BD",
+   "table_reg": "r14",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142324C49",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142326314",
+   "table_reg": "r9",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142326A73",
+   "table_reg": "r9",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142327657",
+   "table_reg": "r14",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14232C9C7",
+   "table_reg": "rbx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14232CDEA",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14232E2C1",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14232F1DC",
+   "table_reg": "rcx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14232F91A",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423318DF",
+   "table_reg": "rdx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423327C4",
+   "table_reg": "r12",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x142332C93",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142333F13",
+   "table_reg": "r10",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142335E34",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423365DF",
+   "table_reg": "r8",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423375E7",
+   "table_reg": "r12",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423377C4",
+   "table_reg": "rsi",
+   "slot": "0x120",
+   "ip_slot": true
+  },
+  {
+   "at": "0x14233868A",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142338862",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423391EC",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142339370",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142339986",
+   "table_reg": "r12",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14233A63C",
+   "table_reg": "r12",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x14233B1A7",
+   "table_reg": "r11",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14233B7A9",
+   "table_reg": "rax",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14233C2A0",
+   "table_reg": "r8",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14233CF88",
+   "table_reg": "r9",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14233DE26",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14233DF9A",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14233F862",
+   "table_reg": "rdi",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1423408C7",
+   "table_reg": "r11",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423419C3",
+   "table_reg": "r12",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423427D6",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423429B5",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14234305D",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423434EB",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142343B2C",
+   "table_reg": "rdi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142343D32",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142344727",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142344975",
+   "table_reg": "r10",
+   "slot": "0x120",
+   "ip_slot": true
+  },
+  {
+   "at": "0x142344EB1",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142345D9B",
+   "table_reg": "r8",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142347A1A",
+   "table_reg": "rbx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142348838",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142349D26",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14234B1F6",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14234B7F3",
+   "table_reg": "r9",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14234C0EC",
+   "table_reg": "r8",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14234C84F",
+   "table_reg": "r8",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14234CD80",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14234E598",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14234F80F",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423508FE",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142351A42",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142351C18",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423524C5",
+   "table_reg": "r11",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142352C1F",
+   "table_reg": "r10",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142352D99",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142354009",
+   "table_reg": "rdi",
+   "slot": "0x120",
+   "ip_slot": true
+  },
+  {
+   "at": "0x142356416",
+   "table_reg": "rbx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142356A84",
+   "table_reg": "rbx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142356DCC",
+   "table_reg": "r12",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142357F1B",
+   "table_reg": "rax",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142358BD8",
+   "table_reg": "r8",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142358D40",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142359247",
+   "table_reg": "rcx",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x14235985F",
+   "table_reg": "rdx",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x14235A544",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14235AA75",
+   "table_reg": "rbx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14235AC13",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14235ADFA",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14235B38F",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14235C332",
+   "table_reg": "r11",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x14235C4D4",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14235C660",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14235D2AA",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14235DB8E",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14235DD5A",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14235E479",
+   "table_reg": "r8",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14235F01D",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142360428",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423609A9",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142360E5B",
+   "table_reg": "rdi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142361E16",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142361EFC",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423627A3",
+   "table_reg": "r11",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423648BA",
+   "table_reg": "rax",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14236617D",
+   "table_reg": "rdi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423683D1",
+   "table_reg": "rax",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423685F3",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142368E1E",
+   "table_reg": "rax",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142369998",
+   "table_reg": "rdi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142369B37",
+   "table_reg": "r9",
+   "slot": "0x120",
+   "ip_slot": true
+  },
+  {
+   "at": "0x14236A1C6",
+   "table_reg": "r9",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14236B69F",
+   "table_reg": "r12",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14236BCB5",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14236BE90",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14236CF94",
+   "table_reg": "rdi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14236D13F",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14236E25F",
+   "table_reg": "r8",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14236E61C",
+   "table_reg": "r9",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14237030B",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423704A3",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14237111B",
+   "table_reg": "rdi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142371E21",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142372EB1",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142373E29",
+   "table_reg": "r12",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142374D3E",
+   "table_reg": "rdi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142374F0D",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423750A2",
+   "table_reg": "rcx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142375BCC",
+   "table_reg": "r11",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142375D9C",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142377195",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142377CD8",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142377EF4",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142379656",
+   "table_reg": "r11",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142379EA5",
+   "table_reg": "rcx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14237A7D2",
+   "table_reg": "r9",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14237BCD9",
+   "table_reg": "rdi",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x14237C259",
+   "table_reg": "r9",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14237CAF7",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14237CCD1",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14237DA33",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14237F039",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14237F775",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142380214",
+   "table_reg": "rcx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142380372",
+   "table_reg": "r9",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423804F3",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14238243D",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14238287A",
+   "table_reg": "rdi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142382F38",
+   "table_reg": "r8",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142383C6C",
+   "table_reg": "r12",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142384FDF",
+   "table_reg": "rbx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14238560E",
+   "table_reg": "r9",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142385DBE",
+   "table_reg": "r11",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142387ACF",
+   "table_reg": "r9",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142387CBE",
+   "table_reg": "r12",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423888CB",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142388AF9",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142389354",
+   "table_reg": "r14",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423896CF",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14238B3EE",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14238B6BE",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14238CB45",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14238CD12",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423916D6",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142391DC5",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423927F3",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142393989",
+   "table_reg": "r8",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x142394F0A",
+   "table_reg": "rcx",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1423950A6",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423955C7",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423960B2",
+   "table_reg": "rdx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14239668E",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142396F9A",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14239716E",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423972DC",
+   "table_reg": "rax",
+   "slot": "0x120",
+   "ip_slot": true
+  },
+  {
+   "at": "0x142397B31",
+   "table_reg": "r8",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423980F3",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423988A0",
+   "table_reg": "rax",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142398FE3",
+   "table_reg": "rdi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14239A8B7",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14239AAC9",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14239ABCC",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14239B2C3",
+   "table_reg": "rbx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14239C25E",
+   "table_reg": "r10",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14239C854",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14239CA06",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14239D063",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14239D1ED",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14239D39C",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14239D4BA",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14239DA39",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14239E8A7",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14239EA4A",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423A0368",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423A0C59",
+   "table_reg": "rbx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423A425E",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423A70E7",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423A72AE",
+   "table_reg": "r12",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423AAA85",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423AC294",
+   "table_reg": "rcx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423AD973",
+   "table_reg": "r11",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423AE024",
+   "table_reg": "r12",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423AF1A8",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423AF99C",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423B3081",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423B3C75",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423B497A",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423B4B28",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423B4D12",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423B537A",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423B58E8",
+   "table_reg": "rbx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423B7879",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423B840F",
+   "table_reg": "r11",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423B8B0C",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423B99E8",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423B9E2D",
+   "table_reg": "rbx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423BAE0A",
+   "table_reg": "r11",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423BCF87",
+   "table_reg": "r10",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423BD7A6",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423BDF17",
+   "table_reg": "r8",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423BF875",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423BFFBC",
+   "table_reg": "r12",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423C08B5",
+   "table_reg": "r13",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423C0B21",
+   "table_reg": "rdx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423C22C8",
+   "table_reg": "rax",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423C24AD",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423C3933",
+   "table_reg": "r12",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423C43D1",
+   "table_reg": "r12",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423C4EE0",
+   "table_reg": "r9",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423C54FA",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423C589A",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423C705F",
+   "table_reg": "r11",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423C7EF1",
+   "table_reg": "r10",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423C83E6",
+   "table_reg": "r8",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1423C9151",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423CA617",
+   "table_reg": "r12",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423CAB50",
+   "table_reg": "r12",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423CCB44",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423CDB85",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423CE895",
+   "table_reg": "r9",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423D1418",
+   "table_reg": "rax",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423D2003",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423D2672",
+   "table_reg": "r9",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423D3599",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423D3AF3",
+   "table_reg": "r12",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423D4024",
+   "table_reg": "rbx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423D41C2",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423D57E9",
+   "table_reg": "r8",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423D5E12",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423D66A0",
+   "table_reg": "r10",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423D6BDF",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423D76EC",
+   "table_reg": "r10",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423D9056",
+   "table_reg": "rsi",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423D9545",
+   "table_reg": "rbx",
+   "slot": "0x18",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1423D9728",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423D9E4A",
+   "table_reg": "r11",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423DA562",
+   "table_reg": "r13",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423DAD1D",
+   "table_reg": "r8",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423DAE82",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423DB06A",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423DB5EC",
+   "table_reg": "r11",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423DBBA3",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423DC31C",
+   "table_reg": "r12",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423DCE9C",
+   "table_reg": "rdx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423DDEEA",
+   "table_reg": "rdx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423DF9E3",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423DFF7B",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423E00E0",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423E0294",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423E0445",
+   "table_reg": "r9",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423E08DE",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423E1A94",
+   "table_reg": "r14",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423E21A6",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423E230E",
+   "table_reg": "r12",
+   "slot": "0x120",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1423E492E",
+   "table_reg": "r12",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423E77A5",
+   "table_reg": "rcx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423E83B1",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423E900E",
+   "table_reg": "rax",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423EC787",
+   "table_reg": "r12",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423EC9AA",
+   "table_reg": "r9",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423EFB5A",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423EFD51",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423F0018",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423F1B67",
+   "table_reg": "r13",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423F2508",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423F3CAC",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423F3E91",
+   "table_reg": "r13",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423F4582",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423F5183",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423F533E",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423F74EF",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423F76D0",
+   "table_reg": "r9",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423F7BA6",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423F8CEA",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423F8EDF",
+   "table_reg": "r13",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423F9B50",
+   "table_reg": "rax",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423F9F15",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423FB7BE",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423FD59E",
+   "table_reg": "r13",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423FDA5B",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423FDC3B",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423FDE43",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423FE414",
+   "table_reg": "r11",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1423FE8E0",
+   "table_reg": "r15",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142400D96",
+   "table_reg": "r9",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1424033FE",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1424035E7",
+   "table_reg": "rsi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142404CA2",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142405CC9",
+   "table_reg": "rcx",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142407346",
+   "table_reg": "r13",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142407F16",
+   "table_reg": "r10",
+   "slot": "0xF5",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14240805E",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142408F13",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142419E35",
+   "table_reg": "r12",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14241A462",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14241A651",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14241A935",
+   "table_reg": "rcx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14241AB54",
+   "table_reg": "r9",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14241AD30",
+   "table_reg": "r12",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14241B079",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14241B38A",
+   "table_reg": "r13",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14241B59E",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14241B8EE",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14241BAC1",
+   "table_reg": "rsi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14241BCAC",
+   "table_reg": "r9",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14241BF1F",
+   "table_reg": "rdi",
+   "slot": "0x120",
+   "ip_slot": true
+  },
+  {
+   "at": "0x14241C104",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14241C4A7",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14241C6D1",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14241C8EB",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14241CB72",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14241EE5C",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14241F3B0",
+   "table_reg": "r13",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14241F65A",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14241F7CF",
+   "table_reg": "rsi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14241FA37",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14241FC08",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14241FD8C",
+   "table_reg": "rcx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14241FFB3",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1424201A8",
+   "table_reg": "r12",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14242034E",
+   "table_reg": "rcx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142420539",
+   "table_reg": "rdx",
+   "slot": "0x120",
+   "ip_slot": true
+  },
+  {
+   "at": "0x1424206F7",
+   "table_reg": "r13",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1424208BE",
+   "table_reg": "r13",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142420BA2",
+   "table_reg": "r9",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142434DFC",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142434FD2",
+   "table_reg": "r12",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142435471",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142435718",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14243592C",
+   "table_reg": "rdx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142435C59",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142435E34",
+   "table_reg": "r12",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1424392E5",
+   "table_reg": "rdx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1424394C9",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142439660",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142439A02",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142439CF8",
+   "table_reg": "rsi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14243AF01",
+   "table_reg": "r11",
+   "slot": "0x120",
+   "ip_slot": true
+  },
+  {
+   "at": "0x14243B1AF",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14243B394",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14243B524",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14243B6DD",
+   "table_reg": "r12",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14243B967",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14243BB76",
+   "table_reg": "r9",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14243BFCF",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14243C1C1",
+   "table_reg": "rsi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14243C354",
+   "table_reg": "r11",
+   "slot": "0x120",
+   "ip_slot": true
+  },
+  {
+   "at": "0x14243C5CE",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14243C7F1",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14243C9BC",
+   "table_reg": "r10",
+   "slot": "0x120",
+   "ip_slot": true
+  },
+  {
+   "at": "0x14243CD11",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14243CEEA",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14243D0F4",
+   "table_reg": "r12",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14243D450",
+   "table_reg": "rsi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14243D5F9",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14243D90B",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14243DCE9",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14243E545",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14243FA5D",
+   "table_reg": "r13",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14243FD6D",
+   "table_reg": "r13",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142440415",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14244062F",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142440C4D",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142440E08",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142441104",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14244140E",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1424419C8",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142441BC8",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14244219D",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14244238D",
+   "table_reg": "r9",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1424426B8",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1424452A0",
+   "table_reg": "r9",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1424474FF",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14244861F",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14244923C",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1424494A0",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14244C0A5",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14244C965",
+   "table_reg": "r13",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14244CB67",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14244CEBA",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14244D47E",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14244D61B",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14244DBC4",
+   "table_reg": "rcx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14244DD6F",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14244E164",
+   "table_reg": "r9",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14244E4E9",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14244E846",
+   "table_reg": "rsi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14244EAA6",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14244ED14",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14244F7D3",
+   "table_reg": "rdx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14244FAB4",
+   "table_reg": "rdx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14244FC52",
+   "table_reg": "rdx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14244FEA8",
+   "table_reg": "rdx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142450142",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1424502FC",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1424504E4",
+   "table_reg": "r9",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142450DAB",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1424510E3",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14245146B",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142451C88",
+   "table_reg": "rsi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142451E22",
+   "table_reg": "r9",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1424522F8",
+   "table_reg": "rdx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142452BB9",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142452DA5",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142456CE4",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1424575FD",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1424578B6",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142458D61",
+   "table_reg": "rcx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1424595A7",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14245978D",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14245AFE9",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14245B1CC",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142460C23",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1424621F4",
+   "table_reg": "r12",
+   "slot": "0x120",
+   "ip_slot": true
+  },
+  {
+   "at": "0x142462B2E",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142462D0E",
+   "table_reg": "rsi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142462F44",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142463461",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1424637A5",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142463AB9",
+   "table_reg": "r13",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142463E23",
+   "table_reg": "r15",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142463F41",
+   "table_reg": "rsi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142464247",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142464454",
+   "table_reg": "r9",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1424645F1",
+   "table_reg": "rdx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142464B5F",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142464D37",
+   "table_reg": "r8",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142464F6B",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142465185",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1424653A1",
+   "table_reg": "rdi",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142465638",
+   "table_reg": "rdx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1424657E4",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x1424659EA",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142465D44",
+   "table_reg": "rbx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142466364",
+   "table_reg": "r14",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14246718A",
+   "table_reg": "r9",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142467577",
+   "table_reg": "rdx",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142467D8B",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14246884C",
+   "table_reg": "r13",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142468A42",
+   "table_reg": "r13",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142468C61",
+   "table_reg": "r9",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142468F5D",
+   "table_reg": "r10",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14246915B",
+   "table_reg": "r12",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x142469383",
+   "table_reg": "rsi",
+   "slot": "0x120",
+   "ip_slot": true
+  },
+  {
+   "at": "0x14246CF1C",
+   "table_reg": "rax",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14246D93F",
+   "table_reg": "r9",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14246DCB7",
+   "table_reg": "r11",
+   "slot": "0x8",
+   "ip_slot": false
+  },
+  {
+   "at": "0x14246DED1",
+   "table_reg": "rdx",
+   "slot": "0x120",
+   "ip_slot": true
+  }
+ ],
+ "unresolved": 1416
+}

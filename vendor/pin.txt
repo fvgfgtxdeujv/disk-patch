@@ -1,0 +1,5 @@
+filename=DGEng6201829_x64.zip
+url=https://www.diskgenius.com/dyna_download/?software=DGEng6201829_x64.zip
+sha256=36ce2365a8d243bc8be37d2e82fc3e30bbef76224453a3319970ba064ac73d84
+size=41993815
+note=DiskGenius 6.2.0.1829 绿色版 x64（原版加壳）。.vmp 段 RVA=0x19D4000 VSize=0xDAC000，磁盘上 RawSize=0（运行时由壳解密）。

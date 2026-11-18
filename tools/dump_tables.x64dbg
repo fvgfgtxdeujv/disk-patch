@@ -1,0 +1,13 @@
+// x64dbg 脚本：dump VM 上下文里的 handler 表
+// 用法：在断点命中、rbp = VM 上下文基址时运行
+log "ctx+0x4 ->"
+log "{p:qword(0x{rbp}+0x4)}"
+log "ctx+0x8 ->"
+log "{p:qword(0x{rbp}+0x8)}"
+log "ctx+0xF5 ->"
+log "{p:qword(0x{rbp}+0xF5)}"
+log "ctx+0x110 ->"
+log "{p:qword(0x{rbp}+0x110)}"
+log "ctx+0x1F4 ->"
+log "{p:qword(0x{rbp}+0x1F4)}"
+ret

@@ -1,0 +1,160 @@
+name: dump-vm-tables
+
+# 在 GitHub 的 Windows runner 上跑 DiskGenius（原版加壳 exe），
+# 壳会在运行时把它自己的 .vmp 段解密到内存，我们就读那块内存里的 handler 表。
+# 不注入、不调试：只用 ReadProcessMemory + 内存特征扫描。
+#
+# 安装包来源三级回退：
+#   1. 仓库里的 vendor/*.zip（提交进仓库，最省事、最快）
+#   2. Actions cache（首次跑完自动存，之后命中）
+#   3. 官网下载（最后兜底）
+#
+# 手动触发：Actions -> dump-vm-tables -> Run workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      pkg_url:
+        description: '安装包地址（留空用默认）'
+        required: false
+        default: ''
+      pkg_tag:
+        description: '缓存标签（换版本时改一下，避免命中旧缓存）'
+        required: false
+        default: '6201829'
+      seconds:
+        description: '轮询秒数'
+        required: false
+        default: '60'
+      min_score:
+        description: '上下文候选最低分'
+        required: false
+        default: '4'
+
+jobs:
+  dump:
+    runs-on: windows-latest
+    timeout-minutes: 40
+
+    steps:
+      - name: 取代码
+        uses: actions/checkout@v4
+
+      - name: 装 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 装依赖
+        shell: pwsh
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy
+
+      - name: 本地自检（扫描算法，不依赖 Windows）
+        shell: pwsh
+        run: python winactions/local_selftest.py
+
+      # ---------- 安装包：vendor -> cache -> 官网 ----------
+      - name: 恢复安装包缓存
+        id: restore
+        uses: actions/cache/restore@v4
+        with:
+          path: vendor
+          key: dg-pkg-${{ github.event.inputs.pkg_tag }}
+
+      - name: 确保有安装包
+        id: pkg
+        shell: pwsh
+        run: |
+          $zip = Get-ChildItem -Path vendor -Filter *.zip -ErrorAction SilentlyContinue |
+                 Select-Object -First 1
+          if ($zip) {
+            Write-Host "用已有的包: $($zip.FullName)"
+            Write-Host ("大小: {0:N0} 字节" -f $zip.Length)
+            Write-Host ("SHA256: {0}" -f (Get-FileHash $zip.FullName -Algorithm SHA256).Hash)
+            "zip=$($zip.FullName)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+            exit 0
+          }
+          $url = "${{ github.event.inputs.pkg_url }}"
+          if ([string]::IsNullOrWhiteSpace($url)) {
+            $url = "https://www.diskgenius.com/dyna_download/?software=DGEng6201829_x64.zip"
+          }
+          Write-Host "没有本地包，下载: $url"
+          New-Item -ItemType Directory -Force -Path vendor | Out-Null
+          $out = "vendor\dg-x64.zip"
+          Invoke-WebRequest -Uri $url -OutFile $out -UseBasicParsing -TimeoutSec 600
+          Write-Host ("下载完成: {0:N0} 字节" -f (Get-Item $out).Length)
+          Write-Host ("SHA256: {0}" -f (Get-FileHash $out -Algorithm SHA256).Hash)
+          "zip=$((Resolve-Path $out).Path)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+
+      - name: 保存安装包缓存
+        if: steps.restore.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: vendor
+          key: dg-pkg-${{ github.event.inputs.pkg_tag }}
+
+      - name: 解压并定位 exe
+        id: dl
+        shell: pwsh
+        run: |
+          $zip = "${{ steps.pkg.outputs.zip }}"
+          if ([string]::IsNullOrWhiteSpace($zip)) { Write-Host "没有包"; exit 1 }
+          if (Test-Path dg) { Remove-Item -Recurse -Force dg }
+          Expand-Archive -Path $zip -DestinationPath dg -Force
+          $exe = Get-ChildItem -Path dg -Recurse -Filter DiskGenius.exe | Select-Object -First 1
+          if (-not $exe) { Write-Host "包里没有 DiskGenius.exe"; exit 1 }
+          Write-Host "EXE: $($exe.FullName)"
+          Write-Host ("大小: {0:N0} 字节" -f $exe.Length)
+          "exe=$($exe.FullName)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+
+      # ---------- 抓表 ----------
+      - name: 抓 VM 上下文
+        id: dump
+        shell: pwsh
+        continue-on-error: true
+        run: |
+          $exe = "${{ steps.dl.outputs.exe }}"
+          python winactions/dump_ctx.py `
+            --exe "$exe" `
+            --seconds ${{ github.event.inputs.seconds }} `
+            --min-score ${{ github.event.inputs.min_score }} `
+            --out tables.json 2>&1 | Tee-Object -FilePath dump.log
+          Write-Host "退出码: $LASTEXITCODE"
+
+      - name: 合并成 handlers.py（拿到表就做）
+        if: ${{ hashFiles('tables.json') != '' }}
+        shell: pwsh
+        run: |
+          python winactions/merge_tables.py tables.json --out handlers.py --json handlers.json 2>&1 |
+            Tee-Object -FilePath merge.log
+
+      - name: 兜底：抓一份 minidump
+        if: ${{ steps.dump.outcome != 'success' }}
+        shell: pwsh
+        continue-on-error: true
+        run: |
+          $exe = "${{ steps.dl.outputs.exe }}"
+          if ([string]::IsNullOrWhiteSpace($exe)) { exit 0 }
+          $p = Start-Process -FilePath $exe -PassThru
+          Start-Sleep -Seconds 25
+          rundll32.exe C:\Windows\System32\comsvcs.dll, MiniDump $p.Id "$PWD\dg.dmp" full
+          Start-Sleep -Seconds 5
+          if (Test-Path dg.dmp) { Write-Host ("dmp 大小: {0:N0}" -f (Get-Item dg.dmp).Length) }
+          Stop-Process -Id $p.Id -Force -ErrorAction SilentlyContinue
+
+      - name: 上传产物
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vm-tables
+          path: |
+            tables.json
+            handlers.py
+            handlers.json
+            dump.log
+            merge.log
+            dg.dmp
+          if-no-files-found: warn
+          retention-days: 7
