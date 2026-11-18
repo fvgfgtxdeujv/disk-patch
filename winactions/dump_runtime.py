@@ -1663,20 +1663,64 @@ def table_hook_trace(exe, seconds, out_dir='.'):
     print('[*] 主模块 %s base=%#x size=%#x' % (name, base, size), flush=True)
 
     vmp = None
-    for _ in range(80):
+    for _ in range(120):
         blob = read_mem_safe(h, base + VMP_RVA, VMPSIZE)
-        if blob and len(blob) > 0x1000 and blob.count(b'\x00') < len(blob):
+        if blob and blob.find(b'\x48\x63\x0b') != -1:      # 派发器已解密
             vmp = blob
             break
         time.sleep(0.25)
     if not vmp:
-        print('!! .vmp 读不到')
+        print('!! .vmp 未解密')
         return None
     lo, hi = base + VMP_RVA, base + VMP_RVA + len(vmp)
     print('[*] .vmp %d 字节，范围 [%#x, %#x)' % (len(vmp), lo, hi), flush=True)
 
-    tables = discover_tables(vmp, lo, lo, hi)
-    tables = [(va, n) for va, n in tables if n <= 4096]
+    # 先用历史证据里的表地址探一下（事实校验），再上扫描
+    KNOWN = [0x1421080ab, 0x141da2b42, 0x141d8df04, 0x141c50d31]
+    tables = []
+    for va0 in KNOWN:
+        va = va0 - 0x140000000 + base
+        raw = read_mem(h, va, 64)
+        if not raw or len(raw) < 64:
+            print('    known %#x 读不出' % va)
+            continue
+        q = struct.unpack('<8Q', raw)
+        diffs = [q[i + 1] - q[i] for i in range(7)]
+        print('    known %#x 前 4 项 %s 差 %s 全在 .vmp=%s'
+              % (va, [hex(x) for x in q[:4]], diffs,
+                 all(lo <= x < hi for x in q)), flush=True)
+        if all(lo <= x < hi for x in q) and diffs[0] == 5:
+            tables.append((va, 0))       # 项数稍后量出来
+
+    found = []
+    for attempt in range(20):
+        found = discover_tables(vmp, lo, lo, hi)
+        if found:
+            break
+        vmp = read_mem_safe(h, base + VMP_RVA, VMPSIZE) or vmp
+        time.sleep(0.5)
+    print('[*] 扫描（差 5）找到 %d 张表: %s'
+          % (len(found), [(hex(va), n) for va, n in found]), flush=True)
+
+    # 合并已知表与扫描结果，已知表按扫描到的长度补齐
+    lenmap = {va: n for va, n in found}
+    merged = {}
+    for va, n in found:
+        merged[va] = n
+    for va, _ in tables:
+        if va in merged:
+            continue
+        big = read_mem(h, va, 4096 * 8)
+        if not big:
+            continue
+        q2 = struct.unpack('<%dQ' % (len(big) // 8), big[:len(big) // 8 * 8])
+        m = 0
+        while m + 1 < len(q2) and lo <= q2[m] < hi and q2[m + 1] - q2[m] == 5:
+            m += 1
+        if m + 1 >= 8:
+            merged[va] = m + 1
+            print('    known %#x 量到 %d 项' % (va, m + 1), flush=True)
+    tables = sorted(merged.items())
     total = sum(n for _, n in tables)
     print('[*] 发现 %d 张表，共 %d 项: %s'
           % (len(tables), total, [(hex(va), n) for va, n in tables]), flush=True)
@@ -1787,7 +1831,7 @@ def table_hook_trace(exe, seconds, out_dir='.'):
     return n
 
 
-def discover_tables(blob, va0, lo, hi, min_len=24):
+def discover_tables(blob, va0, lo, hi, min_len=24, delta=5):
     """在 .vmp 段里找 opcode 表：连续 qword 落在 [lo,hi)、且相邻差 5（jmp rel32 桩间距）。
     返回 [(va, 项数), ...]"""
     import array
@@ -1798,9 +1842,10 @@ def discover_tables(blob, va0, lo, hi, min_len=24):
     i = 0
     while i < n - 4:
         v = q[i]
-        if lo <= v < hi and q[i + 1] == v + 5 and q[i + 2] == v + 10 and q[i + 3] == v + 15:
+        if (lo <= v < hi and q[i + 1] == v + delta and q[i + 2] == v + 2 * delta
+                and q[i + 3] == v + 3 * delta):
             j = i
-            while j + 1 < n and q[j + 1] == q[j] + 5 and lo <= q[j + 1] < hi:
+            while j + 1 < n and q[j + 1] == q[j] + delta and lo <= q[j + 1] < hi:
                 j += 1
             L = j - i + 1
             if L >= min_len:
