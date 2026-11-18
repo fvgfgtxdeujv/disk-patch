@@ -1198,7 +1198,11 @@ def vm_hook_trace(exe, seconds, out_dir='.'):
     MEM_RESERVE = 0x2000
     PAGE_EXECUTE_READWRITE = 0x40
 
-    pid = launch(exe)
+    proc = launch(exe)
+    pid = getattr(proc, 'pid', proc)
+    if not isinstance(pid, int):
+        print('!! 启动失败: %r' % (proc,))
+        return None
     print('[*] pid=%d，等待 VM 启动…' % pid, flush=True)
     h = k32.OpenProcess(PROCESS_VM_READ | PROCESS_VM_WRITE |
                         PROCESS_VM_OPERATION | PROCESS_QUERY_INFORMATION |
