@@ -1,16 +1,25 @@
 # -*- coding: utf-8 -*-
 """
-local_selftest.py —— 在 Linux/macOS 上验证 dump_ctx 的扫描核心
+local_selftest.py —— 跨平台自检（Linux / macOS / Windows 都能跑）
 
-不需要 Windows：构造一块合成内存镜像（代码段 + handler 表 + VM 上下文 + 干扰结构），
-检查 scan_buffer 能不能把真正的 ctx 排在第一位、且不把干扰结构当成 ctx。
+不需要 Windows、不需要真目标：
+构造一块合成内存镜像（代码段 + handler 表 + VM 上下文 + 干扰结构），检查
+  1) scan_buffer 能不能把真 ctx 排第一、且不把干扰结构当 ctx
+  2) memimage 容器往返正确、离线扫结果与在线扫一致
+
+CI 第一步就跑它 —— Windows runner 的控制台默认 cp1252，中文 print 会炸，
+所以入口处统一把 stdout/stderr 切 UTF-8。
 """
 import os
 import struct
 import sys
+import tempfile
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import dump_ctx as D
+import memimage as M
+
+D._utf8_console()
 
 CODE_LO = 0x180000000
 CODE_HI = 0x180100000
@@ -39,12 +48,12 @@ def build_image():
     # 真 ctx
     ctx = IMG_LO + 0x8000
     put64(ctx + 0x0, IMG_LO + 0x10000)      # 字节流指针
-    put64(ctx + 0x8, t1)                    # 表指针 1（0x4 与 0x8 会重叠，只取其一）
+    put64(ctx + 0x8, t1)                    # 表指针 1（0x4 与 0x8 重叠，只取其一）
     put64(ctx + 0xF5, t2)                   # 表指针 2
     put64(ctx + 0x92, IMG_LO + 0x10000)     # IP
     put_bytes(IMG_LO + 0x10000, b'\x20\x10\x00\x00' + b'\x00' * 12)
 
-    # 干扰 1：两个代码段指针但指向的不是表（指向代码中的孤立地址）
+    # 干扰 1：两个代码段指针但指向的不是表
     dec1 = IMG_LO + 0x9000
     put64(dec1 + 0x8, CODE_LO + 0x1234)
     put64(dec1 + 0xF5, CODE_LO + 0x5678)
@@ -74,14 +83,15 @@ def main():
         nonlocal ok, fail
         if cond:
             ok += 1
-            print('   [PASS] %-32s %s' % (name, extra))
+            print('   [PASS] %-34s %s' % (name, extra))
         else:
             fail += 1
-            print('   [FAIL] %-32s %s' % (name, extra))
+            print('   [FAIL] %-34s %s' % (name, extra))
 
     print('[*] 合成镜像 %d KB，候选 %d 个' % (len(buf) // 1024, len(hits)))
     check('找到候选', len(hits) > 0, '%d 个' % len(hits))
     if not hits:
+        print('\n[*] 结果: %d passed, %d failed' % (ok, fail))
         return 1
 
     top = hits[0]
@@ -97,6 +107,35 @@ def main():
     va_set = {h['va'] for h in hits[:6]}
     check('干扰结构未被当 ctx', not (va_set & set(decoys)),
           'decoys=%s' % ','.join('0x%X' % d for d in decoys))
+
+    # ---- memimage 往返 + 离线扫 ----
+    tmp = tempfile.mkdtemp(prefix='dgselftest_')
+    path = os.path.join(tmp, 'mem.bin')
+    n = M.write_image(path, [(IMG_LO, buf)])
+    check('镜像写入', n == 1 and os.path.getsize(path) >= len(buf),
+          '%d 字节' % os.path.getsize(path))
+
+    img = M.read_image(path)
+    got = img.read(ctx + 0x8, 8)
+    img.close()
+    check('镜像往返读表指针', got is not None and struct.unpack('<Q', got)[0] == t1,
+          '0x%X' % (struct.unpack('<Q', got)[0] if got else 0))
+
+    off_hits = M.scan_image(path, CODE_LO, CODE_HI, min_score=4)
+    check('离线扫找到候选', len(off_hits) > 0, '%d 个' % len(off_hits))
+    if off_hits:
+        check('离线扫第一名一致', off_hits[0]['va'] == top['va'],
+              '0x%X' % off_hits[0]['va'])
+        ot = M.dump_tables(path, off_hits[0]['va'], CODE_LO, CODE_HI)
+        check('离线读表内容一致', ot.get('0x8', {}).get('table_va') == '0x%X' % t1 and
+              len(ot.get('0x8', {}).get('entries', [])) == 32,
+              '%s 项' % len(ot.get('0x8', {}).get('entries', [])))
+
+    try:
+        os.remove(path)
+        os.rmdir(tmp)
+    except Exception:
+        pass
 
     print('\n[*] 结果: %d passed, %d failed' % (ok, fail))
     return 0 if fail == 0 else 1

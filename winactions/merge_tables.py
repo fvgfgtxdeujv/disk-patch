@@ -22,6 +22,24 @@ merge_tables.py —— 把 dump_ctx.py 抓回来的表合并成 opcode -> handle
 import json
 import argparse
 import collections
+import sys
+
+
+def _utf8_console():
+    for s in (sys.stdout, sys.stderr):
+        try:
+            s.reconfigure(encoding='utf-8', errors='replace')
+        except Exception:
+            pass
+
+
+_utf8_console()
+
+
+def _as_int(v):
+    if isinstance(v, int):
+        return v
+    return int(str(v), 16) if str(v).lower().startswith('0x') else int(v)
 
 
 def main():
@@ -70,7 +88,7 @@ def main():
     merged = {}
     per_table = []
     for slot, info in sorted(tables.items()):
-        ents = info.get('entries') or []
+        ents = [_as_int(x) for x in (info.get('entries') or [])]
         per_table.append((slot, info.get('table_va'), len(ents)))
         for i, v in enumerate(ents):
             merged.setdefault(i, []).append(v + shift)

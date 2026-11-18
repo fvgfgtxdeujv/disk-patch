@@ -10,6 +10,13 @@ name: dump-vm-tables
 #   3. 官网下载（最后兜底）
 #
 # 手动触发：Actions -> dump-vm-tables -> Run workflow
+#
+# 2026-11 修复：
+#   * 全局 UTF-8：runner 控制台默认 cp1252，脚本里的中文 print 会
+#     UnicodeEncodeError 把整步打断（v1 就是死在这）
+#   * API 触发时 github.event.inputs.* 为空串，不会回落到默认值 —— 这里显式兜底
+#   * 目标 exe 是 requireAdministrator，直接 Popen 会 740，脚本内改走 runas
+#   * 在线扫不到时把可读内存存成 memimage 再离线扫一遍
 
 on:
   workflow_dispatch:
@@ -25,16 +32,21 @@ on:
       seconds:
         description: '轮询秒数'
         required: false
-        default: '60'
+        default: '90'
       min_score:
         description: '上下文候选最低分'
         required: false
         default: '4'
 
+env:
+  PYTHONUTF8: '1'
+  PYTHONIOENCODING: 'utf-8'
+  PYTHONUNBUFFERED: '1'
+
 jobs:
   dump:
     runs-on: windows-latest
-    timeout-minutes: 40
+    timeout-minutes: 45
 
     steps:
       - name: 取代码
@@ -51,9 +63,24 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install numpy
 
-      - name: 本地自检（扫描算法，不依赖 Windows）
+      - name: 本地自检（扫描算法 + 内存镜像，不依赖目标程序）
         shell: pwsh
         run: python winactions/local_selftest.py
+
+      - name: 数值输入兜底（API 触发时 inputs 是空串）
+        id: cfg
+        shell: pwsh
+        run: |
+          $tag = "${{ github.event.inputs.pkg_tag }}"
+          if ([string]::IsNullOrWhiteSpace($tag)) { $tag = '6201829' }
+          $sec = "${{ github.event.inputs.seconds }}"
+          if ([string]::IsNullOrWhiteSpace($sec)) { $sec = '90' }
+          $ms  = "${{ github.event.inputs.min_score }}"
+          if ([string]::IsNullOrWhiteSpace($ms))  { $ms = '4' }
+          "tag=$tag" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          "seconds=$sec" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          "min_score=$ms" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          Write-Host "tag=$tag seconds=$sec min_score=$ms"
 
       # ---------- 安装包：vendor -> cache -> 官网 ----------
       - name: 恢复安装包缓存
@@ -61,7 +88,7 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: vendor
-          key: dg-pkg-${{ github.event.inputs.pkg_tag }}
+          key: dg-pkg-${{ steps.cfg.outputs.tag }}
 
       - name: 确保有安装包
         id: pkg
@@ -93,24 +120,33 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: vendor
-          key: dg-pkg-${{ github.event.inputs.pkg_tag }}
+          key: dg-pkg-${{ steps.cfg.outputs.tag }}
 
       - name: 解压并定位 exe
         id: dl
         shell: pwsh
         run: |
           $zip = "${{ steps.pkg.outputs.zip }}"
-          if ([string]::IsNullOrWhiteSpace($zip)) { Write-Host "没有包"; exit 1 }
+          if ([string]::IsNullOrWhiteSpace($zip)) { throw "没有安装包" }
           if (Test-Path dg) { Remove-Item -Recurse -Force dg }
           Expand-Archive -Path $zip -DestinationPath dg -Force
           $exe = Get-ChildItem -Path dg -Recurse -Filter DiskGenius.exe | Select-Object -First 1
-          if (-not $exe) { Write-Host "包里没有 DiskGenius.exe"; exit 1 }
+          if (-not $exe) { throw "包里没有 DiskGenius.exe" }
           Write-Host "EXE: $($exe.FullName)"
           Write-Host ("大小: {0:N0} 字节" -f $exe.Length)
           "exe=$($exe.FullName)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
 
       # ---------- 抓表 ----------
-      - name: 抓 VM 上下文
+      - name: 环境诊断
+        shell: pwsh
+        run: |
+          Write-Host "管理员: $(([Security.Principal.WindowsPrincipal] `
+            [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole( `
+            [Security.Principal.WindowsBuiltInRole]::Administrator))"
+          Write-Host "Python: $(python -c 'import sys;print(sys.version)')"
+          python -c "import sys;print('stdout encoding:', sys.stdout.encoding)"
+
+      - name: 抓 VM 上下文（在线扫 + 内存镜像兜底）
         id: dump
         shell: pwsh
         continue-on-error: true
@@ -118,31 +154,28 @@ jobs:
           $exe = "${{ steps.dl.outputs.exe }}"
           python winactions/dump_ctx.py `
             --exe "$exe" `
-            --seconds ${{ github.event.inputs.seconds }} `
-            --min-score ${{ github.event.inputs.min_score }} `
+            --seconds ${{ steps.cfg.outputs.seconds }} `
+            --min-score ${{ steps.cfg.outputs.min_score }} `
+            --image dg.memimg `
             --out tables.json 2>&1 | Tee-Object -FilePath dump.log
           Write-Host "退出码: $LASTEXITCODE"
 
-      - name: 合并成 handlers.py（拿到表就做）
-        if: ${{ hashFiles('tables.json') != '' }}
+      - name: 没抓到就明确报错（别让 job 绿着交空产物）
+        if: ${{ hashFiles('tables.json') == '' }}
+        shell: pwsh
+        run: |
+          Write-Host "=== dump.log 尾部 ==="
+          if (Test-Path dump.log) { Get-Content dump.log -Tail 80 }
+          if (Test-Path dg.memimg) {
+            Write-Host ("memimg 大小: {0:N0}" -f (Get-Item dg.memimg).Length)
+          }
+          throw "没有拿到 tables.json：目标进程没跑起来 / 上下文没扫到。日志见 artifact。"
+
+      - name: 合并成 handlers.py
         shell: pwsh
         run: |
           python winactions/merge_tables.py tables.json --out handlers.py --json handlers.json 2>&1 |
             Tee-Object -FilePath merge.log
-
-      - name: 兜底：抓一份 minidump
-        if: ${{ steps.dump.outcome != 'success' }}
-        shell: pwsh
-        continue-on-error: true
-        run: |
-          $exe = "${{ steps.dl.outputs.exe }}"
-          if ([string]::IsNullOrWhiteSpace($exe)) { exit 0 }
-          $p = Start-Process -FilePath $exe -PassThru
-          Start-Sleep -Seconds 25
-          rundll32.exe C:\Windows\System32\comsvcs.dll, MiniDump $p.Id "$PWD\dg.dmp" full
-          Start-Sleep -Seconds 5
-          if (Test-Path dg.dmp) { Write-Host ("dmp 大小: {0:N0}" -f (Get-Item dg.dmp).Length) }
-          Stop-Process -Id $p.Id -Force -ErrorAction SilentlyContinue
 
       - name: 上传产物
         if: always()
@@ -155,6 +188,6 @@ jobs:
             handlers.json
             dump.log
             merge.log
-            dg.dmp
+            dg.memimg
           if-no-files-found: warn
           retention-days: 7
