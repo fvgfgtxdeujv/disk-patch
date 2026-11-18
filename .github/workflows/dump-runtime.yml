@@ -1,0 +1,195 @@
+name: dump-runtime
+
+# 运行期抓 DiskGenius 的 X86IL VM 上下文（handler 表 + 字节流）
+#
+# 与旧 dump-vm-tables 的区别：
+#   旧版硬编码槽位（0x4/0x8/0xF5…，对应 .vmp RVA=0x1D34000 那个构建）且假设
+#   内存里有「指向表的指针数组」。本样本派发器是 `mov reg,[ctx+imm8]` 直接寻址，
+#   槽位每构建重新分配（新构建 0x70/0x73/0xBC/0x1E2），旧模型必然 0 命中。
+#
+#   本版槽位无关：逐字节扫 ctx，用两个指纹自动发现槽位
+#     A 表：连续 48 项 qword 全落在可执行段
+#     B 流：能按 [u16 op][i32 len] 线性走通 >=40 步（随机内存通过率≈0）
+#   ctx 定位三层：rbp（主）→ 线程栈（兜底）→ 全内存（--deep）
+#   VM 常只在启动瞬间活跃，所以支持 --relaunch：重启 N 次，每次起来就高速采样
+
+on:
+  workflow_dispatch:
+    inputs:
+      seconds:
+        description: '单次启动的采样时长（秒）'
+        required: false
+        default: '20'
+      rounds:
+        description: '单次启动的采样轮数'
+        required: false
+        default: '8'
+      relaunch:
+        description: '重启次数（VM 可能只在启动瞬间活跃）'
+        required: false
+        default: '3'
+      deep:
+        description: 'rbp/栈都失败时扫全内存（慢，但命中率高）'
+        required: false
+        default: 'true'
+      pkg_tag:
+        description: '安装包缓存标签（换版本时改）'
+        required: false
+        default: '6201829'
+
+env:
+  PYTHONUTF8: '1'
+  PYTHONIOENCODING: 'utf-8'
+  PYTHONUNBUFFERED: '1'
+
+jobs:
+  dump:
+    runs-on: windows-latest
+    timeout-minutes: 50
+
+    steps:
+      - name: 取代码
+        uses: actions/checkout@v4
+
+      - name: 装 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # ---- 先跑自测：核心算法错的话没必要浪费时间启动目标 ----
+      - name: 核心算法自测
+        shell: pwsh
+        run: python winactions/dump_runtime.py --selftest
+
+      - name: 输入兜底（API 触发时 inputs 是空串）
+        id: cfg
+        shell: pwsh
+        run: |
+          function Pick($v, $d) { if ([string]::IsNullOrWhiteSpace($v)) { $d } else { $v } }
+          $sec = Pick "${{ github.event.inputs.seconds }}" '20'
+          $rnd = Pick "${{ github.event.inputs.rounds }}" '8'
+          $rel = Pick "${{ github.event.inputs.relaunch }}" '3'
+          $dep = Pick "${{ github.event.inputs.deep }}" 'true'
+          $tag = Pick "${{ github.event.inputs.pkg_tag }}" '6201829'
+          "seconds=$sec" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          "rounds=$rnd"  | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          "relaunch=$rel"| Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          "deep=$dep"    | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          "tag=$tag"     | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          Write-Host "seconds=$sec rounds=$rnd relaunch=$rel deep=$dep tag=$tag"
+
+      - name: 环境诊断（虚拟化 / 权限 / 会话）
+        shell: pwsh
+        run: |
+          $p = [Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()
+          Write-Host "管理员: $($p.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))"
+          Write-Host "磁盘剩余: $([int]((Get-PSDrive C).Free / 1GB)) GB"
+          python winactions/diag.py
+
+      # ---- 安装包：cache -> 官网 ----
+      - name: 恢复安装包缓存
+        id: restore
+        uses: actions/cache/restore@v4
+        with:
+          path: vendor
+          key: dg-pkg-${{ steps.cfg.outputs.tag }}
+
+      - name: 确保有安装包
+        id: pkg
+        shell: pwsh
+        run: |
+          $zip = Get-ChildItem -Path vendor -Filter *.zip -ErrorAction SilentlyContinue |
+                 Select-Object -First 1
+          if ($zip) {
+            Write-Host "已有包: $($zip.FullName)"
+            "zip=$($zip.FullName)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+            exit 0
+          }
+          $url = "https://www.diskgenius.com/dyna_download/?software=DGEng6201829_x64.zip"
+          New-Item -ItemType Directory -Force -Path vendor | Out-Null
+          $out = "vendor\dg-x64.zip"
+          Invoke-WebRequest -Uri $url -OutFile $out -UseBasicParsing -TimeoutSec 600
+          Write-Host ("下载 {0:N0} 字节" -f (Get-Item $out).Length)
+          Write-Host ("SHA256 {0}" -f (Get-FileHash $out -Algorithm SHA256).Hash)
+          "zip=$((Resolve-Path $out).Path)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+
+      - name: 保存安装包缓存
+        if: steps.restore.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: vendor
+          key: dg-pkg-${{ steps.cfg.outputs.tag }}
+
+      - name: 解压定位 exe
+        id: dl
+        shell: pwsh
+        run: |
+          $zip = "${{ steps.pkg.outputs.zip }}"
+          if ([string]::IsNullOrWhiteSpace($zip)) { throw "没有安装包" }
+          if (Test-Path dg) { Remove-Item -Recurse -Force dg }
+          Expand-Archive -Path $zip -DestinationPath dg -Force
+          $exe = Get-ChildItem -Path dg -Recurse -Filter DiskGenius.exe |
+                 Select-Object -First 1
+          if (-not $exe) { throw "包里没有 DiskGenius.exe" }
+          Write-Host "EXE: $($exe.FullName)  $('{0:N0}' -f $exe.Length) 字节"
+          "exe=$($exe.FullName)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+
+      # ---- 抓表 ----
+      - name: 抓运行期上下文
+        id: dump
+        shell: pwsh
+        continue-on-error: true
+        run: |
+          $deepArg = @()
+          if ("${{ steps.cfg.outputs.deep }}" -eq 'true') { $deepArg = @('--deep') }
+          python winactions/dump_runtime.py `
+            --exe "${{ steps.dl.outputs.exe }}" `
+            --seconds ${{ steps.cfg.outputs.seconds }} `
+            --rounds ${{ steps.cfg.outputs.rounds }} `
+            --relaunch ${{ steps.cfg.outputs.relaunch }} `
+            --out tables.json @deepArg 2>&1 | Tee-Object -FilePath dump.log
+          Write-Host "退出码: $LASTEXITCODE"
+
+      - name: 闭合映射
+        id: resolve
+        if: ${{ hashFiles('tables.json') != '' }}
+        shell: pwsh
+        continue-on-error: true
+        run: |
+          python winactions/resolve_map.py --json tables.json `
+            --entries winactions/handler_entries.json `
+            --out map.json --handlers handlers.py 2>&1 | Tee-Object -FilePath resolve.log
+          Write-Host "退出码: $LASTEXITCODE"
+
+      - name: 没抓到就明确失败（别让 job 绿着交空产物）
+        if: ${{ hashFiles('tables.json') == '' }}
+        shell: pwsh
+        run: |
+          Write-Host "=== dump.log 尾部 ==="
+          if (Test-Path dump.log) { Get-Content dump.log -Tail 100 }
+          throw "没有 tables.json：目标没跑起来，或 ctx 三层都没命中"
+
+      - name: 摘要
+        shell: pwsh
+        run: |
+          python winactions/summary.py .
+          if (Test-Path tables.json) {
+            Get-Content tables.json -Raw | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Encoding utf8 -Append
+          }
+
+      - name: 上传产物
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vm-runtime-dump
+          path: |
+            tables.json
+            map.json
+            handlers.py
+            table_*.bin
+            stream_*.bin
+            ctx.bin
+            dump.log
+            resolve.log
+          if-no-files-found: warn
+          retention-days: 7
