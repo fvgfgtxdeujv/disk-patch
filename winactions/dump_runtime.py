@@ -1030,6 +1030,21 @@ def selftest():
                 fails.append('stub6[%s] 第 %#x 处 jcc 跳到桩外 %#x' % (mode, i, tgt))
         print('  stub6[%-7s] %3d 字节，%d 处 rel32 全在桩内' % (mode, len(stub), n_rel))
 
+    s7 = _build_stub7(2, 0x100000100, 0x140000000, 0x142ff3000,
+                      0x100000000, 0x100100000)
+    print('  stub7(跳转式): %d 字节，尾 %s' % (len(s7), s7[-2:].hex()))
+    if len(s7) != 290:
+        fails.append('stub7 长度异常: %d（期望 290）' % len(s7))
+    if s7[-2:] != b'\xff\xe6':
+        fails.append('stub7 末尾不是 jmp rsi')
+    # find_cave：造一段带洞的假 .vmp
+    fake = bytearray(b'\x90' * 0x200)
+    fake[0x108:0x110] = b'\xcc' * 8
+    off = find_cave(bytes(fake), 0x100)
+    print('  find_cave(0x100) -> %s' % (hex(off) if off is not None else None))
+    if off != 0x108:
+        fails.append('find_cave 未找到 0x108 处的洞（实际 %s）' % off)
+
     if fails:
         print('\n[FAIL]')
         for f in fails:
@@ -1334,6 +1349,102 @@ def _build_stub6(mode, site_no, probe_base, lo_va, hi_va, count_va, buf_va, shel
     return bytes(b)
 
 
+def _build_stub7(site_no, probe_base, lo_va, hi_va, count_va, buf_va):
+    """v21 跳转式桩（不占用栈、不吃 call 返回地址）：
+       末尾是裸 `jmp rsi`，因此入口用 2 字节 `eb rel8` 短跳进来，
+       绝不覆盖 `jmp rsi` 之后的任何指令。记录 192 字节/条。"""
+    b = bytearray()
+    holes = []
+
+    def jcc(op, kind):
+        pos = len(b)
+        b.extend(op + b'\x00\x00\x00\x00')
+        holes.append((pos, kind))
+        return pos
+
+    def counter(va):
+        b.extend(b'\x48\xb8' + struct.pack('<Q', va))
+        b.extend(b'\x48\xff\x00')
+
+    b += b'\x9c'
+    b += bytes.fromhex('50515253555657')
+    b += bytes.fromhex('4150415141524153415441554156')
+    b += bytes.fromhex('4157')
+    counter(probe_base)
+    b += b'\x48\xa1' + struct.pack('<Q', count_va)
+    b += bytes.fromhex('4889c3')
+    b += b'\x48\x3d' + struct.pack('<I', REC_MAX)
+    jcc(bytes.fromhex('0f83'), 'out')
+    b += bytes.fromhex('4869cbc0000000')                  # imul rcx,rbx,192
+    b += bytes.fromhex('48bf') + struct.pack('<Q', buf_va)
+    b += bytes.fromhex('4801cf')
+    b += bytes.fromhex('4889e6')
+    b += bytes.fromhex('fc')
+    b += bytes.fromhex('b910000000')
+    b += bytes.fromhex('f348a5')                          # rep movsq
+    counter(probe_base + 8)
+    b += bytes.fromhex('4889ea')
+    b += b'\x49\xb9' + struct.pack('<Q', lo_va)
+    b += bytes.fromhex('4c39ca')
+    jcc(bytes.fromhex('0f82'), 'fin')
+    b += b'\x49\xb9' + struct.pack('<Q', hi_va)
+    b += bytes.fromhex('4c39ca')
+    jcc(bytes.fromhex('0f83'), 'fin')
+    b += bytes.fromhex('488b95bc000000')
+    b += bytes.fromhex('488917')
+    b += bytes.fromhex('488b95f5000000')
+    b += bytes.fromhex('48895708')
+    b += bytes.fromhex('488b17')
+    b += b'\x49\xb9' + struct.pack('<Q', lo_va)
+    b += bytes.fromhex('4c39ca')
+    jcc(bytes.fromhex('0f82'), 'fin')
+    b += bytes.fromhex('4c8d5210')
+    b += b'\x49\xb9' + struct.pack('<Q', hi_va)
+    b += bytes.fromhex('4d39ca')
+    jcc(bytes.fromhex('0f87'), 'fin')
+    counter(probe_base + 0x10)
+    b += bytes.fromhex('4c8b0a')
+    b += bytes.fromhex('4c894f10')
+    b += bytes.fromhex('4c8b4a08')
+    b += bytes.fromhex('4c894f18')
+    fin_pos = len(b)
+    b += bytes.fromhex('48c74720') + struct.pack('<I', site_no)
+    b += bytes.fromhex('488d4301')
+    b += b'\x48\xa3' + struct.pack('<Q', count_va)
+    out_pos = len(b)
+    b += bytes.fromhex('415f415e415d415c415b415a41594158')
+    b += bytes.fromhex('5f5e5d5b5a5958')
+    b += bytes.fromhex('9d')
+    b += bytes.fromhex('ffe6')                            # 裸 jmp rsi
+    for pos, kind in holes:
+        tgt = out_pos if kind == 'out' else fin_pos
+        b[pos + 2:pos + 6] = struct.pack('<i', tgt - (pos + 6))
+    return bytes(b)
+
+
+def find_cave(vmp, site_off, span=0x70, need=5, fill=(0xCC, 0x00)):
+    """在 site_off 前后 span 字节内找一个 need 字节的填充洞（0xCC/0x00 连续）。
+    返回相对偏移（洞起点），要求能放进 `e9 rel32`（5 字节）且不与站点重叠。"""
+    best = None
+    for delta in range(1, span):
+        for sign in (-1, 1):
+            off = site_off + sign * delta
+            if off < 0 or off + need > len(vmp):
+                continue
+            if abs(off + need - site_off) < 2 or abs(off - site_off) < 2:
+                continue                       # 不能和 `ff e6` 重叠
+            chunk = vmp[off:off + need]
+            if len(chunk) < need:
+                continue
+            if all(c == chunk[0] for c in chunk) and chunk[0] in fill:
+                d = best if best is not None else None
+                if d is None or abs(off - site_off) < abs(d - site_off):
+                    best = off
+        if best is not None and abs(best - site_off) <= 0x30:
+            break
+    return best
+
+
 def _read_probes(read_mem, h, count_va, n_sites):
     """读探针：条数 + 每站点 3 个（进入/复制完/ctx通过）"""
     def q(va):
@@ -1432,38 +1543,55 @@ def vm_hook_trace(exe, seconds, out_dir='.'):
     wrote = ctypes.c_size_t(0)
 
     shells = {}
-    patches = {}
+    caves_short = {}
+    patches = {}          # site -> 原始 5 字节
+    caves = {}            # cave_va -> 原始 5 字节
     for si, site in enumerate(sites):
         old = read_mem(h, site, 5)
         if not old or old[:2] != b'\xff\xe6':
             print('    site %#x 不是 jmp rsi（%s），跳过'
                   % (site, old.hex() if old else 'None'))
             continue
+        site_off = site - (base + 0x19d4000)
+        cave_off = find_cave(vmp, site_off) if 0 <= site_off < len(vmp) else None
+        if cave_off is None:
+            print('    site %#x 附近无填充洞，跳过（5 字节 hook 会劈开后续指令）' % site)
+            continue
+        cave_va = base + 0x19d4000 + cave_off
+        rel8 = cave_va - (site + 2)
+        if not -128 <= rel8 <= 127:
+            print('    site %#x 洞太远（%d），跳过' % (site, rel8))
+            continue
         shell_va = alloc + 0x1000 + si * 0x400
-        mode = STUB_MODES[si] if si < len(STUB_MODES) else 'full'
-        stub = _build_stub6(mode, si, count_va + PROBE_BASE + si * PROBE_STRIDE,
-                            base, hi_va, count_va, buf_va, shell_va)
+        stub = _build_stub7(si, count_va + PROBE_BASE + si * PROBE_STRIDE,
+                            base, hi_va, count_va, buf_va)
         k32.WriteProcessMemory(ctypes.c_void_p(h), ctypes.c_void_p(shell_va),
                                stub, len(stub), ctypes.byref(wrote))
-        shells[site] = shell_va
-        if si == 0:
-            print('[*] 桩 %d 字节（记录 %d 字节/条，上限 %d 条）'
-                  % (len(stub), REC_SZ, REC_MAX), flush=True)
         op2 = ctypes.c_uint32(0)
-        k32.VirtualProtectEx(ctypes.c_void_p(h), ctypes.c_void_p(site & ~0xFFF),
-                             ctypes.c_size_t(0x1000), PAGE_EXECUTE_READWRITE,
-                             ctypes.byref(op2))
-        p = b'\xe8' + struct.pack('<i', shell_va - (site + 5))
-        ok = k32.WriteProcessMemory(ctypes.c_void_p(h), ctypes.c_void_p(site),
-                                    p, 5, ctypes.byref(wrote))
-        if ok:
+        for pg in {(site & ~0xFFF), (cave_va & ~0xFFF)}:
+            k32.VirtualProtectEx(ctypes.c_void_p(h), ctypes.c_void_p(pg),
+                                 ctypes.c_size_t(0x1000), PAGE_EXECUTE_READWRITE,
+                                 ctypes.byref(op2))
+        old_cave = read_mem(h, cave_va, 5) or b''
+        # 洞里放 e9 rel32 -> 桩（5 字节），站点只写 2 字节 eb rel8
+        okc = k32.WriteProcessMemory(ctypes.c_void_p(h), ctypes.c_void_p(cave_va),
+                                     b'\xe9' + struct.pack('<i', shell_va - (cave_va + 5)),
+                                     5, ctypes.byref(wrote))
+        oks = k32.WriteProcessMemory(ctypes.c_void_p(h), ctypes.c_void_p(site),
+                                     bytes([0xEB, rel8 & 0xFF]), 2,
+                                     ctypes.byref(wrote))
+        if okc and oks:
+            shells[site] = shell_va
             patches[site] = old
+            caves[cave_va] = old_cave
+            caves_short[site] = bytes([0xEB, rel8 & 0xFF])
             time.sleep(0.15)
-            back = read_mem(h, site, 5) or b''
-            print('    hook %#x 已下（site %d 档=%s，桩 %#x，%d 字节）回读=%s 原尾3字节=%s'
-                  % (site, si, mode, shell_va, len(stub), back.hex(), old[2:5].hex()),
+            print('    hook %#x 已下（site %d，2 字节短跳->洞 %#x->桩 %#x，%d 字节）'
+                  ' 回读站点=%s 洞=%s 原尾3字节=%s'
+                  % (site, si, cave_va, shell_va, len(stub),
+                     (read_mem(h, site, 4) or b'').hex(),
+                     (read_mem(h, cave_va, 5) or b'').hex(), old[2:5].hex()),
                   flush=True)
-            # 分级观测：每装一处先活 1.5s，看是不是这一处把进程打死
             time.sleep(1.5)
             code = ctypes.c_ulong(0)
             okalive = k32.GetExitCodeProcess(ctypes.c_void_p(h), ctypes.byref(code))
@@ -1474,7 +1602,8 @@ def vm_hook_trace(exe, seconds, out_dir='.'):
             print('    [staged] site %d 观测存活，探针 %s'
                   % (si, _read_probes(read_mem, h, count_va, len(sites))), flush=True)
         else:
-            print('    hook %#x 失败 err=%d' % (site, ctypes.get_last_error()))
+            print('    hook %#x 失败 cave=%s site=%s err=%d'
+                  % (site, okc, oks, ctypes.get_last_error()))
 
     t0 = time.time()
     last = 0
@@ -1496,19 +1625,18 @@ def vm_hook_trace(exe, seconds, out_dir='.'):
             print('    [hb %.1fs] 存活 code=%#x 探针 %s 首站可读=%s'
                   % (time.time() - t0, code.value, pr,
                      bool(read_mem(h, sites[0], 5))), flush=True)
-        for site, old in list(patches.items()):
-            cur = read_mem(h, site, 5) or b''
-            if cur[:1] != b'\xe8':
+        for site in list(patches):
+            cur = read_mem(h, site, 2) or b''
+            if cur[:1] != b'\xeb':                 # 保护器把短跳改回去了
+                want = caves_short[site]
                 op2 = ctypes.c_uint32(0)
                 k32.VirtualProtectEx(ctypes.c_void_p(h),
                                      ctypes.c_void_p(site & ~0xFFF),
                                      ctypes.c_size_t(0x1000),
                                      PAGE_EXECUTE_READWRITE, ctypes.byref(op2))
                 k32.WriteProcessMemory(ctypes.c_void_p(h),
-                                       ctypes.c_void_p(site),
-                                       b'\xe8' + struct.pack('<i',
-                                           shells[site] - (site + 5)),
-                                       5, ctypes.byref(wrote))
+                                       ctypes.c_void_p(site), want, 2,
+                                       ctypes.byref(wrote))
                 repatch += 1
         cnt = struct.unpack('<Q', read_mem(h, count_va, 8) or b'\0' * 8)[0]
         if cnt != last:
@@ -1546,9 +1674,12 @@ def vm_hook_trace(exe, seconds, out_dir='.'):
           % (n, len(keys), valid, site_hits), flush=True)
 
     for site, old in patches.items():
-        if len(old) >= 5:
-            k32.WriteProcessMemory(ctypes.c_void_p(h), ctypes.c_void_p(site),
-                                   old[:5], 5, ctypes.byref(wrote))
+        k32.WriteProcessMemory(ctypes.c_void_p(h), ctypes.c_void_p(site),
+                               old[:2], 2, ctypes.byref(wrote))
+    for cave_va, oc in caves.items():
+        if len(oc) == 5:
+            k32.WriteProcessMemory(ctypes.c_void_p(h), ctypes.c_void_p(cave_va),
+                                   oc, 5, ctypes.byref(wrote))
     return n
 
 
