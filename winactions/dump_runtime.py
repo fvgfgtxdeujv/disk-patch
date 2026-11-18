@@ -543,112 +543,143 @@ def probe_ctx(view, ctx, ranges, guard=None):
 
 def hot_phase(view, pid, ranges, guard, seconds, out_dir_ref=['.']):
     """
-    高速只读线程寄存器：VM 执行期间 rbp 就是 ctx（静态已证）。
-    不扫内存、不做栈扫，每轮 OpenThread+GetThreadContext，~2ms 一轮。
-    命中（score>0）记下；有 IP 槽的立刻返回。
+    v11：线程句柄缓存 + 高速 GetThreadContext 采样（目标 ~7k 轮/秒）。
+    rbp 落保护段 => VM 正在跑。对 ctx 的 IP 候选槽做「派发器规则」验证：
+      op = u16@IP+7, rel = i32@IP, next = IP+rel
+    只有解码成立的样本才落盘（指令字节只在取指瞬间是明文）。
     """
-    hits = []
-    probed = set()
-    rip_hits = {}                     # v7: VM 执行时 RIP 直方图（rbp 落保护段）
-    trace = []                        # v9: (tid, ctx, slot, ptr) 采样序列
-    pages = set()                     # v9: 已抓过的页
+    trace = []
+    pages = set()
     MAX_PAGES = 96
     WIN = 0x4000
-    SLOTS = [0x70, 0x73, 0xBC, 0xC4, 0xF5, 0x36, 0x5B, 0xB9, 0x120, 0x1E2]
+    IP_SLOTS = [0xBC, 0x73, 0x120, 0x70]
+    DISP = [(0x141a352d0, 0x141a35350)]       # 已知派发器窗口（实例 B）
+    rip_hits = {}
+    handles = []
+
+    def refresh():
+        for _tid, h in handles:
+            try:
+                k32.CloseHandle(h)
+            except Exception:
+                pass
+        del handles[:]
+        snap = k32.CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0)
+        if snap in (0, -1):
+            return
+        te = THREADENTRY32()
+        te.dwSize = ctypes.sizeof(te)
+        try:
+            ok = k32.Thread32First(snap, ctypes.byref(te))
+            while ok:
+                if te.th32OwnerProcessID == pid:
+                    h = k32.OpenThread(THREAD_GET_CONTEXT |
+                                       THREAD_SUSPEND_RESUME |
+                                       THREAD_QUERY_INFORMATION, False,
+                                       te.th32ThreadID)
+                    if h:
+                        handles.append((te.th32ThreadID, h))
+                ok = k32.Thread32Next(snap, ctypes.byref(te))
+        finally:
+            k32.CloseHandle(snap)
+
+    def grab(tid, h, rbp, rip):
+        """命中：挂起线程 -> 读 ctx -> 逐槽解码 -> 落盘"""
+        k32.SuspendThread(h)
+        try:
+            ctx_raw = read_mem(view.h, rbp, 0x200) or b''
+            if len(ctx_raw) < 0x200:
+                return
+            for sl in IP_SLOTS:
+                ptr = struct.unpack_from('<Q', ctx_raw, sl)[0]
+                if not (0x140000000 <= ptr < 0x143000000):
+                    continue
+                raw = read_mem(view.h, ptr, 16) or b''
+                if len(raw) < 12:
+                    continue
+                rel = struct.unpack_from('<i', raw, 0)[0]
+                op = struct.unpack_from('<H', raw, 7)[0]
+                if not (0 <= op < 0x2000 and 4 <= rel <= 0x1000):
+                    continue
+                trace.append([round(time.time() - t0h, 6), tid, rbp, sl,
+                              ptr, op, rel, raw[:12].hex(), rip])
+                pg = ptr & ~0xFFF
+                if pg not in pages and len(pages) < MAX_PAGES:
+                    pages.add(pg)
+                    buf = read_mem(view.h, pg, WIN) or b''
+                    with open(os.path.join(out_dir_ref[0],
+                                           'live_p%x.bin' % pg), 'wb') as f:
+                        f.write(buf)
+                print('    [hit] ctx=%#x slot+%#x ip=%#x op=%d rel=%d rip=%#x'
+                      % (rbp, sl, ptr, op, rel, rip), flush=True)
+        except Exception as e:
+            print('    [hit] 失败: %s' % e, flush=True)
+        finally:
+            k32.ResumeThread(h)
+
+    refresh()
     t0h = time.time()
+    t_end = t0h + seconds
+    k = 0
+    buf = ctypes.create_string_buffer(CONTEXT_SIZE)
+
     def _flush():
         try:
             with open(os.path.join(out_dir_ref[0], 'hot_trace.json'), 'w') as f:
                 json.dump({'n_rounds': k, 'samples': trace,
-                       'fmt': '[t,tid,ctx,slot,ip,op,rel,bytes12hex]'}, f)
-            print('[*] hot_trace: %d 条采样, %d 页现场' % (len(trace), len(pages)),
-                  flush=True)
+                           'fmt': '[t,tid,ctx,slot,ip,op,rel,bytes12hex,rip]'},
+                          f)
+            print('[*] hot_trace: %d 条可解码采样, %d 页, %d 轮'
+                  % (len(trace), len(pages), k), flush=True)
         except Exception as e:
             print('[*] hot_trace 写失败: %s' % e, flush=True)
         if rip_hits:
             top = sorted(rip_hits.items(), key=lambda x: -x[1])[:24]
             print('[*] VM 执行期 RIP 直方图（top24）:', flush=True)
-            for rip, cnt in top:
-                print('    rip=%#x x%d' % (rip, cnt), flush=True)
+            for a, c in top:
+                print('    rip=%#x x%d' % (a, c), flush=True)
             try:
                 with open(os.path.join(out_dir_ref[0], 'rip_hits.json'), 'w') as f:
-                    json.dump({hex(k2): v for k2, v in sorted(rip_hits.items(),
-                                key=lambda x: -x[1])[:200]}, f, indent=1)
+                    json.dump({hex(a): c for a, c in sorted(
+                        rip_hits.items(), key=lambda x: -x[1])[:200]}, f, indent=1)
             except Exception:
                 pass
 
-    t_end = time.time() + seconds
-    k = 0
     while time.time() < t_end:
         k += 1
-        try:
-            ctxs = thread_contexts(pid)
-        except Exception:
-            ctxs = []
-        for tid, rip, rsp, rbp in ctxs:
-            # v7：rbp 落在保护段 => VM 正在执行，RIP 就是派发器/handler
-            if rbp and any(lo <= rbp < hi for lo, hi in guard) \
-                    and rip and any(lo <= rip < hi for lo, hi in ranges):
-                rip_hits[rip] = rip_hits.get(rip, 0) + 1
-                # v10：指令字节只在取指瞬间是明文。只保留「能按派发器规则解码」的样本：
-                # op = u16@IP+7，rel = i32@IP，next = IP+rel（规则来自派发器反汇编）
-                ht = k32.OpenThread(THREAD_SUSPEND_RESUME |
-                                    THREAD_QUERY_INFORMATION, False, tid)
-                if ht:
-                    k32.SuspendThread(ht)
-                try:
-                    ctx_raw = read_mem(view.h, rbp, 0x200) or b''
-                    if len(ctx_raw) >= 0x200:
-                        import struct as _s
-                        for sl in SLOTS:
-                            ptr = _s.unpack_from('<Q', ctx_raw, sl)[0]
-                            if not (0x140000000 <= ptr < 0x143000000):
-                                continue
-                            raw = read_mem(view.h, ptr, 16) or b''
-                            if len(raw) < 12:
-                                continue
-                            rel = _s.unpack_from('<i', raw, 0)[0]
-                            op = _s.unpack_from('<H', raw, 7)[0]
-                            if 0 <= op < 0x2000 and 4 <= rel <= 0x1000:
-                                trace.append([round(time.time() - t0h, 5), tid,
-                                              rbp, sl, ptr, op, rel,
-                                              raw[:12].hex()])
-                                pg = ptr & ~0xFFF
-                                if pg not in pages and len(pages) < MAX_PAGES:
-                                    pages.add(pg)
-                                    buf = read_mem(view.h, pg, WIN) or b''
-                                    with open(os.path.join(out_dir_ref[0],
-                                              'live_p%x.bin' % pg), 'wb') as f:
-                                        f.write(buf)
-                                    print('    [hit] ctx=%#x slot+%#x ip=%#x '
-                                          'op=%d rel=%d 页%#x' % (rbp, sl, ptr,
-                                                                 op, rel, pg),
-                                          flush=True)
-                except Exception as e:
-                    print('    [live] 抓取失败: %s' % e, flush=True)
-                finally:
-                    if ht:
-                        k32.ResumeThread(ht)
-                        k32.CloseHandle(ht)
-            for va, how in ((rbp, 'rbp:t%d' % tid), (rsp, 'rsp:t%d' % tid)):
-                if va < 0x10000 or va in probed:
+        if k % 2000 == 0:
+            refresh()
+        for tid, h in handles:
+            struct.pack_into('<I', buf, CTX_FLAGS, CONTEXT_ALL_AMD64)
+            if not k32.GetThreadContext(h, buf):
+                continue
+            rip = struct.unpack_from('<Q', buf, CTX_RIP)[0]
+            rbp = struct.unpack_from('<Q', buf, CTX_RBP)[0]
+            if rbp < 0x10000 or not any(lo <= rbp < hi for lo, hi in guard):
+                continue
+            rip_hits[rip] = rip_hits.get(rip, 0) + 1
+            if any(lo <= rip < hi for lo, hi in DISP):
+                grab(tid, h, rbp, rip)
+                continue
+            # 廉价验证：单次读 ctx，看 IP 候选槽能否解码出一条合法指令
+            ctx_raw = read_mem(view.h, rbp, 0x200) or b''
+            if len(ctx_raw) < 0x200:
+                continue
+            for sl in IP_SLOTS:
+                ptr = struct.unpack_from('<Q', ctx_raw, sl)[0]
+                if not (0x140000000 <= ptr < 0x143000000):
                     continue
-                probed.add(va)
-                if not quick_prefilter(view, va, ranges, guard=guard):
+                raw = read_mem(view.h, ptr, 16) or b''
+                if len(raw) < 12:
                     continue
-                r = probe_ctx(view, va, ranges, guard)
-                if r['score'] > 0:
-                    r['how'] = how
-                    hits.append((va, r))
-                    print('    [hot] %#x how=%s score=%d 表=%d IP=%d'
-                          % (va, how, r['score'], len(r['tables']), len(r['ips'])),
-                          flush=True)
-                    if r['ips']:
-                        _flush()
-                        return hits, k
-        # hot 阶段进程刚起，偶发读失败是正常
+                rel = struct.unpack_from('<i', raw, 0)[0]
+                op = struct.unpack_from('<H', raw, 7)[0]
+                if 0 <= op < 0x2000 and 4 <= rel <= 0x1000:
+                    grab(tid, h, rbp, rip)
+                    break
+
     _flush()
-    return hits, k
+    return [], k
 
 
 def best_ctx(view, pid, ranges, deep=False, guard=None, hot=False):
