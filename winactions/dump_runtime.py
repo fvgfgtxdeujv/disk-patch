@@ -1354,7 +1354,8 @@ def vm_hook_trace(exe, seconds, out_dir='.'):
         return None
     print('[*] pid=%d' % pid, flush=True)
     h = k32.OpenProcess(PROCESS_VM_READ | PROCESS_VM_WRITE |
-                        PROCESS_VM_OPERATION | 0x0400 | 0x0010, False, pid)
+                        PROCESS_VM_OPERATION | 0x0400 | 0x0010 | 0x00100000,
+                        False, pid)
     if not h:
         print('!! OpenProcess 失败 err=%d' % ctypes.get_last_error())
         return None
@@ -1449,18 +1450,24 @@ def vm_hook_trace(exe, seconds, out_dir='.'):
     last = 0
     repatch = 0
     dead_at = None
+    tick = 0
     while time.time() - t0 < seconds:
         time.sleep(0.5)
-        if k32.WaitForSingleObject(ctypes.c_void_p(h), 0) == 0:
-            code = ctypes.c_ulong(0)
-            k32.GetExitCodeProcess(ctypes.c_void_p(h), ctypes.byref(code))
+        tick += 1
+        code = ctypes.c_ulong(0)
+        okalive = k32.GetExitCodeProcess(ctypes.c_void_p(h), ctypes.byref(code))
+        pr = {n: struct.unpack('<Q', read_mem(h, count_va + o, 8) or b'\0' * 8)[0]
+              for n, o in (('条数', 0), ('进入', PROBE_ENTER),
+                           ('复制', PROBE_COPY), ('ctx通过', PROBE_CTX))}
+        if not okalive or code.value != 259:        # 259 = STILL_ACTIVE
             dead_at = round(time.time() - t0, 1)
-            pr = {n: struct.unpack('<Q', read_mem(h, count_va + o, 8) or b'\0' * 8)[0]
-                  for n, o in (('条数', 0), ('进入', PROBE_ENTER),
-                               ('复制', PROBE_COPY), ('ctx通过', PROBE_CTX))}
-            print('[!] 进程在 %.1fs 退出，退出码 %#x，探针 %s' % (dead_at, code.value, pr),
-                  flush=True)
+            print('[!] 进程在 %.1fs 已退出（GetExitCodeProcess ok=%s code=%#x）探针 %s'
+                  % (dead_at, okalive, code.value, pr), flush=True)
             break
+        if tick <= 2 or tick % 8 == 0:
+            print('    [hb %.1fs] 存活 code=%#x 探针 %s 首站可读=%s'
+                  % (time.time() - t0, code.value, pr,
+                     bool(read_mem(h, sites[0], 5))), flush=True)
         for site, old in list(patches.items()):
             cur = read_mem(h, site, 5) or b''
             if cur[:1] != b'\xe8':
