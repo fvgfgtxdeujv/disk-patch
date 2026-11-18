@@ -1902,11 +1902,13 @@ def table_hook_trace(exe, seconds, out_dir='.'):
     lo, hi = base + VMP_RVA, base + VMP_RVA + len(vmp)
     print('[*] .vmp %d 字节，范围 [%#x, %#x)' % (len(vmp), lo, hi), flush=True)
 
-    # 历史证据里的表地址逐个实证。实测保护器会「先填 RVA、后加重定位」，
-    # 所以这里要等到表项变成绝对地址（落在 .vmp 内）再动手，最多等 20 秒。
-    KNOWN = [0x1421080ab, 0x141da2b42, 0x141d8df04]
+    # 历史证据里的表地址逐个实证。两种形态都钩：
+    #   绝对形态：表项=VA，新表直接写桩 VA；
+    #   RVA  形态：表项=RVA（调度器自己加 base），新表写 (桩VA-base)，
+    #              原_handler 用 base+rva 还原。→ 一次性覆盖全部 5 张表。
+    KNOWN = [0x1421080ab, 0x141da2b42, 0x141d8df04]   # 全部来自历史证据
     rva_lo, rva_hi = VMP_RVA, VMP_RVA + len(vmp)
-    tables = []
+    tables = []          # (va, n, form)  form: 'abs' | 'rva'
     for attempt in range(40):
         tables = []
         for va0 in KNOWN:
@@ -1922,31 +1924,35 @@ def table_hook_trace(exe, seconds, out_dir='.'):
                 print('    known %#x 前 4 项 %s 绝对=%s RVA=%s'
                       % (va, [hex(x) for x in q[:4]], inabs, inrva), flush=True)
             if inabs:
-                tables.append(va)
+                tables.append([va, 0, 'abs'])
             elif inrva:
-                print('      （RVA 形态，等重定位）', flush=True)
-        if tables:
+                tables.append([va, 0, 'rva'])
+        if len(tables) >= 3:
             break
         time.sleep(0.5)
 
     sized = []
-    for va in tables:
+    for va, _, form in tables:
         big = read_mem(h, va, 4096 * 8)
         if not big:
             continue
         q2 = struct.unpack('<%dQ' % (len(big) // 8), big[:len(big) // 8 * 8])
+        if form == 'abs':
+            okv = lambda x: lo <= x < hi
+        else:
+            okv = lambda x: rva_lo <= x < rva_hi
         m = 0
-        while m < len(q2) and lo <= q2[m] < hi:
+        while m < len(q2) and okv(q2[m]):
             m += 1
         if m >= 24:
-            sized.append((va, m))
-            print('    -> 采纳 %#x，长度 %d 项（%#x..%#x）' % (va, m, va, va + m * 8),
-                  flush=True)
+            sized.append((va, m, form))
+            print('    -> 采纳 %#x（%s），长度 %d 项' % (va, form, m), flush=True)
     tables = sized
 
-    total = sum(n for _, n in tables)
+    total = sum(n for _, n, _ in tables)
     print('[*] 发现 %d 张表，共 %d 项: %s'
-          % (len(tables), total, [(hex(va), n) for va, n in tables]), flush=True)
+          % (len(tables), total, [(hex(va), n, fm) for va, n, fm in tables]),
+          flush=True)
     if not tables or total == 0:
         print('!! 没找到表')
         return None
@@ -1974,7 +1980,7 @@ def table_hook_trace(exe, seconds, out_dir='.'):
     originals = {}       # table_va -> (原 entries bytes, n)
     stubs = []           # [(table_i, entry_i, stub_va)]
     k = 0
-    for ti, (tva, n) in enumerate(tables):
+    for ti, (tva, n, form) in enumerate(tables):
         raw = read_mem(h, tva, n * 8)
         if not raw or len(raw) != n * 8:
             print('   表 %#x 读不出（%s），跳过' % (tva, len(raw) if raw else None))
@@ -1984,12 +1990,14 @@ def table_hook_trace(exe, seconds, out_dir='.'):
         pb = probe_va + ti * PROBE_STRIDE
         blob_stubs = bytearray()
         ptrs = []
-        for ei, orig in enumerate(ents):
+        for ei, e0 in enumerate(ents):
+            orig = e0 if form == 'abs' else base + e0      # 原_handler VA
             sv = stub_va + k * STUB11_SZ
             st = _build_stub11(orig, (ti << 20) | ei, pb, slots_va, lo, hi,
                                count_va, buf_va)
             blob_stubs += st + b'\xcc' * (STUB11_SZ - len(st))
-            ptrs.append(sv)
+            # 表里写什么：绝对表写桩 VA；RVA 表写 (桩VA-base)
+            ptrs.append(sv if form == 'abs' else sv - base)
             stubs.append((ti, ei, sv, orig))
             k += 1
         args = [ctypes.c_void_p(h), ctypes.c_void_p(stub_va + (k - n) * STUB11_SZ),
@@ -2085,7 +2093,7 @@ def table_hook_trace(exe, seconds, out_dir='.'):
         json.dump({'n': n, 'mode': 'table-plain', 'rec_size': REC11_SZ,
                    'fmt': '[ip,[ip],[ip+8],tag,rbp,orig,0,0]',
                    'dead_at': dead_at, 'n_ip': len(ips), 'n_ctx': len(ctxs),
-                   'tables': [(hex(va), nn) for va, nn in tables],
+                   'tables': [(hex(va), nn, fm) for va, nn, fm in tables],
                    'tag_hist': tags, 'trace': out,
                    'insns': insns, 'insns_ok_op': ok_op, 'insns_ok_rel': ok_rel}, f)
 
