@@ -1951,6 +1951,10 @@ def table_hook_trace(exe, seconds, out_dir='.'):
         if m >= 24:
             sized.append((va, m, form))
             print('    -> 采纳 %#x（%s），长度 %d 项' % (va, form, m), flush=True)
+    # v24.7：只钩 661 项主表；其它表即使重定位为 abs 也不动
+    #（v24.4/v24.6 实证：钩 49/1096 表 → 0 派发 + 8.4s 崩溃）
+    main_va = 0x1421080ab - 0x140000000 + base
+    sized = [t for t in sized if t[0] == main_va]
     tables = sized
 
     total = sum(n for _, n, _ in tables)
@@ -2021,6 +2025,27 @@ def table_hook_trace(exe, seconds, out_dir='.'):
                   flush=True)
         else:
             print('   表 %#x 写入失败 err=%d' % (tva, ctypes.get_last_error()))
+
+    # 沿 handler 入口的 jmp 链 dump 主体区（v8.2 实证：入口是 4 条 jmp rel32，
+    # 目标在模块外 0x1433xxxx/0x1442xxxx —— 从未 dump 过的解释器主体区）
+    tva0 = [t for t in tables if t[2] == 'abs'][0][0]
+    for ei in (0, 297, 446, 478, 545, 547):
+        hv = struct.unpack('<Q', read_mem(h, tva0 + ei * 8, 8) or b'\0' * 8)[0]
+        if not (lo <= hv < hi):
+            continue
+        head = read_mem(h, hv, 0x20) or b''
+        tgt = None
+        if head[:1] == b'\xe9':
+            tgt = hv + 5 + struct.unpack_from('<i', head, 1)[0]
+        print('    entry %d handler %#x 头 %s → %#x' % (ei, hv, head[:5].hex(), tgt or 0),
+              flush=True)
+        if tgt:
+            reg = read_mem_safe(h, tgt & ~0xFFF, 0x8000)
+            if reg:
+                with open(os.path.join(out_dir, 'handlerbody_%d.bin' % ei), 'wb') as f2:
+                    f2.write(reg)
+                print('      已 dump %#x..%#x → handlerbody_%d.bin'
+                      % (tgt & ~0xFFF, (tgt & ~0xFFF) + 0x8000, ei), flush=True)
 
     # 静态 dump 循环附近字节码区（两次：钩后 / 观察结束），用于离线比对
     for tagx, tva2 in (('lic_bytecode.bin', base + 0x2150000),):
