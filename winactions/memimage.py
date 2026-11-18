@@ -158,6 +158,39 @@ def scan_image(path, code_lo, code_hi, min_score=4, min_table_len=16,
     return hits
 
 
+def _scan_arrays(path, lo, hi, min_len, max_tables, chunk=CHUNK):
+    import dump_ctx as D
+    img = Image(path)
+    found = []
+    try:
+        for rva, size, off in img.regions:
+            for va, data in img.iter_region(rva, size, off, chunk):
+                for tva, ents in D.collect_static_tables(
+                        data, va, lo, hi, min_len, max_tables - len(found)):
+                    found.append((tva, ents))
+                if len(found) >= max_tables:
+                    return sorted(found, key=lambda x: -len(x[1]))
+    finally:
+        img.close()
+    return sorted(found, key=lambda x: -len(x[1]))
+
+
+def scan_static_tables(path, code_lo, code_hi, min_len=8, max_tables=32,
+                       vmp_lo=None, vmp_hi=None, chunk=CHUNK):
+    """
+    找「整段指向 VM 代码区」的指针数组（不依赖 VM 上下文）。
+
+    handler 表项必须落在 VM 代码段（.vmp）里，所以给了 vmp 区间就先只在
+    .vmp 里找；找不到再放宽到整个模块代码区，并在结果里标注范围。
+    """
+    if vmp_lo and vmp_hi:
+        got = _scan_arrays(path, vmp_lo, vmp_hi, min_len, max_tables, chunk)
+        if got:
+            return got, 'vmp'
+    got = _scan_arrays(path, code_lo, code_hi, min_len, max_tables, chunk)
+    return got, 'module' if got else 'none'
+
+
 def dump_tables(path, ctx_va, code_lo=0, code_hi=0, slots=None, maxn=65536):
     """按 ctx 槽把整张表读出来（离线版）"""
     import dump_ctx as D

@@ -177,6 +177,11 @@ jobs:
           python winactions/merge_tables.py tables.json --out handlers.py --json handlers.json 2>&1 |
             Tee-Object -FilePath merge.log
 
+      - name: 产物摘要
+        shell: pwsh
+        run: |
+          python -c "import json;d=json.load(open('tables.json',encoding='utf-8'));t=d.get('tables') or {};print('mode=%s source=%s 表=%d 项=%d'%(d.get('mode'),d.get('source'),len(t),sum(len(v.get('entries') or []) for v in t.values())));print('vmp_rva=%s module_base=%s'%(d.get('vmp_rva'),d.get('module_base')))"
+
       - name: 上传产物
         if: always()
         uses: actions/upload-artifact@v4

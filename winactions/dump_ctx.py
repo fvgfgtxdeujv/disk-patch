@@ -221,6 +221,36 @@ def scan_buffer(buf, base_va, code_lo, code_hi, step=8, min_score=4,
     return out
 
 
+def collect_static_tables(buf, base_va, code_lo, code_hi, min_len=8,
+                          max_tables=32, min_span=0x400, min_distinct=0.5):
+    """
+    第二种策略：不依赖 VM 上下文，直接找「整段都指向 VM 代码区」的指针数组。
+
+    过滤掉明显不是 handler 表的东西：
+      * 升序数组 -> 编译器生成的 switch 跳表
+      * 所有值挤在一小段里（span < min_span）-> vtable / 小结构
+      * 去重后太少的 -> 填充/重复表
+    返回 [(表起始VA, [项...])]，按长度降序。
+    """
+    runs = find_table_runs(buf, base_va, code_lo, code_hi, min_len)
+    out = []
+    for va, n in runs:
+        if len(out) >= max_tables:
+            break
+        o = va - base_va
+        if o < 0 or o + n * 8 > len(buf):
+            continue
+        ents = list(struct.unpack_from('<%dQ' % n, buf, o))
+        if len(set(ents)) < max(4, int(n * min_distinct)):
+            continue
+        if all(ents[i] < ents[i + 1] for i in range(n - 1)):
+            continue
+        if max(ents) - min(ents) < min_span:
+            continue
+        out.append((va, ents))
+    return out
+
+
 # ------------------------------------------------------------
 # Windows 侧
 # ------------------------------------------------------------
@@ -619,16 +649,29 @@ def main():
             print('[!] %s' % e)
         time.sleep(a.interval)
 
-    # 在线扫不到 → 存内存镜像，离线再扫（同算法，可复算）
+    # 在线扫不到 → 存内存镜像，离线再扫（同算法，可复算）；再不行退到静态指针数组
     source = 'live'
+    mode = 'ctx'
     tables = None
-    if best is not None:
-        tables = dump_tables(h, best['va'], code_lo=code_lo or 0, code_hi=code_hi or 0)
-    elif a.image and h:
+
+    if best is None and h and a.image:
         import memimage
         print('[*] 在线没命中，存内存镜像 %s' % a.image)
         n = memimage.save_process(h, a.image, enum_regions(h))
         print('[*] 镜像 %d 个区域，%.1f MB' % (n, os.path.getsize(a.image) / 1e6))
+
+    if best is not None:
+        tables = dump_tables(h, best['va'], code_lo=code_lo or 0, code_hi=code_hi or 0)
+        if not tables:
+            print('[!] 上下文候选里没读出有效表，继续走静态数组策略')
+            best = None
+
+    if best is None and a.image and os.path.exists(a.image):
+        import memimage
+        vmp_lo = vmp_hi = None
+        if lay and lay.get('vmp_rva'):
+            vmp_lo = lay['image_base'] + lay['vmp_rva']
+            vmp_hi = vmp_lo + (lay['vmp_vsize'] or 0)
         hits = memimage.scan_image(a.image, code_lo, code_hi, a.min_score)
         if hits:
             best = hits[0]
@@ -636,13 +679,32 @@ def main():
             print('[*] 离线扫命中 %d 个候选，最高分 %d @0x%X'
                   % (len(hits), best['score'], best['va']))
             tables = memimage.dump_tables(a.image, best['va'], code_lo or 0, code_hi or 0)
+        if not tables:
+            best = None
+            mode = 'arrays'
+            arrs, rng = memimage.scan_static_tables(
+                a.image, code_lo or 0, code_hi or 0, min_len=8, max_tables=32,
+                vmp_lo=vmp_lo, vmp_hi=vmp_hi)
+            print('[i] 没找到带槽位的 VM 上下文，改为抓「整段指向 VM 代码区」的指针数组')
+            print('[i] 过滤范围: %s' % (('VM 段 0x%X..0x%X' % (vmp_lo, vmp_hi))
+                                        if rng == 'vmp' else '整个模块代码区'))
+            for va, ents in arrs[:16]:
+                print('      0x%X: %d 项' % (va, len(ents)))
+            if arrs:
+                source = 'memimage'
+                tables = {('arr_0x%X' % va):
+                          {'table_va': '0x%X' % va, 'entries': ents}
+                          for va, ents in arrs}
 
-    if best is None:
-        print('[!] 没找到上下文候选')
+    if not tables:
+        print('[!] 上下文和指针数组都没找到')
         return 1
 
-    out = {'pid': pid, 'ctx_va': '0x%X' % best['va'], 'score': best['score'],
-           'detail': best['detail'], 'tables': tables,
+    out = {'pid': pid, 'mode': mode,
+           'ctx_va': ('0x%X' % best['va']) if best else None,
+           'score': best['score'] if best else None,
+           'detail': best['detail'] if best else {},
+           'tables': tables,
            'module_base': '0x%X' % (code_lo or 0),
            'module_name': name,
            'image_base': ('0x%X' % lay['image_base']) if lay else None,
@@ -651,9 +713,9 @@ def main():
            'source': source}
     with open(a.out, 'w', encoding='utf-8') as f:
         json.dump(out, f, ensure_ascii=False, indent=1)
-    print('[+] 已写入 %s' % a.out)
-    for k, v in tables.items():
-        print('    ctx+%s -> table %s，%d 项' % (k, v['table_va'], len(v['entries'])))
+    print('[+] 已写入 %s（mode=%s，%d 张表）' % (a.out, mode, len(tables)))
+    for k, v in list(tables.items())[:20]:
+        print('    %s -> table %s，%d 项' % (k, v['table_va'], len(v['entries'])))
     return 0
 
 

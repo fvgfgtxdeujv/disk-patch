@@ -69,11 +69,22 @@ def build_image():
     dec3 = IMG_LO + 0xB000
     put64(dec3 + 0x8, 0)
 
-    return bytes(buf), ctx, t1, t2, (dec1, dec2, dec3)
+    # 一张「静态 handler 表」：乱序、互不相同、跨度大 —— 静态策略应该认出来
+    t3 = IMG_LO + 0x4000
+    order = [(i * 37) % 32 for i in range(32)]
+    for i, k in enumerate(order):
+        put64(t3 + i * 8, CODE_LO + 0x2000 + k * 0x40)
+
+    # 升序跳表（编译器 switch 表）—— 静态策略应该跳过
+    t4 = IMG_LO + 0x5000
+    for i in range(32):
+        put64(t4 + i * 8, CODE_LO + 0x3000 + i * 0x40)
+
+    return bytes(buf), ctx, t1, t2, (dec1, dec2, dec3), t3, t4
 
 
 def main():
-    buf, ctx, t1, t2, decoys = build_image()
+    buf, ctx, t1, t2, decoys, t3, t4 = build_image()
     hits = D.scan_buffer(buf, IMG_LO, CODE_LO, CODE_HI, min_score=4)
 
     ok = 0
@@ -107,6 +118,14 @@ def main():
     va_set = {h['va'] for h in hits[:6]}
     check('干扰结构未被当 ctx', not (va_set & set(decoys)),
           'decoys=%s' % ','.join('0x%X' % d for d in decoys))
+
+    # ---- 静态指针数组策略 ----
+    arrs = D.collect_static_tables(buf, IMG_LO, CODE_LO, CODE_HI, min_len=8)
+    arr_vas = [va for va, _ in arrs]
+    check('静态策略认出 handler 表', t3 in arr_vas,
+          '%d 张：%s' % (len(arrs), ','.join('0x%X' % v for v in arr_vas[:4])))
+    check('静态策略跳过升序跳表', t4 not in arr_vas,
+          '升序表 0x%X' % t4)
 
     # ---- memimage 往返 + 离线扫 ----
     tmp = tempfile.mkdtemp(prefix='dgselftest_')

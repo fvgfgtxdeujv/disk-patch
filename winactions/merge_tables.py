@@ -85,20 +85,42 @@ def main():
     elif a.runtime_vmp_rva:
         print('[!] 缺 module_base，换算可能不准')
 
+    # 两种 mode：
+    #   ctx   -> 同一个上下文里的几张表，按 index 合并（本来就是一个 opcode 空间）
+    #   arrays-> 抓到的是一堆互不相关的指针数组，合并会互相打架，
+    #           只取最大的一张做 HANDLERS，其余单列进 TABLES
+    arrays_mode = bool(tables) and all(str(k).startswith('arr_') for k in tables)
     merged = {}
     per_table = []
     for slot, info in sorted(tables.items()):
         ents = [_as_int(x) for x in (info.get('entries') or [])]
         per_table.append((slot, info.get('table_va'), len(ents)))
+        if arrays_mode:
+            continue
         for i, v in enumerate(ents):
             merged.setdefault(i, []).append(v + shift)
+
+    all_tables = {}
+    if arrays_mode:
+        per_sorted = sorted(per_table, key=lambda x: -x[2])
+        for slot, tva, n in per_sorted:
+            ents = [_as_int(x) for x in tables[slot]['entries']]
+            all_tables[slot] = [v + shift for v in ents]
+        top_slot = per_sorted[0][0]
+        print('[*] arrays 模式：%d 张指针数组，HANDLERS 只取最大的 %s（%d 项）'
+              % (len(per_sorted), top_slot, per_sorted[0][2]))
+        for i, v in enumerate(all_tables[top_slot]):
+            merged.setdefault(i, []).append(v)
 
     _ctx = d.get('ctx_va', '?')
     print('[*] 上下文 %s  代码区基址 0x%X'
           % (_ctx if str(_ctx).startswith('0x') else '0x' + str(_ctx), code_base))
     print('[*] 表 %d 张' % len(per_table))
     for slot, tva, n in per_table:
-        print('    ctx+%-6s table %-12s %d 项' % (slot, tva, n))
+        if str(slot).startswith('arr_'):
+            print('    %-20s table %-14s %d 项' % (slot, tva, n))
+        else:
+            print('    ctx+%-16s table %-14s %d 项' % (slot, tva, n))
 
     if not merged:
         print('[!] 没读到任何表项')
@@ -138,8 +160,17 @@ def main():
     for k in sorted(merged):
         v = merged[k][0]
         L.append('    0x%0*X: 0x%X,' % (4 if bits > 8 else 2, k, v))
-    L += ['}', '',
-          'ALIASES = {']
+    L += ['}']
+    if arrays_mode:
+        L += ['', '# 这次抓到的是互不相关的指针数组，单列出来备查',
+              'TABLES = {']
+        for slot in sorted(all_tables):
+            L.append('    %r: [' % slot)
+            for v in all_tables[slot]:
+                L.append('        0x%X,' % v)
+            L.append('    ],')
+        L += ['}', '']
+    L += ['', 'ALIASES = {']
     for h, ops in sorted(dup.items()):
         L.append('    0x%X: [%s],' % (h, ', '.join('0x%X' % o for o in ops)))
     L += ['}', '']
