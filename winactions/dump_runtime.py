@@ -1045,6 +1045,25 @@ def selftest():
     if off != 0x108:
         fails.append('find_cave 未找到 0x108 处的洞（实际 %s）' % off)
 
+    # discover_tables：造 3 张表（间隔 5 的 qword 序列）+ 噪声
+    seg = 0x1419D4000
+    fake = bytearray(b'\x90' * 0x4000)
+    for t, n in ((0x800, 40), (0xA00, 30)):
+        for i in range(n):
+            struct.pack_into('<Q', fake, t + i * 8, seg + 0x1000 + i * 5)
+    found = discover_tables(bytes(fake), seg, seg, seg + 0x4000)
+    print('  discover_tables -> %s' % [(hex(va - seg), n) for va, n in found])
+    if [n for _, n in found] != [40, 30]:
+        fails.append('discover_tables 长度不对: %s' % [n for _, n in found])
+
+    s9 = _build_stub9(0x141e81f2a, 7, 0x10000100, 0x140000000, 0x142ff3000,
+                      0x100000000, 0x100600000)
+    print('  stub9(表项): %d 字节，尾 %s' % (len(s9), s9[-2:].hex()))
+    if s9[-2:] != b'\xff\xe6' or b'\x48\xbe' not in s9[-12:]:
+        fails.append('stub9 尾部不是 mov rsi,orig; jmp rsi')
+    if len(s9) > STUB9_SZ:
+        fails.append('stub9 超过槽长')
+
     if fails:
         print('\n[FAIL]')
         for f in fails:
@@ -1445,6 +1464,353 @@ def find_cave(vmp, site_off, span=0x70, need=5, fill=(0xCC, 0x00)):
     return best
 
 
+def _build_stub8(copy_va, probe_base, lo_va, hi_va, count_va, buf_va):
+    """v22 表项桩：被派发表直接指向它。进入时 r15 = op*8，
+    从自己的表副本里取回原 handler（rsi），记录 192 字节，再 jmp rsi。
+    全程不碰目标代码，只改数据表。"""
+    b = bytearray()
+    holes = []
+
+    def jcc(op, kind):
+        pos = len(b)
+        b.extend(op + b'\x00\x00\x00\x00')
+        holes.append((pos, kind))
+        return pos
+
+    def counter(va):
+        b.extend(b'\x48\xb8' + struct.pack('<Q', va))
+        b.extend(b'\x48\xff\x00')
+
+    b += b'\x9c'
+    b += bytes.fromhex('50515253555657')
+    b += bytes.fromhex('4150415141524153415441554156')
+    b += bytes.fromhex('4157')
+    counter(probe_base)
+    b += b'\x48\xa1' + struct.pack('<Q', count_va)
+    b += bytes.fromhex('4889c3')                          # mov rbx,rax
+    b += b'\x48\x3d' + struct.pack('<I', REC_MAX)
+    jcc(bytes.fromhex('0f83'), 'out')
+    b += bytes.fromhex('4869cbc0000000')                  # imul rcx,rbx,192
+    b += bytes.fromhex('48bf') + struct.pack('<Q', buf_va)
+    b += bytes.fromhex('4801cf')                          # add rdi,rcx
+    b += bytes.fromhex('4889e6')                          # mov rsi,rsp
+    b += bytes.fromhex('fc')
+    b += bytes.fromhex('b910000000')
+    b += bytes.fromhex('f348a5')                          # rep movsq
+    counter(probe_base + 8)
+    b += bytes.fromhex('4889ea')                          # mov rdx,rbp
+    b += b'\x49\xb9' + struct.pack('<Q', lo_va)
+    b += bytes.fromhex('4c39ca')
+    jcc(bytes.fromhex('0f82'), 'fin')
+    b += b'\x49\xb9' + struct.pack('<Q', hi_va)
+    b += bytes.fromhex('4c39ca')
+    jcc(bytes.fromhex('0f83'), 'fin')
+    b += bytes.fromhex('488b95bc000000')                  # mov rdx,[rbp+0xBC]
+    b += bytes.fromhex('488917')                          # mov [rdi],rdx
+    b += bytes.fromhex('488b95f5000000')                  # mov rdx,[rbp+0xF5]
+    b += bytes.fromhex('48895708')                        # mov [rdi+8],rdx
+    b += bytes.fromhex('488b17')                          # mov rdx,[rdi]
+    b += b'\x49\xb9' + struct.pack('<Q', lo_va)
+    b += bytes.fromhex('4c39ca')
+    jcc(bytes.fromhex('0f82'), 'fin')
+    b += bytes.fromhex('4c8d5210')                        # lea r10,[rdx+16]
+    b += b'\x49\xb9' + struct.pack('<Q', hi_va)
+    b += bytes.fromhex('4d39ca')
+    jcc(bytes.fromhex('0f87'), 'fin')
+    counter(probe_base + 0x10)
+    b += bytes.fromhex('4c8b0a')
+    b += bytes.fromhex('4c894f10')
+    b += bytes.fromhex('4c8b4a08')
+    b += bytes.fromhex('4c894f18')
+    fin_pos = len(b)
+    b += bytes.fromhex('48c74720') + b'\x00\x00\x00\x00'   # 站点号占位（表号在下面写）
+    b += bytes.fromhex('48ba') + struct.pack('<Q', copy_va)    # mov rdx,copy
+    b += bytes.fromhex('4a8b343a')                             # mov rsi,[rdx+r15]
+    b += bytes.fromhex('488d4301')                             # lea rax,[rbx+1]
+    b += b'\x48\xa3' + struct.pack('<Q', count_va)
+    out_pos = len(b)
+    b += bytes.fromhex('415f415e415d415c415b415a41594158')
+    b += bytes.fromhex('5f5e5d5b5a5958')
+    b += bytes.fromhex('9d')
+    b += bytes.fromhex('ffe6')
+    for pos, kind in holes:
+        tgt = out_pos if kind == 'out' else fin_pos
+        b[pos + 2:pos + 6] = struct.pack('<i', tgt - (pos + 6))
+    return bytes(b)
+
+
+STUB9_SZ = 0x140
+
+
+def _build_stub9(orig_va, tag, probe_base, lo_va, hi_va, count_va, buf_va):
+    """v22 表项桩（每个表项一个，原 handler 直接烤进桩里）：
+        记录 192 字节后，恢复全部寄存器，再 `mov rsi, orig; jmp rsi`。
+        —— 不依赖 r15 的索引约定，也不需要表副本，最简单也最不容易错。"""
+    b = bytearray()
+    holes = []
+
+    def jcc(op, kind):
+        pos = len(b)
+        b.extend(op + b'\x00\x00\x00\x00')
+        holes.append((pos, kind))
+        return pos
+
+    def counter(va):
+        b.extend(b'\x48\xb8' + struct.pack('<Q', va))
+        b.extend(b'\x48\xff\x00')
+
+    b += b'\x9c'
+    b += bytes.fromhex('50515253555657')
+    b += bytes.fromhex('4150415141524153415441554156')
+    b += bytes.fromhex('4157')
+    counter(probe_base)
+    b += b'\x48\xa1' + struct.pack('<Q', count_va)
+    b += bytes.fromhex('4889c3')
+    b += b'\x48\x3d' + struct.pack('<I', REC_MAX)
+    jcc(bytes.fromhex('0f83'), 'out')
+    b += bytes.fromhex('4869cbc0000000')
+    b += bytes.fromhex('48bf') + struct.pack('<Q', buf_va)
+    b += bytes.fromhex('4801cf')
+    b += bytes.fromhex('4889e6')
+    b += bytes.fromhex('fc')
+    b += bytes.fromhex('b910000000')
+    b += bytes.fromhex('f348a5')
+    counter(probe_base + 8)
+    b += bytes.fromhex('4889ea')
+    b += b'\x49\xb9' + struct.pack('<Q', lo_va)
+    b += bytes.fromhex('4c39ca')
+    jcc(bytes.fromhex('0f82'), 'fin')
+    b += b'\x49\xb9' + struct.pack('<Q', hi_va)
+    b += bytes.fromhex('4c39ca')
+    jcc(bytes.fromhex('0f83'), 'fin')
+    b += bytes.fromhex('488b95bc000000')
+    b += bytes.fromhex('488917')
+    b += bytes.fromhex('488b95f5000000')
+    b += bytes.fromhex('48895708')
+    b += bytes.fromhex('488b17')
+    b += b'\x49\xb9' + struct.pack('<Q', lo_va)
+    b += bytes.fromhex('4c39ca')
+    jcc(bytes.fromhex('0f82'), 'fin')
+    b += bytes.fromhex('4c8d5210')
+    b += b'\x49\xb9' + struct.pack('<Q', hi_va)
+    b += bytes.fromhex('4d39ca')
+    jcc(bytes.fromhex('0f87'), 'fin')
+    counter(probe_base + 0x10)
+    b += bytes.fromhex('4c8b0a')
+    b += bytes.fromhex('4c894f10')
+    b += bytes.fromhex('4c8b4a08')
+    b += bytes.fromhex('4c894f18')
+    fin_pos = len(b)
+    b += bytes.fromhex('48c74720') + struct.pack('<I', tag & 0xFFFFFFFF)
+    b += bytes.fromhex('488d4301')
+    b += b'\x48\xa3' + struct.pack('<Q', count_va)
+    out_pos = len(b)
+    b += bytes.fromhex('415f415e415d415c415b415a41594158')
+    b += bytes.fromhex('5f5e5d5b5a5958')
+    b += bytes.fromhex('9d')
+    b += bytes.fromhex('48be') + struct.pack('<Q', orig_va)   # mov rsi, orig
+    b += bytes.fromhex('ffe6')                                # jmp rsi
+    for pos, kind in holes:
+        tgt = out_pos if kind == 'out' else fin_pos
+        b[pos + 2:pos + 6] = struct.pack('<i', tgt - (pos + 6))
+    assert len(b) <= STUB9_SZ, 'stub9 超长 %d' % len(b)
+    return bytes(b)
+
+
+def table_hook_trace(exe, seconds, out_dir='.'):
+    """v22：只改派发表（数据），不动任何代码。
+    1) 在 .vmp 里按「相邻差 5」签名找出所有 opcode 表；
+    2) 每个表项换成专属桩（原 handler 烤进桩里，桩记录后跳回原 handler）；
+    3) 收集 (ctx, IP, 表基址, IP 处 16 字节, tag) 轨迹。"""
+    import ctypes
+    k32 = ctypes.WinDLL('kernel32', use_last_error=True)
+    k32.VirtualAllocEx.restype = ctypes.c_void_p
+    k32.OpenProcess.restype = ctypes.c_void_p
+    k32.CreateToolhelp32Snapshot.restype = ctypes.c_void_p
+
+    PROCESS_VM_WRITE = 0x0020
+    PROCESS_VM_OPERATION = 0x0008
+    MEM_COMMIT = 0x1000
+    MEM_RESERVE = 0x2000
+    PAGE_EXECUTE_READWRITE = 0x40
+    PAGE_READWRITE = 0x04
+    VMPSIZE = 0xDAC000
+    VMP_RVA = 0x19d4000
+
+    proc = launch(exe)
+    pid = getattr(proc, 'pid', proc)
+    if not isinstance(pid, int):
+        print('!! 启动失败: %r' % (proc,))
+        return None
+    print('[*] pid=%d' % pid, flush=True)
+    h = k32.OpenProcess(PROCESS_VM_READ | PROCESS_VM_WRITE | PROCESS_VM_OPERATION |
+                        0x0400 | 0x0010 | 0x00100000, False, pid)
+    if not h:
+        print('!! OpenProcess 失败 err=%d' % ctypes.get_last_error())
+        return None
+
+    mods = []
+    t0m = time.time()
+    while time.time() - t0m < 30:
+        mods = list_modules(pid) or []
+        if mods:
+            break
+        time.sleep(0.2)
+    if not mods:
+        print('!! 拿不到模块列表')
+        return None
+    base, size, name = max(mods, key=lambda m: m[1])
+    print('[*] 主模块 %s base=%#x size=%#x' % (name, base, size), flush=True)
+
+    vmp = None
+    for _ in range(80):
+        blob = read_mem_safe(h, base + VMP_RVA, VMPSIZE)
+        if blob and len(blob) > 0x1000 and blob.count(b'\x00') < len(blob):
+            vmp = blob
+            break
+        time.sleep(0.25)
+    if not vmp:
+        print('!! .vmp 读不到')
+        return None
+    lo, hi = base + VMP_RVA, base + VMP_RVA + len(vmp)
+    print('[*] .vmp %d 字节，范围 [%#x, %#x)' % (len(vmp), lo, hi), flush=True)
+
+    tables = discover_tables(vmp, lo, lo, hi)
+    tables = [(va, n) for va, n in tables if n <= 4096]
+    total = sum(n for _, n in tables)
+    print('[*] 发现 %d 张表，共 %d 项: %s'
+          % (len(tables), total, [(hex(va), n) for va, n in tables]), flush=True)
+    if not tables or total == 0:
+        print('!! 没找到表')
+        return None
+
+    alloc = None
+    for hint in (0x100000000, 0x110000000, 0x150000000, 0x160000000, None):
+        alloc = k32.VirtualAllocEx(ctypes.c_void_p(h), ctypes.c_void_p(hint),
+                                   ctypes.c_size_t(0x4000000),
+                                   MEM_COMMIT | MEM_RESERVE,
+                                   PAGE_EXECUTE_READWRITE)
+        if alloc:
+            break
+    if not alloc:
+        print('!! VirtualAllocEx 失败')
+        return None
+    count_va = alloc
+    probe_va = alloc + 0x100
+    stub_va = alloc + 0x200000
+    buf_va = alloc + 0x600000
+    print('[*] 缓冲: count=%#x stub=%#x buf=%#x（每桩 %d 字节）'
+          % (count_va, stub_va, buf_va, STUB9_SZ), flush=True)
+
+    wrote = ctypes.c_size_t(0)
+    originals = {}       # table_va -> (原 entries bytes, n)
+    stubs = []           # [(table_i, entry_i, stub_va)]
+    k = 0
+    for ti, (tva, n) in enumerate(tables):
+        raw = read_mem(h, tva, n * 8)
+        if not raw or len(raw) != n * 8:
+            print('   表 %#x 读不出（%s），跳过' % (tva, len(raw) if raw else None))
+            continue
+        originals[tva] = (raw, n)
+        ents = struct.unpack('<%dQ' % n, raw)
+        pb = probe_va + ti * PROBE_STRIDE
+        blob_stubs = bytearray()
+        ptrs = []
+        for ei, orig in enumerate(ents):
+            sv = stub_va + k * STUB9_SZ
+            st = _build_stub9(orig, (ti << 20) | ei, pb, lo, hi, count_va, buf_va)
+            blob_stubs += st + b'\xcc' * (STUB9_SZ - len(st))
+            ptrs.append(sv)
+            stubs.append((ti, ei, sv, orig))
+            k += 1
+        args = [ctypes.c_void_p(h), ctypes.c_void_p(stub_va + (k - n) * STUB9_SZ),
+                bytes(blob_stubs), len(blob_stubs), ctypes.byref(wrote)]
+        if not k32.WriteProcessMemory(*args):
+            print('   写桩失败表 %#x err=%d' % (tva, ctypes.get_last_error()))
+            continue
+        op = ctypes.c_uint32(0)
+        k32.VirtualProtectEx(ctypes.c_void_p(h), ctypes.c_void_p(tva),
+                             ctypes.c_size_t(n * 8), PAGE_READWRITE, ctypes.byref(op))
+        newtab = struct.pack('<%dQ' % n, *ptrs)
+        if k32.WriteProcessMemory(ctypes.c_void_p(h), ctypes.c_void_p(tva),
+                                  newtab, len(newtab), ctypes.byref(wrote)):
+            print('   表 %#x（%d 项）已换成桩，首项回读 %#x'
+                  % (tva, n, struct.unpack('<Q', read_mem(h, tva, 8) or b'\0' * 8)[0]),
+                  flush=True)
+        else:
+            print('   表 %#x 写入失败 err=%d' % (tva, ctypes.get_last_error()))
+
+    t0 = time.time()
+    dead_at = None
+    tick = 0
+    while time.time() - t0 < seconds:
+        time.sleep(0.5)
+        tick += 1
+        code = ctypes.c_ulong(0)
+        oka = k32.GetExitCodeProcess(ctypes.c_void_p(h), ctypes.byref(code))
+        pr = _read_probes(read_mem, h, count_va, len(tables))
+        if not oka or code.value != 259:
+            dead_at = round(time.time() - t0, 1)
+            print('[!] 进程在 %.1fs 退出 code=%#x 探针 %s' % (dead_at, code.value, pr),
+                  flush=True)
+            break
+        if tick <= 2 or tick % 8 == 0:
+            print('    [hb %.1fs] 存活 探针 %s' % (time.time() - t0, pr), flush=True)
+        cnt = struct.unpack('<Q', read_mem(h, count_va, 8) or b'\0' * 8)[0]
+        if cnt >= REC_MAX:
+            break
+
+    cnt = min(struct.unpack('<Q', read_mem(h, count_va, 8) or b'\0' * 8)[0], REC_MAX)
+    raw = read_mem(h, buf_va, cnt * REC_SZ) or b''
+    n = len(raw) // REC_SZ
+    out = [list(struct.unpack_from('<22Q', raw, i * REC_SZ)) for i in range(n)]
+    keys = {tuple(e[:18]) for e in out}
+    tags = {}
+    for e in out:
+        tags[e[20]] = tags.get(e[20], 0) + 1
+    print('[*] 轨迹 %d 条，去重 %d，tag 分布(前10) %s'
+          % (n, len(keys), sorted(tags.items(), key=lambda kv: -kv[1])[:10]), flush=True)
+    with open(os.path.join(out_dir, 'vm_trace.json'), 'w') as f:
+        json.dump({'n': n, 'mode': 'table', 'reg_order': REG_ORDER,
+                   'rec_size': REC_SZ, 'dead_at': dead_at,
+                   'tables': [(hex(va), nn) for va, nn in tables],
+                   'distinct': len(keys), 'tag_hist': tags,
+                   'trace': out}, f)
+
+    for tva, (raw0, nn) in originals.items():
+        op = ctypes.c_uint32(0)
+        k32.VirtualProtectEx(ctypes.c_void_p(h), ctypes.c_void_p(tva),
+                             ctypes.c_size_t(nn * 8), PAGE_READWRITE, ctypes.byref(op))
+        k32.WriteProcessMemory(ctypes.c_void_p(h), ctypes.c_void_p(tva),
+                               raw0, len(raw0), ctypes.byref(wrote))
+    print('[*] 已还原 %d 张表' % len(originals), flush=True)
+    return n
+
+
+def discover_tables(blob, va0, lo, hi, min_len=24):
+    """在 .vmp 段里找 opcode 表：连续 qword 落在 [lo,hi)、且相邻差 5（jmp rel32 桩间距）。
+    返回 [(va, 项数), ...]"""
+    import array
+    n = len(blob) // 8
+    q = array.array('Q')
+    q.frombytes(blob[:n * 8])
+    out = []
+    i = 0
+    while i < n - 4:
+        v = q[i]
+        if lo <= v < hi and q[i + 1] == v + 5 and q[i + 2] == v + 10 and q[i + 3] == v + 15:
+            j = i
+            while j + 1 < n and q[j + 1] == q[j] + 5 and lo <= q[j + 1] < hi:
+                j += 1
+            L = j - i + 1
+            if L >= min_len:
+                out.append((va0 + i * 8, L))
+                i = j + 1
+                continue
+        i += 1
+    return out
+
+
 def _read_probes(read_mem, h, count_va, n_sites):
     """读探针：条数 + 每站点 3 个（进入/复制完/ctx通过）"""
     def q(va):
@@ -1701,8 +2067,9 @@ def main():
     ap.add_argument('--out', default='tables.json')
     ap.add_argument('--deep', action='store_true')
     ap.add_argument('--selftest', action='store_true')
-    ap.add_argument('--trace-vm', action='store_true',
-                    help='inline hook 派发器，抓逐条 VM 指令轨迹')
+    ap.add_argument('--trace-vm', nargs='?', const='table', default=None,
+                    choices=['table', 'site'],
+                    help='抓逐条 VM 指令轨迹：table=换派发表(默认)，site=给派发器下 hook')
     ap.add_argument('--trace-seconds', type=float, default=60.0)
     a = ap.parse_args()
 
@@ -1721,7 +2088,9 @@ def main():
             print('[!] --trace-vm 需要 --exe')
             return 2
         od = os.path.dirname(os.path.abspath(a.out)) or '.'
-        n = vm_hook_trace(a.exe, a.trace_seconds, od)
+        fn = table_hook_trace if a.trace_vm == 'table' else vm_hook_trace
+        print('[*] 追踪方式: %s' % a.trace_vm)
+        n = fn(a.exe, a.trace_seconds, od)
         print('[*] trace-mode 结束: %s 条' % n)
         return 0
 
