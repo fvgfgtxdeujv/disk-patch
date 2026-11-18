@@ -613,9 +613,9 @@ def hot_phase(view, pid, ranges, guard, seconds, out_dir_ref=['.']):
                     ent = read_mem(view.h, tb + op * 8, 8) or b''
                     if len(ent) < 8:
                         continue
-                    h = struct.unpack_from('<Q', ent, 0)[0]
-                    if any(lo <= h < hi for lo, hi in ranges):
-                        hw = h
+                    hd = struct.unpack_from('<Q', ent, 0)[0]
+                    if any(lo <= hd < hi for lo, hi in ranges):
+                        hw = hd
                         break
                 if hw is None:
                     continue
@@ -1154,30 +1154,31 @@ HOOK_BACK = 6             # 补回 5 字节后，回到 hook 点 +6
 def _build_stub(count_va, buf_va, shell_va, back_va):
     """生成 hook 桩：记录 (ip, op, handler) 到 buf[count]，再补回被覆盖指令"""
     b = bytearray()
-    b += bytes.fromhex('9c')                       # pushfq
-    b += bytes.fromhex('5051525356')               # push rax rcx rdx rbx rsi
-    b += bytes.fromhex('488b31')                   # mov rsi,[rcx]  (原指令)
-    b += b'\x48\xa1' + struct.pack('<Q', count_va)  # mov rax,[count]
-    b += b'\x48\x3d' + struct.pack('<I', 2600000)   # cmp rax, MAX
-    b += bytes.fromhex('4c8bc0')                   # mov r8,rax
-    b += bytes.fromhex('4d6bc018')                 # imul r8,r8,0x18
-    b += bytes.fromhex('4981c0') + struct.pack('<I', buf_va)   # add r8,buf
+    b += bytes.fromhex('9c')                        # pushfq
+    b += bytes.fromhex('5051525356')                # push rax rcx rdx rbx rsi
+    b += bytes.fromhex('4150')                      # push r8
+    b += bytes.fromhex('488b31')                    # mov rsi,[rcx]（原指令）
+    b += b'\x48\xa1' + struct.pack('<Q', count_va)   # mov rax,[count]
+    b += b'\x48\x3d' + struct.pack('<I', 2600000)    # cmp rax, MAX
     jae_pos = len(b)
-    b += bytes.fromhex('0f83') + b'\x00\x00\x00\x00'       # jae end
-    b += bytes.fromhex('488b95bc000000')           # mov rdx,[rbp+0xBC]
-    b += bytes.fromhex('498910')                   # mov [r8],rdx
-    b += bytes.fromhex('4d89d7')                   # mov rdx,r15
-    b += bytes.fromhex('48c1ea03')                 # shr rdx,3
-    b += bytes.fromhex('49895008')                 # mov [r8+8],rdx
-    b += bytes.fromhex('49897010')                 # mov [r8+0x10],rsi
-    b += bytes.fromhex('48ffc0')                   # inc rax
-    b += b'\x48\xa3' + struct.pack('<Q', count_va)  # mov [count],rax
+    b += bytes.fromhex('0f83') + b'\x00\x00\x00\x00'  # jae end
+    b += bytes.fromhex('4889c3')                    # mov rbx,rax
+    b += bytes.fromhex('486bdb18')                  # imul rbx,rbx,24
+    b += bytes.fromhex('49b8') + struct.pack('<Q', buf_va)   # mov r8,buf
+    b += bytes.fromhex('4901d8')                    # add r8,rbx
+    b += bytes.fromhex('488b95bc000000')            # mov rdx,[rbp+0xBC]
+    b += bytes.fromhex('498910')                    # mov [r8],rdx
+    b += bytes.fromhex('498bd7')                    # mov rdx,r15
+    b += bytes.fromhex('48c1ea03')                  # shr rdx,3
+    b += bytes.fromhex('49895008')                  # mov [r8+8],rdx
+    b += bytes.fromhex('49897010')                  # mov [r8+0x10],rsi
+    b += bytes.fromhex('48ffc0')                    # inc rax
+    b += b'\x48\xa3' + struct.pack('<Q', count_va)   # mov [count],rax
     end_pos = len(b)
-    b += bytes.fromhex('5e5b5a5958')               # pop rsi rbx rdx rcx rax
-    b += bytes.fromhex('9d')                       # popfq
-    b += bytes.fromhex('4889eb')                   # mov rbx,rbp  (补回被覆盖)
-    b += b'\xe9' + struct.pack('<I', back_va - (shell_va + len(b) + 5))
-    # 回填 jae 目标 = end_pos
+    b += bytes.fromhex('41585e5b5a5958')            # pop r8 rsi rbx rdx rcx rax
+    b += bytes.fromhex('9d')                        # popfq
+    b += bytes.fromhex('4889eb')                    # mov rbx,rbp（补回）
+    b += b'\xe9' + struct.pack('<i', back_va - (shell_va + len(b) + 5))
     off = end_pos - (jae_pos + 6)
     b[jae_pos + 2:jae_pos + 6] = struct.pack('<i', off)
     return bytes(b)
@@ -1226,13 +1227,19 @@ def vm_hook_trace(exe, seconds, out_dir='.'):
         break
 
     alloc = None
-    for hint in (0x10000000, 0x20000000, 0x30000000, 0x50000000):
+    for hint in (0x100000000, 0x110000000, 0x150000000, 0x160000000,
+                 0x10000000, None):
         alloc = k32.VirtualAllocEx(ctypes.c_void_p(h), ctypes.c_void_p(hint),
                                    ctypes.c_size_t(0x4000000),
                                    MEM_COMMIT | MEM_RESERVE,
                                    PAGE_EXECUTE_READWRITE)
-        if alloc:
+        if not alloc:
+            continue
+        # rel32 只能覆盖 ±2GB：桩必须落在 hook 附近
+        if abs((alloc + 0x100) - hook) < 0x7FF00000:
             break
+        print('[!] %#x 离 hook 太远，换地址' % alloc, flush=True)
+        alloc = None
     if not alloc:
         print('!! VirtualAllocEx 失败')
         return None

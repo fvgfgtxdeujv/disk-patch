@@ -32,6 +32,10 @@ on:
         description: 'rbp/栈都失败时扫全内存（慢，但命中率高）'
         required: false
         default: 'true'
+      trace:
+        description: 'inline hook 派发器，抓逐条 VM 指令轨迹（true/false）'
+        required: false
+        default: 'false'
       pkg_tag:
         description: '安装包缓存标签（换版本时改）'
         required: false
@@ -71,11 +75,13 @@ jobs:
           $rel = Pick "${{ github.event.inputs.relaunch }}" '3'
           $dep = Pick "${{ github.event.inputs.deep }}" 'true'
           $tag = Pick "${{ github.event.inputs.pkg_tag }}" '6201829'
+          $trc = Pick "${{ github.event.inputs.trace }}" 'false'
           "seconds=$sec" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
           "rounds=$rnd"  | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
           "relaunch=$rel"| Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
           "deep=$dep"    | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
           "tag=$tag"     | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          "trace=$trc"   | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
           Write-Host "seconds=$sec rounds=$rnd relaunch=$rel deep=$dep tag=$tag"
 
       - name: 环境诊断（虚拟化 / 权限 / 会话）
@@ -134,9 +140,27 @@ jobs:
           Write-Host "EXE: $($exe.FullName)  $('{0:N0}' -f $exe.Length) 字节"
           "exe=$($exe.FullName)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
 
+      # ---- v14：inline hook 逐条追踪（trace=true 时走这条，替代采样） ----
+      - name: 逐条 VM 指令追踪（inline hook）
+        id: trace
+        if: steps.cfg.outputs.trace == 'true'
+        shell: pwsh
+        continue-on-error: true
+        run: |
+          python winactions/dump_runtime.py `
+            --exe "${{ steps.dl.outputs.exe }}" `
+            --trace-vm --trace-seconds 30 `
+            --out vm_trace.json 2>&1 | Tee-Object -FilePath trace.log
+          Write-Host "退出码: $LASTEXITCODE"
+          if (Test-Path vm_trace.json) {
+            Get-Content vm_trace.json -Raw | Select-Object -First 1 |
+              Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Encoding utf8 -Append
+          }
+
       # ---- 抓表 ----
       - name: 抓运行期上下文
         id: dump
+        if: steps.cfg.outputs.trace != 'true'
         shell: pwsh
         continue-on-error: true
         run: |
@@ -162,7 +186,7 @@ jobs:
           Write-Host "退出码: $LASTEXITCODE"
 
       - name: 没抓到就明确失败（别让 job 绿着交空产物）
-        if: ${{ hashFiles('tables.json') == '' }}
+        if: ${{ steps.cfg.outputs.trace != 'true' && hashFiles('tables.json') == '' }}
         shell: pwsh
         run: |
           Write-Host "=== dump.log 尾部 ==="
@@ -194,6 +218,8 @@ jobs:
             lic_trace.json
             hot_trace.json
             rip_hits.json
+            vm_trace.json
+            trace.log
             dump.log
             resolve.log
           if-no-files-found: warn
