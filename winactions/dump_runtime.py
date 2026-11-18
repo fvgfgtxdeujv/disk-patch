@@ -1958,7 +1958,7 @@ def table_hook_trace(exe, seconds, out_dir='.'):
         return None
 
     alloc = None
-    for hint in (0x100000000, 0x110000000, 0x150000000, 0x160000000, None):
+    for hint in (0x150000000, 0x160000000, 0x170000000, 0x180000000, None):
         alloc = k32.VirtualAllocEx(ctypes.c_void_p(h), ctypes.c_void_p(hint),
                                    ctypes.c_size_t(0x4000000),
                                    MEM_COMMIT | MEM_RESERVE,
@@ -2218,7 +2218,7 @@ def vm_hook_trace(exe, seconds, out_dir='.'):
         return None
 
     alloc = None
-    for hint in (0x100000000, 0x110000000, 0x150000000, 0x160000000, None):
+    for hint in (0x150000000, 0x160000000, 0x170000000, 0x180000000, None):
         alloc = k32.VirtualAllocEx(ctypes.c_void_p(h), ctypes.c_void_p(hint),
                                    ctypes.c_size_t(0x4000000),
                                    MEM_COMMIT | MEM_RESERVE,
