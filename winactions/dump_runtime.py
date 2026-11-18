@@ -1076,6 +1076,40 @@ def selftest():
     if b'\x49\xb9' in s11:
         fails.append('stub11 仍用 r9 做比较（会覆盖 [IP+8]）')
 
+    # v25 stub12：compact + 32B 窗口 + ctx 4KB 复制
+    s12 = _build_stub12(0x141ea7cc1, 424, 0x10000100, 0x100100000,
+                        0x1419d4000, 0x142780000, 0x100000000,
+                        0x102200000, 0x103000000)
+    print('  stub12(fullctx): %d 字节，尾 %s' % (len(s12), s12[-2:].hex()))
+    if len(s12) > STUB12_SZ:
+        fails.append('stub12 超过槽长 %d' % STUB12_SZ)
+    if s12[-2:] != b'\xff\xe6':
+        fails.append('stub12 尾部不是 jmp rsi')
+    if b'\xf3\x48\xa5' not in s12:
+        fails.append('stub12 缺 rep movsq（ctx 复制）')
+    if s12.count(b'\x48\xff\x00') != 2:
+        fails.append('stub12 计数器个数异常（期望 2）')
+    # 每个已执行过的 orig 都要能生成桩（v23 轨迹 66 个 op 抽样验证）
+    import json as _json
+    _tr = None
+    for _p in ('art23c/vm_trace.json', '../art23c/vm_trace.json'):
+        if os.path.exists(_p):
+            _tr = _json.load(open(_p))
+            break
+    if _tr:
+        _seen = {}
+        for _e in _tr['trace']:
+            _seen.setdefault(_e[3], _e[5])
+        _n12 = 0
+        for _op, _orig in list(_seen.items())[:20]:
+            _sv = _build_stub12(_orig, _op, 0x10000100, 0x100100000,
+                                0x1419d4000, 0x142780000,
+                                0x100000000, 0x102200000, 0x103000000)
+            if len(_sv) > STUB12_SZ:
+                fails.append('stub12 op%d 超长 %d' % (_op, len(_sv)))
+            _n12 += 1
+        print('  stub12 抽样 %d 个 orig 全部可生成' % _n12)
+
     if fails:
         print('\n[FAIL]')
         for f in fails:
@@ -1849,6 +1883,119 @@ def _build_stub12(orig_va, tag, probe_base, seen_va, lo_va, hi_va,
     rel = fin_pos - (je_pos + 2)
     B[je_pos + 1] = rel & 0xFF
     assert len(B) <= STUB12_SZ, 'stub12 超长 %d' % len(B)
+    return bytes(B)
+
+
+def _build_stub11(orig_va, tag, probe_base, slots_va, lo_va, hi_va,
+                  count_va, buf_va, ent_cnt_va=None):
+    """v24.1 表项桩：只在 IP 处字节「像明文」时落盘（u16@IP<0x800 且
+    i32@IP+2 ∈ [-0x80000,0x80000)），双写：顺序轨迹 + IP 直接映射槽表。
+    记录 64 字节：+0 IP  +8 [IP]  +0x10 [IP+8]  +0x18 tag  +0x20 rbp
+    +0x28 orig  +0x30 0  +0x38 0。槽下标=((IP-lo)>>4)&0x7FFFF，后写覆盖。
+    r10 作比较寄存器，r9 专存 [IP+8]，原 handler 烤进桩尾。"""
+    B = bytearray()
+    holes = []          # (pos, kind)
+
+    def jcc(opc, kind):
+        pos = len(B)
+        B.extend(opc + b'\x00\x00\x00\x00')
+        holes.append((pos, kind))
+        return pos
+
+    def counter(va):
+        B.extend(b'\x48\xb8' + struct.pack('<Q', va))    # mov rax,imm64
+        B.extend(b'\x48\xff\x00')                        # inc qword [rax]
+
+    def imm64(prefix, v):
+        return prefix + struct.pack('<Q', v)
+
+    # ---- 保存：pushfq + rax rcx rdx rbx rbp rsi rdi + r8..r15 ----
+    B += b'\x9c'
+    B += bytes.fromhex('50515253')                       # rax rcx rdx rbx
+    B += bytes.fromhex('555657')                         # rbp rsi rdi
+    B += bytes.fromhex('41504151415241534154415541564157')  # r8..r15
+    if ent_cnt_va:
+        B.extend(b'\x48\xb8' + struct.pack('<Q', ent_cnt_va))
+        B.extend(b'\x48\xff\x00')                       # inc qword [ent_cnt]
+    counter(probe_base)                                  # 进入计数
+    B += imm64(b'\x48\xa1', count_va)                    # mov rax,[count]
+    B += b'\x48\x3d' + struct.pack('<I', TRACE11_MAX)    # cmp rax,MAX
+    jcc(b'\x0f\x83', 'fin')
+    B += bytes.fromhex('4889c3')                         # mov rbx,rax
+    # ctx 校验（r10=lo/hi）
+    B += bytes.fromhex('4889ea')                         # mov rdx,rbp
+    B += imm64(b'\x49\xba', lo_va)                       # mov r10,lo
+    B += bytes.fromhex('4c39d2')                         # cmp rdx,r10
+    jcc(b'\x0f\x82', 'fin')
+    B += imm64(b'\x49\xba', hi_va)                       # mov r10,hi
+    B += bytes.fromhex('4c39d2')
+    jcc(b'\x0f\x83', 'fin')
+    B += bytes.fromhex('488b95bc000000')                 # mov rdx,[rbp+0xBC] = IP
+    B += bytes.fromhex('488d4a10')                       # lea rcx,[rdx+0x10]
+    B += imm64(b'\x49\xba', hi_va)
+    B += bytes.fromhex('4c39d1')                         # cmp rcx,r10
+    jcc(b'\x0f\x87', 'fin')
+    B += imm64(b'\x49\xba', lo_va)
+    B += bytes.fromhex('4c39d2')                         # cmp rdx,r10
+    jcc(b'\x0f\x82', 'fin')
+    # 读 IP 处 16 字节：r8=[IP]，r9=[IP+8]
+    B += bytes.fromhex('4c8b02')                         # mov r8,[rdx]
+    B += bytes.fromhex('4c8b4a08')                       # mov r9,[rdx+8]
+    # 明文自检 1：u16@IP < 0x800
+    B += bytes.fromhex('4c89c1')                         # mov rcx,r8
+    B += bytes.fromhex('81e1ffff0000')                   # and ecx,0xFFFF
+    B += b'\x48\x81\xf9' + struct.pack('<I', 0x800)      # cmp rcx,0x800
+    jcc(b'\x0f\x83', 'fin')
+    # 明文自检 2：i32@IP+2 ∈ [-0x80000,0x80000)
+    B += bytes.fromhex('4c89c1')                         # mov rcx,r8
+    B += bytes.fromhex('48c1e910')                       # shr rcx,16
+    B += b'\x48\x81\xc1' + struct.pack('<I', 0x80000)    # add rcx,0x80000
+    B += b'\x48\x81\xf9' + struct.pack('<I', 0x100000)   # cmp rcx,0x100000
+    jcc(b'\x0f\x83', 'fin')
+    counter(probe_base + 8)                              # 明文命中计数
+    # 槽写入：idx=((IP-lo)>>4)&0x7FFFF，×64
+    B += bytes.fromhex('4889d0')                         # mov rax,rdx
+    B += imm64(b'\x49\xba', lo_va)                       # mov r10,lo
+    B += bytes.fromhex('4c29d0')                         # sub rax,r10
+    B += bytes.fromhex('48c1e804')                       # shr rax,4
+    B += b'\x48\x25' + struct.pack('<I', SLOT_COUNT - 1) # and rax,0x7FFFF
+    B += bytes.fromhex('48c1e006')                       # shl rax,6
+    B += imm64(b'\x48\xbf', slots_va)                    # mov rdi,slots
+    B += bytes.fromhex('4801c7')                         # add rdi,rax
+    B += bytes.fromhex('488917')                         # mov [rdi],rdx
+    B += bytes.fromhex('4c894708')                       # mov [rdi+8],r8
+    B += bytes.fromhex('4c894f10')                       # mov [rdi+0x10],r9
+    B += b'\x48\xc7\x47\x18' + struct.pack('<I', tag & 0xFFFFFFFF)
+    B += bytes.fromhex('48896f20')                       # mov [rdi+0x20],rbp
+    B += imm64(b'\x48\xb8', orig_va)                     # mov rax,orig
+    B += bytes.fromhex('48894728')                       # mov [rdi+0x28],rax
+    B += bytes.fromhex('48c7473000000000')               # mov qword [rdi+0x30],0
+    B += bytes.fromhex('48c7473800000000')               # mov qword [rdi+0x38],0
+    # 顺序轨迹追加（同样 64 字节）
+    B += bytes.fromhex('4889d8')                         # mov rax,rbx
+    B += bytes.fromhex('48c1e006')                       # shl rax,6
+    B += imm64(b'\x48\xbf', buf_va)
+    B += bytes.fromhex('4801c7')                         # add rdi,rax
+    B += bytes.fromhex('488917')
+    B += bytes.fromhex('4c894708')
+    B += bytes.fromhex('4c894f10')
+    B += b'\x48\xc7\x47\x18' + struct.pack('<I', tag & 0xFFFFFFFF)
+    B += bytes.fromhex('48896f20')
+    B += imm64(b'\x48\xb8', orig_va)
+    B += bytes.fromhex('48894728')
+    B += bytes.fromhex('48c7473000000000')
+    B += bytes.fromhex('48c7473800000000')
+    B += bytes.fromhex('488d4301')                       # lea rax,[rbx+1]
+    B += imm64(b'\x48\xa3', count_va)                    # mov [count],rax
+    fin_pos = len(B)
+    B += bytes.fromhex('415f415e415d415c415b415a41594158')  # pop r15..r8
+    B += bytes.fromhex('5f5e5d5b5a5958')                 # pop rdi rsi rbp rbx rdx rcx rax
+    B += b'\x9d'                                         # popfq
+    B += imm64(b'\x48\xbe', orig_va)                     # mov rsi,orig
+    B += b'\xff\xe6'                                     # jmp rsi
+    for pos, kind in holes:
+        B[pos + 2:pos + 6] = struct.pack('<i', fin_pos - (pos + 6))
+    assert len(B) <= STUB11_SZ, 'stub11 超长 %d' % len(B)
     return bytes(B)
 
 
