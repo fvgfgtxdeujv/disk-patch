@@ -464,6 +464,32 @@ if os.name == 'nt':
         import subprocess
         return subprocess.Popen([exe] + ([args] if args else []), cwd=cwd)
 
+    def read_mem(h, va, n):
+        buf = ctypes.create_string_buffer(n)
+        got = ctypes.c_size_t(0)
+        ok = k32.ReadProcessMemory(h, ctypes.c_void_p(va), buf, n,
+                                   ctypes.byref(got))
+        return bytes(buf.raw[:got.value]) if ok and got.value else None
+
+    def read_mem_safe(h, va, n, chunk=0x100000):
+        """整段读，跨不可读页时退化为逐页（读不到的页填 0）"""
+        out = bytearray()
+        off = 0
+        while off < n:
+            c = min(chunk, n - off)
+            b = read_mem(h, va + off, c)
+            if b is None or len(b) < c:
+                # 逐页兜底
+                for p in range(off, off + c, 0x1000):
+                    pn = min(0x1000, n - p)
+                    pb = read_mem(h, va + p, pn)
+                    out += pb if pb else b'\x00' * pn
+                off += c
+            else:
+                out += b
+                off += len(b)
+        return bytes(out)
+
 
 # ---------------------------------------------------------------- 采样
 
@@ -665,6 +691,48 @@ def _op_hist(ops, top=12):
     return {hex(k): v for k, v in sorted(c.items(), key=lambda x: -x[1])[:top]}
 
 
+# ---------------------------------------------------------------- 保护段整段 dump
+# v3 的教训：三轮全假阳性（表项 100% 落原生 .text、ctx 窗口 51/2048 字节非零）。
+# 与其继续猜 ctx 槽位，不如直接把非原生可执行段整段搬回来——运行期 VM 把
+# 密文解密后写回原节，与静态脱壳产物 diff 即可直接拿到解密区（表+字节流）。
+
+def collect_protected(h, dump_list):
+    """dump_list: [(lo, hi)]，返回 {lo: bytes}"""
+    out = {}
+    for lo, hi in dump_list:
+        size = hi - lo
+        if not (0 < size <= (256 << 20)):
+            continue
+        out[lo] = read_mem_safe(h, lo, size)
+    return out
+
+
+def save_protected(data_map, tag, out_dir, ref_map=None):
+    """写盘；ref_map 给定时跳过内容相同的段（省 artifact 体积）"""
+    for lo, data in sorted(data_map.items()):
+        if ref_map is not None and ref_map.get(lo) == data:
+            continue
+        path = os.path.join(out_dir, 'prot_%s_%x.bin' % (tag, lo))
+        with open(path, 'wb') as f:
+            f.write(data)
+        print('    prot dump: %#x (%#x B) -> %s'
+              % (lo, len(data), os.path.basename(path)), flush=True)
+
+
+def save_rbp_sites(view, hits, out_dir, tag, n=0x1000):
+    seen = set()
+    for va, r in hits:
+        if va in seen:
+            continue
+        seen.add(va)
+        raw = view.block(va, n) or b''
+        path = os.path.join(out_dir, 'rbp_%s_%x.bin' % (tag, va))
+        with open(path, 'wb') as f:
+            f.write(raw)
+        print('    rbp site dump: %#x (%d B 非零 %d)'
+              % (va, len(raw), sum(1 for b in raw if b)), flush=True)
+
+
 # ---------------------------------------------------------------- 自测（跨平台）
 
 def selftest():
@@ -768,7 +836,7 @@ def selftest():
 # ---------------------------------------------------------------- main
 
 def sample_process(h, pid, seconds, rounds, interval, deep, guard=None,
-                   hot_seconds=0.0):
+                   hot_seconds=0.0, out_dir='.'):
     """对一个已打开的进程采样若干轮，返回 (rounds, base, lay)"""
     mods = list_modules(pid)
     main_mod = None
@@ -810,9 +878,14 @@ def sample_process(h, pid, seconds, rounds, interval, deep, guard=None,
     print('[*] 保护段(表/流必须落在这里): %s'
           % [('%#x-%#x' % r) for r in guard])
 
+    # 整段 dump 范围：主模块除原生 .text 外的所有可执行段
+    # （extra 模块的可执行段已并入 ranges，因此也被覆盖）
+    dump_list = list(ranges[1:]) if len(ranges) > 1 else list(ranges)
+
     rounds_out = []
 
     # ---- hot 阶段：启动头几秒，VM 窗口，只盯线程寄存器 ----
+    prot_t0 = None
     if hot_seconds > 0:
         view = WinView(h)
         t0 = time.time()
@@ -824,6 +897,11 @@ def sample_process(h, pid, seconds, rounds, interval, deep, guard=None,
                 rd = dump_round(view, r, ranges)
                 rd['t'] = round(time.time(), 3)
                 rounds_out.append(rd)
+        # ---- v5：不管 ctx 抓没抓到，证据先搬回来 ----
+        if hits:
+            save_rbp_sites(view, hits, out_dir, 't0')
+        prot_t0 = collect_protected(h, dump_list)
+        save_protected(prot_t0, 't0', out_dir)
 
     deadline = time.time() + seconds
     for k in range(rounds):
@@ -847,6 +925,11 @@ def sample_process(h, pid, seconds, rounds, interval, deep, guard=None,
             print('     其他候选: %s' % [(hex(c['ctx']), c['score'])
                                         for c in cands[1:4]])
         time.sleep(interval)
+
+    # ---- 采样结束再 dump 一次：对比 t0/t1 可看解密是否随时间扩散 ----
+    if dump_list:
+        prot_t1 = collect_protected(h, dump_list)
+        save_protected(prot_t1, 't1', out_dir, ref_map=prot_t0)
     return rounds_out, base, lay
 
 
@@ -899,7 +982,9 @@ def main():
                 continue
 
         got, b, l = sample_process(h, pid, a.seconds, a.rounds, a.interval,
-                                   a.deep, hot_seconds=a.hot_seconds)
+                                   a.deep, hot_seconds=a.hot_seconds,
+                                   out_dir=os.path.dirname(
+                                       os.path.abspath(a.out)) or '.')
         all_rounds += got
         base = base or b
         lay = lay or l
