@@ -785,6 +785,26 @@ def sample_process(h, pid, seconds, rounds, interval, deep, guard=None,
     if guard is None:
         # 保护段 = 除第一段（原生 .text）外的可执行段；没有就退化为全部
         guard = ranges[1:] if len(ranges) > 1 else ranges
+
+    # ---- 授权/锁盘模块（LSlM.dll 等）也被 X86IL 虚拟化，其 VM 表落在本模块段 ----
+    # 名字命中授权模块的，把它的可执行段并入 ranges，guard 加它的非第一段
+    extra = [(b, n) for b, s, n in sorted(mods, key=lambda x: x[0])
+             if any(k in n.lower() for k in ('lsim', 'license', 'wlreg', 'activ'))]
+    for eb, en in extra:
+        er, elay = code_ranges_of(h, eb)
+        if not er:
+            print('[*] 模块 %s base=%#x 无可执行段映射，跳过' % (en, eb))
+            continue
+        print('[*] 授权模块 %s base=%#x 可执行段: %s'
+              % (en, eb, [('%#x-%#x' % r) for r in er]))
+        for r in er:
+            if r not in ranges:
+                ranges.append(r)
+        if len(er) > 1:
+            for r in er[1:]:
+                if r not in guard:
+                    guard.append(r)
+
     print('[*] 主模块 %s base=%#x' % (main_mod[2], base))
     print('[*] 可执行段: %s' % [('%#x-%#x' % r) for r in ranges])
     print('[*] 保护段(表/流必须落在这里): %s'
