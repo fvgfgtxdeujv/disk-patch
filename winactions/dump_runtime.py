@@ -1731,7 +1731,7 @@ def _build_stub9(orig_va, tag, probe_base, lo_va, hi_va, count_va, buf_va):
 REC11_SZ = 64           # v24.1 记录：[IP,[IP],[IP+8],tag,rbp,orig,0,0]
 TRACE11_MAX = 150000    # 顺序轨迹 150k 条（9.6MB）
 SLOT_COUNT = 0x80000    # IP 直接映射槽表：512K 槽 × 64B = 32MB
-STUB11_SZ = 0x1C0
+STUB11_SZ = 0x200
 
 
 def _build_stub11(orig_va, tag, probe_base, slots_va, lo_va, hi_va,
