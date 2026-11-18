@@ -552,14 +552,15 @@ def hot_phase(view, pid, ranges, guard, seconds, out_dir_ref=['.']):
     rip_hits = {}                     # v7: VM 执行时 RIP 直方图（rbp 落保护段）
     trace = []                        # v9: (tid, ctx, slot, ptr) 采样序列
     pages = set()                     # v9: 已抓过的页
-    MAX_PAGES = 48
+    MAX_PAGES = 96
     WIN = 0x4000
     SLOTS = [0x70, 0x73, 0xBC, 0xC4, 0xF5, 0x36, 0x5B, 0xB9, 0x120, 0x1E2]
     t0h = time.time()
     def _flush():
         try:
             with open(os.path.join(out_dir_ref[0], 'hot_trace.json'), 'w') as f:
-                json.dump({'n_rounds': k, 'samples': trace}, f)
+                json.dump({'n_rounds': k, 'samples': trace,
+                       'fmt': '[t,tid,ctx,slot,ip,op,rel,bytes12hex]'}, f)
             print('[*] hot_trace: %d 条采样, %d 页现场' % (len(trace), len(pages)),
                   flush=True)
         except Exception as e:
@@ -589,8 +590,8 @@ def hot_phase(view, pid, ranges, guard, seconds, out_dir_ref=['.']):
             if rbp and any(lo <= rbp < hi for lo, hi in guard) \
                     and rip and any(lo <= rip < hi for lo, hi in ranges):
                 rip_hits[rip] = rip_hits.get(rip, 0) + 1
-                # v9：每轮记录 ctx 的 IP/表槽（连续采样差分 = 指令长度），
-                # 并在新页处抓 16KB 执行期现场（执行后内存会被还原，只有执行期有效）
+                # v10：指令字节只在取指瞬间是明文。只保留「能按派发器规则解码」的样本：
+                # op = u16@IP+7，rel = i32@IP，next = IP+rel（规则来自派发器反汇编）
                 ht = k32.OpenThread(THREAD_SUSPEND_RESUME |
                                     THREAD_QUERY_INFORMATION, False, tid)
                 if ht:
@@ -601,22 +602,28 @@ def hot_phase(view, pid, ranges, guard, seconds, out_dir_ref=['.']):
                         import struct as _s
                         for sl in SLOTS:
                             ptr = _s.unpack_from('<Q', ctx_raw, sl)[0]
-                            if 0x140000000 <= ptr < 0x143000000:
-                                trace.append({'t': round(time.time() - t0h, 5),
-                                              'tid': tid, 'ctx': rbp,
-                                              'rip': rip, 'slot': sl,
-                                              'ptr': ptr})
+                            if not (0x140000000 <= ptr < 0x143000000):
+                                continue
+                            raw = read_mem(view.h, ptr, 16) or b''
+                            if len(raw) < 12:
+                                continue
+                            rel = _s.unpack_from('<i', raw, 0)[0]
+                            op = _s.unpack_from('<H', raw, 7)[0]
+                            if 0 <= op < 0x2000 and 4 <= rel <= 0x1000:
+                                trace.append([round(time.time() - t0h, 5), tid,
+                                              rbp, sl, ptr, op, rel,
+                                              raw[:12].hex()])
                                 pg = ptr & ~0xFFF
-                                if pg not in pages and len(pages) < MAX_PAGES \
-                                        and any(lo <= ptr < hi for lo, hi in ranges):
+                                if pg not in pages and len(pages) < MAX_PAGES:
                                     pages.add(pg)
                                     buf = read_mem(view.h, pg, WIN) or b''
                                     with open(os.path.join(out_dir_ref[0],
                                               'live_p%x.bin' % pg), 'wb') as f:
                                         f.write(buf)
-                                    print('    [live] ctx=%#x slot+%#x ip=%#x '
-                                          '页 %#x 抓 %d B' % (rbp, sl, ptr, pg,
-                                                             len(buf)), flush=True)
+                                    print('    [hit] ctx=%#x slot+%#x ip=%#x '
+                                          'op=%d rel=%d 页%#x' % (rbp, sl, ptr,
+                                                                 op, rel, pg),
+                                          flush=True)
                 except Exception as e:
                     print('    [live] 抓取失败: %s' % e, flush=True)
                 finally:
@@ -1041,7 +1048,7 @@ def main():
                     help='重启 N 次，每次启动后立刻高速采样（VM 常只在启动瞬间活跃）')
     ap.add_argument('--boot-wait', type=float, default=0.3,
                     help='启动后等多久开始抓（VM 窗口在头几秒，默认尽快）')
-    ap.add_argument('--hot-seconds', type=float, default=25.0,
+    ap.add_argument('--hot-seconds', type=float, default=60.0,
                     help='启动后先高速盯 rbp/rsp 的秒数（VM 执行期 rbp=ctx）')
     ap.add_argument('--out', default='tables.json')
     ap.add_argument('--deep', action='store_true')
