@@ -100,3 +100,16 @@ OfflineReg.dat      \OfflineReg.exe  Options.ini
 - `artifact9/`：v9 采样 `hot_trace.json` + 19 页 `live_p*.bin`
 - `winactions/dump_runtime.py`：运行期取证器（v12）
 - `winactions/x86il_disasm.py`：字节码反汇编器（编码规则待接入 v12 样本）
+
+## 6. v22 追加实证（2026-11-18，run 44310525456）
+
+* 派发器 `jmp rsi` 后 3 字节是活代码，5 字节 hook 必然劈开指令：
+  `0x141d46a56` 站点装完 0.5 s 内 `0xC0000005`（run 44307363845 分级日志）。
+* 改为**只改派发表**（数据）后：200000 条轨迹 / 9122 种状态 / 进程 60 s 正常 / 表可还原。
+* 表地址 `0x1421080ab` 是绝对地址风格，项成对（`v[2k+1]=v[2k]+5`）；
+  `0x141da2b42`(49)、`0x141d8df04`(1096) 是 **RVA 风格**。
+* **指令编码修正**：`[u16 op][i32 rel]`，`next = IP + rel`；
+  明文样本上 27273/27273 全中（旧结论 `op@IP+7 / rel@IP+0` 作废）。
+* 追踪到执行形态：单实例 `ctx=0x1420c0e5f`、22 个 IP、16 条一循环的空闲循环。
+
+详见 `reports/REPORT_table_dbi.md`。
