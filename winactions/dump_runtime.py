@@ -2028,9 +2028,11 @@ def table_hook_trace(exe, seconds, out_dir='.'):
 
     # 沿 handler 入口的 jmp 链 dump 主体区（v8.2 实证：入口是 4 条 jmp rel32，
     # 目标在模块外 0x1433xxxx/0x1442xxxx —— 从未 dump 过的解释器主体区）
-    tva0 = [t for t in tables if t[2] == 'abs'][0][0]
-    for ei in (0, 297, 446, 478, 545, 547):
-        hv = struct.unpack('<Q', read_mem(h, tva0 + ei * 8, 8) or b'\0' * 8)[0]
+    want = (0, 297, 446, 478, 545, 547)
+    for ti, ei, sv, orig in stubs:
+        if ei not in want or ti != 0:
+            continue
+        hv = orig
         if not (lo <= hv < hi):
             continue
         head = read_mem(h, hv, 0x20) or b''
