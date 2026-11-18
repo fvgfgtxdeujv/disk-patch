@@ -839,6 +839,8 @@ def sample_process(h, pid, seconds, rounds, interval, deep, guard=None,
                    hot_seconds=0.0, out_dir='.'):
     """对一个已打开的进程采样若干轮，返回 (rounds, base, lay)"""
     mods = list_modules(pid)
+    print('[*] 模块列表: %s' % [(n, hex(b)) for b, s2, n in
+                                sorted(mods, key=lambda x: x[0])])
     main_mod = None
     for b, s, n in sorted(mods, key=lambda x: x[0]):
         if 'diskgenius' in n.lower():
@@ -878,9 +880,33 @@ def sample_process(h, pid, seconds, rounds, interval, deep, guard=None,
     print('[*] 保护段(表/流必须落在这里): %s'
           % [('%#x-%#x' % r) for r in guard])
 
-    # 整段 dump 范围：主模块除原生 .text 外的所有可执行段
-    # （extra 模块的可执行段已并入 ranges，因此也被覆盖）
-    dump_list = list(ranges[1:]) if len(ranges) > 1 else list(ranges)
+    # v6：整段 dump 范围 = 除原生 .text/.rsrc/.boot 外的全部段。
+    # 实证（v5 产物 diff）：VM 表（0x141da2b42 等 5 张）运行期被补上镜像基址，
+    # 且加密无名节（RVA 0x62f000/0x7be000/0x9a3000）里有指向 VM 表的明文 RVA
+    # （exe 文件偏移 0x9956f8/0x9c4d4a）——VM 字节码在这些节里，运行期解密。
+    # .boot 已证 t0==t1 且全程密文，跳过省体积。
+    dump_list = []
+    if lay:
+        skip_names = {'.rsrc', '.boot'}
+        for i, sec in enumerate(lay['sections']):
+            if sec['name'] in skip_names or not sec['vsize']:
+                continue
+            lo = base + sec['rva']
+            if i == 0 and sec['exec']:
+                continue          # 原生 .text
+            hi = lo + sec['vsize']
+            if (lo, hi) not in dump_list:
+                dump_list.append((lo, hi))
+    boot_rng = None
+    if lay:
+        for sec in lay['sections']:
+            if sec['name'] == '.boot':
+                boot_rng = (base + sec['rva'], base + sec['rva'] + sec['vsize'])
+    for r in ranges[1:]:
+        if r in dump_list or (boot_rng and not (r[1] <= boot_rng[0] or r[0] >= boot_rng[1])):
+            continue
+        dump_list.append(r)
+    print('[*] dump 范围: %s' % [('%#x-%#x' % r) for r in dump_list])
 
     rounds_out = []
 
