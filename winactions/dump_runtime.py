@@ -1892,9 +1892,18 @@ def table_hook_trace(exe, seconds, out_dir='.'):
     t0 = time.time()
     dead_at = None
     tick = 0
+    snap = (0, b'')
     while time.time() - t0 < seconds:
         time.sleep(0.5)
         tick += 1
+        # 每 2 秒快照一次（进程随时可能崩，崩后内存就读不出来了）
+        if tick % 4 == 0:
+            c0 = min(struct.unpack('<Q', read_mem(h, count_va, 8) or b'\0' * 8)[0],
+                     REC10_MAX)
+            if c0:
+                raw0 = read_mem(h, buf_va, c0 * REC10_SZ)
+                if raw0:
+                    snap = (len(raw0) // REC10_SZ, raw0)
         code = ctypes.c_ulong(0)
         oka = k32.GetExitCodeProcess(ctypes.c_void_p(h), ctypes.byref(code))
         pr = _read_probes(read_mem, h, count_va, len(tables))
@@ -1911,6 +1920,9 @@ def table_hook_trace(exe, seconds, out_dir='.'):
 
     cnt = min(struct.unpack('<Q', read_mem(h, count_va, 8) or b'\0' * 8)[0], REC10_MAX)
     raw = read_mem(h, buf_va, cnt * REC10_SZ) or b''
+    if not raw and snap[1]:
+        raw, cnt = snap[1], snap[0]
+        print('[*] 进程已退出，改用最后快照（%d 条）' % cnt, flush=True)
     n = len(raw) // REC10_SZ
     out = [list(struct.unpack_from('<8Q', raw, i * REC10_SZ)) for i in range(n)]
     ips = {e[0] for e in out}
