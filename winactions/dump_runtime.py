@@ -98,10 +98,14 @@ def walk_stream(view, ip, max_steps=MIN_WALK_STEPS, max_op=WALK_MAX_OP,
     return steps, off - ip, ops
 
 
-def table_probe(view, ptr, ranges, n=TABLE_ITEMS):
+def table_probe(view, ptr, ranges, n=TABLE_ITEMS, guard=None):
     """
     指纹 A：ptr 起 n 个 qword 是否构成 handler 表。
     返回 (是否像表, 读到的 qword 列表)。
+
+    guard = 保护段范围（.vmp/.boot）。真 VM 表的项几乎全部落在保护段；
+    普通 C++ 对象数组的 vtable 指针落在原生 .text —— 用 guard 把后者砍掉
+    （Actions 实测：不加这条会抓到 0x140641xxx 的 3 项假表，score 84）。
     """
     buf = view.block(ptr, n * 8)
     if buf is None or len(buf) < 16:
@@ -112,10 +116,14 @@ def table_probe(view, ptr, ranges, n=TABLE_ITEMS):
     frac = hit / cnt
     uniq = len(set(vals))
     ok = frac >= TABLE_HIT_FRAC and uniq >= 4 and cnt >= 8
+    if ok and guard:
+        ghit = sum(1 for v in vals if in_ranges(v, guard))
+        if ghit < max(4, hit * 0.5):
+            ok = False
     return ok, vals
 
 
-def scan_ctx(view, ctx, ranges, span=CTX_SCAN_SPAN):
+def scan_ctx(view, ctx, ranges, span=CTX_SCAN_SPAN, guard=None):
     """
     逐字节扫 ctx 窗口，自动发现「表槽」与「IP 槽」。
     返回 (tables, ips)。
@@ -137,7 +145,7 @@ def scan_ctx(view, ctx, ranges, span=CTX_SCAN_SPAN):
             elif kind == 'ip':
                 ips.append({'slot': s, 'va': v})
             continue
-        ok, _ = table_probe(view, v, ranges)
+        ok, _ = table_probe(view, v, ranges, guard=guard)
         if ok:
             cache[v] = 'table'
             tables.append({'slot': s, 'va': v})
@@ -153,8 +161,8 @@ def scan_ctx(view, ctx, ranges, span=CTX_SCAN_SPAN):
 
 
 def ctx_score(tables, ips):
-    """有 IP 才是真 ctx；表越多分越高（一个构建可能有 6 张表）"""
-    return len(ips) * 10 + len(tables) * 6
+    """有 IP 才是真 ctx（权重 30）；表每张 6 分。没有 IP 的 ctx 不可信"""
+    return len(ips) * 30 + len(tables) * 6
 
 
 # ---------------------------------------------------------------- 抽象内存视图
@@ -486,12 +494,64 @@ def quick_prefilter(view, va, ranges, span=0x100):
     return False
 
 
-def probe_ctx(view, ctx, ranges):
-    t, i = scan_ctx(view, ctx, ranges)
+def quick_prefilter(view, va, ranges, span=0x100, guard=None):
+    """
+    廉价预筛：ctx 窗口里至少要有 1 个 qword 落在可执行段。
+    传 guard 时要求落在保护段（.vmp/.boot）——原生 .text 的指针直接排除。
+    这一层把栈扫描从「13 万次完整探测」降到「13 万次 256B 读」。
+    """
+    buf = view.block(va, span)
+    if not buf:
+        return False
+    tgt = guard or ranges
+    for s in range(0, len(buf) - 8, 8):
+        if in_ranges(struct.unpack_from('<Q', buf, s)[0], tgt):
+            return True
+    return False
+
+
+def probe_ctx(view, ctx, ranges, guard=None):
+    t, i = scan_ctx(view, ctx, ranges, guard=guard)
     return {'ctx': ctx, 'score': ctx_score(t, i), 'tables': t, 'ips': i}
 
 
-def best_ctx(view, pid, ranges, deep=False):
+def hot_phase(view, pid, ranges, guard, seconds):
+    """
+    高速只读线程寄存器：VM 执行期间 rbp 就是 ctx（静态已证）。
+    不扫内存、不做栈扫，每轮 OpenThread+GetThreadContext，~2ms 一轮。
+    命中（score>0）记下；有 IP 槽的立刻返回。
+    """
+    hits = []
+    probed = set()
+    t_end = time.time() + seconds
+    k = 0
+    while time.time() < t_end:
+        k += 1
+        try:
+            ctxs = thread_contexts(pid)
+        except Exception:
+            ctxs = []
+        for tid, rip, rsp, rbp in ctxs:
+            for va, how in ((rbp, 'rbp:t%d' % tid), (rsp, 'rsp:t%d' % tid)):
+                if va < 0x10000 or va in probed:
+                    continue
+                probed.add(va)
+                if not quick_prefilter(view, va, ranges, guard=guard):
+                    continue
+                r = probe_ctx(view, va, ranges, guard)
+                if r['score'] > 0:
+                    r['how'] = how
+                    hits.append((va, r))
+                    print('    [hot] %#x how=%s score=%d 表=%d IP=%d'
+                          % (va, how, r['score'], len(r['tables']), len(r['ips'])),
+                          flush=True)
+                    if r['ips']:
+                        return hits, k
+        # hot 阶段进程刚起，偶发读失败是正常
+    return hits, k
+
+
+def best_ctx(view, pid, ranges, deep=False, guard=None, hot=False):
     """L1 rbp → L2 栈 → L3 全内存。返回候选列表（已排序）"""
     cands = {}
     tried = set()
@@ -502,10 +562,10 @@ def best_ctx(view, pid, ranges, deep=False):
             return
         tried.add(va)
         stats['tried'] += 1
-        if not quick_prefilter(view, va, ranges):
+        if not quick_prefilter(view, va, ranges, guard=guard):
             return
         stats['prefiltered'] += 1
-        r = probe_ctx(view, va, ranges)
+        r = probe_ctx(view, va, ranges, guard)
         if r['score'] > 0:
             r['how'] = how
             cands[va] = r
@@ -515,6 +575,9 @@ def best_ctx(view, pid, ranges, deep=False):
     # L1：rbp（所有 handler 都以 rbp 为 ctx）
     for tid, rip, rsp, rbp in ctxs:
         consider(rbp, 'rbp:t%d' % tid)
+
+    if hot:
+        return sorted(cands.values(), key=lambda x: -x['score'])
 
     # L2：栈（rbp 已回滚时兜底）
     if not cands:
@@ -561,15 +624,18 @@ def dump_round(view, cand, ranges, want_bytes=256 << 10):
     for t in cand['tables']:
         ptr = t['va']
         vals = []
+        zeros = 0                     # 稀疏表允许 0 项，连续 4 个无效才断
         for i in range(65536):
             b = view.block(ptr + i * 8, 8)
             if not b or len(b) < 8:
                 break
             v = struct.unpack('<Q', b)[0]
-            if v == 0:
-                break
-            if not in_ranges(v, ranges):
-                break
+            if v == 0 or not in_ranges(v, ranges):
+                zeros += 1
+                if zeros >= 4:
+                    break
+                continue
+            zeros = 0
             vals.append(v)
         if vals:
             key = '0x%X' % t['slot']
@@ -670,6 +736,26 @@ def selftest():
     if t0 or i0:
         fails.append('全零 ctx 产生误报')
 
+    # guard 过滤：Actions 实测的假阳性是「表项全落在原生 .text」
+    # —— guard（保护段）传入后必须被拒
+    NAT_LO, NAT_HI = 0x144000000, 0x14401000
+    native = bytes(range(256)) * 0x100
+    nat_table_va = 0x5100000
+    nat_handlers = [NAT_LO + 0x100 + i * 16 for i in range(0x40)]
+    view3 = BytesView([(NAT_LO, native), (nat_table_va,
+                     struct.pack('<%dQ' % len(nat_handlers), *nat_handlers)),
+                      (TABLE_VA, table), (CODE_LO, code)])
+    ranges2 = [(NAT_LO, NAT_HI), (CODE_LO, CODE_HI)]
+    guard2 = [(CODE_LO, CODE_HI)]                 # guard = ranges[1:]
+    ok3, _ = table_probe(view3, nat_table_va, ranges2, guard=guard2)
+    print('  table_probe(原生段假表+guard): %s (期望 False)' % ok3)
+    if ok3:
+        fails.append('guard 没有拦住原生段假表')
+    ok4, _ = table_probe(view3, TABLE_VA, ranges2, guard=guard2)
+    print('  table_probe(保护段真表+guard): %s (期望 True)' % ok4)
+    if not ok4:
+        fails.append('guard 误杀了保护段真表')
+
     if fails:
         print('\n[FAIL]')
         for f in fails:
@@ -681,8 +767,9 @@ def selftest():
 
 # ---------------------------------------------------------------- main
 
-def sample_process(h, pid, seconds, rounds, interval, deep):
-    """对一个已打开的进程采样若干轮，返回 rounds 列表"""
+def sample_process(h, pid, seconds, rounds, interval, deep, guard=None,
+                   hot_seconds=0.0):
+    """对一个已打开的进程采样若干轮，返回 (rounds, base, lay)"""
     mods = list_modules(pid)
     main_mod = None
     for b, s, n in sorted(mods, key=lambda x: x[0]):
@@ -695,17 +782,36 @@ def sample_process(h, pid, seconds, rounds, interval, deep):
 
     base = main_mod[0]
     ranges, lay = code_ranges_of(h, base)
+    if guard is None:
+        # 保护段 = 除第一段（原生 .text）外的可执行段；没有就退化为全部
+        guard = ranges[1:] if len(ranges) > 1 else ranges
     print('[*] 主模块 %s base=%#x' % (main_mod[2], base))
     print('[*] 可执行段: %s' % [('%#x-%#x' % r) for r in ranges])
+    print('[*] 保护段(表/流必须落在这里): %s'
+          % [('%#x-%#x' % r) for r in guard])
 
     rounds_out = []
+
+    # ---- hot 阶段：启动头几秒，VM 窗口，只盯线程寄存器 ----
+    if hot_seconds > 0:
+        view = WinView(h)
+        t0 = time.time()
+        hits, k = hot_phase(view, pid, ranges, guard, hot_seconds)
+        print('[*] hot 阶段 %d 轮 / %.1fs，命中 %d'
+              % (k, time.time() - t0, len(hits)))
+        for va, r in hits:
+            if r['score'] >= 36 or r['ips']:       # 有 IP 或 2 表以上才 dump
+                rd = dump_round(view, r, ranges)
+                rd['t'] = round(time.time(), 3)
+                rounds_out.append(rd)
+
     deadline = time.time() + seconds
     for k in range(rounds):
         if time.time() > deadline:
             break
         view = WinView(h)
         t0 = time.time()
-        cands = best_ctx(view, pid, ranges, deep=deep)
+        cands = best_ctx(view, pid, ranges, deep=deep, guard=guard)
         if not cands:
             print('[%d] 没扫到 ctx（%.1fs）' % (k, time.time() - t0))
             time.sleep(interval)
@@ -735,8 +841,10 @@ def main():
     ap.add_argument('--rounds', type=int, default=6)
     ap.add_argument('--relaunch', type=int, default=1,
                     help='重启 N 次，每次启动后立刻高速采样（VM 常只在启动瞬间活跃）')
-    ap.add_argument('--boot-wait', type=float, default=1.5,
-                    help='启动后等多久开始抓')
+    ap.add_argument('--boot-wait', type=float, default=0.3,
+                    help='启动后等多久开始抓（VM 窗口在头几秒，默认尽快）')
+    ap.add_argument('--hot-seconds', type=float, default=10.0,
+                    help='启动后先高速盯 rbp/rsp 的秒数（VM 执行期 rbp=ctx）')
     ap.add_argument('--out', default='tables.json')
     ap.add_argument('--deep', action='store_true')
     ap.add_argument('--selftest', action='store_true')
@@ -770,13 +878,18 @@ def main():
                 print('[!] 打不开进程: %s' % e)
                 continue
 
-        got, b, l = sample_process(h, pid, a.seconds, a.rounds, a.interval, a.deep)
+        got, b, l = sample_process(h, pid, a.seconds, a.rounds, a.interval,
+                                   a.deep, hot_seconds=a.hot_seconds)
         all_rounds += got
         base = base or b
         lay = lay or l
-        if got and max(x['score'] for x in got) >= 20:
-            print('[*] 第 %d 次已拿到高置信 ctx，停止重启' % (attempt + 1))
+        # 提前停止只认「有 IP 槽」的命中——上一版 score>=20 就停，
+        # 结果抓到 0x1407be9f0 的 C++ 对象数组假阳性还提前退了
+        if any(x['streams'] for x in got):
+            print('[*] 第 %d 次已抓到活的字节流，停止重启' % (attempt + 1))
             break
+        if any(x['tables'] for x in got):
+            print('[*] 第 %d 次抓到表但无流，继续下一轮启动' % (attempt + 1))
         # 关掉再试
         if not a.pid and h:
             try:
