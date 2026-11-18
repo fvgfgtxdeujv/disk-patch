@@ -1288,12 +1288,24 @@ def vm_hook_trace(exe, seconds, out_dir='.'):
 
     t0 = time.time()
     last = 0
+    repatch = 0
     while time.time() - t0 < seconds:
         time.sleep(0.5)
         cur = read_mem(h, hook, 5) or b''
-        if cur[:1] != b'\xe8':        # 被还原就重下
-            k32.WriteProcessMemory(ctypes.c_void_p(h), ctypes.c_void_p(hook),
-                                   patch, 5, ctypes.byref(wrote))
+        if cur[:1] != b'\xe8':        # 被还原就重下（保护器可能把页改回 RX，需重新赋权）
+            op2 = ctypes.c_uint32(0)
+            k32.VirtualProtectEx(ctypes.c_void_p(h),
+                                 ctypes.c_void_p(hook & ~0xFFF),
+                                 ctypes.c_size_t(0x1000),
+                                 PAGE_EXECUTE_READWRITE,
+                                 ctypes.byref(op2))
+            okw = k32.WriteProcessMemory(ctypes.c_void_p(h),
+                                         ctypes.c_void_p(hook), patch, 5,
+                                         ctypes.byref(wrote))
+            repatch += 1
+            if not okw and repatch <= 3:
+                print('    [!] 重下 hook 失败 err=%d'
+                      % ctypes.get_last_error(), flush=True)
         cnt = struct.unpack('<Q', read_mem(h, count_va, 8) or b'\0' * 8)[0]
         if cnt != last:
             print('    [trace] %d 条' % cnt, flush=True)
@@ -1301,6 +1313,7 @@ def vm_hook_trace(exe, seconds, out_dir='.'):
         if cnt >= 2599000:
             break
 
+    print('[*] 期间重下 hook %d 次' % repatch, flush=True)
     cnt = struct.unpack('<Q', read_mem(h, count_va, 8) or b'\0' * 8)[0]
     cnt = min(cnt, 2600000)
     print('[*] 轨迹共 %d 条，导出…' % cnt, flush=True)
