@@ -238,6 +238,9 @@ jobs:
             live_*.bin
             lic_*.bin
             lic_trace.json
+            vm_trace.json
+            trace.log
+            lic_bytecode*.bin
             hot_trace.json
             rip_hits.json
             vm_trace.json

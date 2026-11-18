@@ -2009,6 +2009,15 @@ def table_hook_trace(exe, seconds, out_dir='.'):
         else:
             print('   表 %#x 写入失败 err=%d' % (tva, ctypes.get_last_error()))
 
+    # 静态 dump 循环附近字节码区（两次：钩后 / 观察结束），用于离线比对
+    for tagx, tva2 in (('lic_bytecode.bin', base + 0x2150000),):
+        blob2 = read_mem_safe(h, tva2, 0x40000)
+        if blob2:
+            with open(os.path.join(out_dir, tagx), 'wb') as f2:
+                f2.write(blob2)
+            print('[*] 已 dump %s（%#x..%#x）' % (tagx, tva2, tva2 + 0x40000),
+                  flush=True)
+
     t0 = time.time()
     dead_at = None
     tick = 0
@@ -2080,6 +2089,10 @@ def table_hook_trace(exe, seconds, out_dir='.'):
                    'tag_hist': tags, 'trace': out,
                    'insns': insns, 'insns_ok_op': ok_op, 'insns_ok_rel': ok_rel}, f)
 
+    blob3 = read_mem_safe(h, base + 0x2150000, 0x40000)
+    if blob3:
+        with open(os.path.join(out_dir, 'lic_bytecode_end.bin'), 'wb') as f2:
+            f2.write(blob3)
     for tva, (raw0, nn) in originals.items():
         op = ctypes.c_uint32(0)
         k32.VirtualProtectEx(ctypes.c_void_p(h), ctypes.c_void_p(tva),
