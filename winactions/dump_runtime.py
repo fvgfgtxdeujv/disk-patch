@@ -1458,8 +1458,21 @@ def vm_hook_trace(exe, seconds, out_dir='.'):
                                     p, 5, ctypes.byref(wrote))
         if ok:
             patches[site] = old
-            print('    hook %#x 已下（site %d 档=%s，桩 %#x，%d 字节）'
-                  % (site, si, mode, shell_va, len(stub)), flush=True)
+            time.sleep(0.15)
+            back = read_mem(h, site, 5) or b''
+            print('    hook %#x 已下（site %d 档=%s，桩 %#x，%d 字节）回读=%s 原尾3字节=%s'
+                  % (site, si, mode, shell_va, len(stub), back.hex(), old[2:5].hex()),
+                  flush=True)
+            # 分级观测：每装一处先活 1.5s，看是不是这一处把进程打死
+            time.sleep(1.5)
+            code = ctypes.c_ulong(0)
+            okalive = k32.GetExitCodeProcess(ctypes.c_void_p(h), ctypes.byref(code))
+            if not okalive or code.value != 259:
+                print('[!] 装上 site %d（%#x）后进程退出 code=%#x'
+                      % (si, site, code.value), flush=True)
+                break
+            print('    [staged] site %d 观测存活，探针 %s'
+                  % (si, _read_probes(read_mem, h, count_va, len(sites))), flush=True)
         else:
             print('    hook %#x 失败 err=%d' % (site, ctypes.get_last_error()))
 
