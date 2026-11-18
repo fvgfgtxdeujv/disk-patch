@@ -928,10 +928,10 @@ def sample_process(h, pid, seconds, rounds, interval, deep, guard=None,
 
     # ---- hot 阶段：启动头几秒，VM 窗口，只盯线程寄存器 ----
     prot_t0 = None
+    out_dir_ref = [out_dir]
     if hot_seconds > 0:
         view = WinView(h)
         t0 = time.time()
-        out_dir_ref[0] = out_dir
         hits, k = hot_phase(view, pid, ranges, guard, hot_seconds,
                             out_dir_ref)
         print('[*] hot 阶段 %d 轮 / %.1fs，命中 %d'
