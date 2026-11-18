@@ -1210,7 +1210,16 @@ def vm_hook_trace(exe, seconds, out_dir='.'):
     if not h:
         print('!! OpenProcess 失败')
         return None
-    mods = list_modules(pid)
+    mods = []
+    t0m = time.time()
+    while time.time() - t0m < 30:
+        mods = list_modules(pid) or []
+        if mods:
+            break
+        time.sleep(0.2)
+    if not mods:
+        print('!! 拿不到模块列表（进程可能已退出或权限不足）')
+        return None
     main = max(mods, key=lambda m: m[1])
     base, size, name = main
     print('[*] 主模块 %s base=%#x size=%#x' % (name, base, size), flush=True)
@@ -1256,8 +1265,16 @@ def vm_hook_trace(exe, seconds, out_dir='.'):
     k32.WriteProcessMemory(ctypes.c_void_p(h), ctypes.c_void_p(shell_va),
                            stub, len(stub), ctypes.byref(wrote))
 
-    old = read_mem(h, hook, 8) or b''
+    old = b''
+    for _ in range(40):
+        old = read_mem(h, hook, 8) or b''
+        if old[:3] == b'\x48\x8b\x31':
+            break
+        time.sleep(0.25)
     print('[*] hook 点原字节: %s' % old[:8].hex(), flush=True)
+    if old[:3] != b'\x48\x8b\x31':
+        print('!! hook 点不是 mov rsi,[rcx]（%s），放弃' % old[:8].hex())
+        return None
     oldprot = ctypes.c_uint32(0)
     k32.VirtualProtectEx(ctypes.c_void_p(h), ctypes.c_void_p(hook & ~0xFFF),
                          ctypes.c_size_t(0x1000), PAGE_EXECUTE_READWRITE,
