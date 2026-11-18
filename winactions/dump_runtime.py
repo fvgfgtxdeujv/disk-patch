@@ -567,6 +567,11 @@ def hot_phase(view, pid, ranges, guard, seconds, out_dir_ref=['.']):
                 # v8：VM 执行瞬间抓活 ctx + IP 指向的字节码（执行后会被还原）
                 if rbp not in live_ctxs:
                     live_ctxs.add(rbp)
+                    # v8.1：先挂起该线程，冻结 VM，再读内存（否则读到的可能是还原后的）
+                    ht = k32.OpenThread(THREAD_SUSPEND_RESUME |
+                                        THREAD_QUERY_INFORMATION, False, tid)
+                    if ht:
+                        k32.SuspendThread(ht)
                     try:
                         ctx_raw = read_mem(h, rbp, 0x1000) or b''
                         tag_dir = out_dir_ref[0]
@@ -589,6 +594,10 @@ def hot_phase(view, pid, ranges, guard, seconds, out_dir_ref=['.']):
                                           flush=True)
                     except Exception as e:
                         print('    [live] 抓取失败: %s' % e, flush=True)
+                    finally:
+                        if ht:
+                            k32.ResumeThread(ht)
+                            k32.CloseHandle(ht)
             for va, how in ((rbp, 'rbp:t%d' % tid), (rsp, 'rsp:t%d' % tid)):
                 if va < 0x10000 or va in probed:
                     continue
