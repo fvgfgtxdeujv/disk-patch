@@ -550,7 +550,32 @@ def hot_phase(view, pid, ranges, guard, seconds, out_dir_ref=['.']):
     hits = []
     probed = set()
     rip_hits = {}                     # v7: VM 执行时 RIP 直方图（rbp 落保护段）
-    live_ctxs = set()                 # v8: 已抓过活 ctx 的地址
+    trace = []                        # v9: (tid, ctx, slot, ptr) 采样序列
+    pages = set()                     # v9: 已抓过的页
+    MAX_PAGES = 48
+    WIN = 0x4000
+    SLOTS = [0x70, 0x73, 0xBC, 0xC4, 0xF5, 0x36, 0x5B, 0xB9, 0x120, 0x1E2]
+    t0h = time.time()
+    def _flush():
+        try:
+            with open(os.path.join(out_dir_ref[0], 'hot_trace.json'), 'w') as f:
+                json.dump({'n_rounds': k, 'samples': trace}, f)
+            print('[*] hot_trace: %d 条采样, %d 页现场' % (len(trace), len(pages)),
+                  flush=True)
+        except Exception as e:
+            print('[*] hot_trace 写失败: %s' % e, flush=True)
+        if rip_hits:
+            top = sorted(rip_hits.items(), key=lambda x: -x[1])[:24]
+            print('[*] VM 执行期 RIP 直方图（top24）:', flush=True)
+            for rip, cnt in top:
+                print('    rip=%#x x%d' % (rip, cnt), flush=True)
+            try:
+                with open(os.path.join(out_dir_ref[0], 'rip_hits.json'), 'w') as f:
+                    json.dump({hex(k2): v for k2, v in sorted(rip_hits.items(),
+                                key=lambda x: -x[1])[:200]}, f, indent=1)
+            except Exception:
+                pass
+
     t_end = time.time() + seconds
     k = 0
     while time.time() < t_end:
@@ -564,40 +589,40 @@ def hot_phase(view, pid, ranges, guard, seconds, out_dir_ref=['.']):
             if rbp and any(lo <= rbp < hi for lo, hi in guard) \
                     and rip and any(lo <= rip < hi for lo, hi in ranges):
                 rip_hits[rip] = rip_hits.get(rip, 0) + 1
-                # v8：VM 执行瞬间抓活 ctx + IP 指向的字节码（执行后会被还原）
-                if rbp not in live_ctxs:
-                    live_ctxs.add(rbp)
-                    # v8.1：先挂起该线程，冻结 VM，再读内存（否则读到的可能是还原后的）
-                    ht = k32.OpenThread(THREAD_SUSPEND_RESUME |
-                                        THREAD_QUERY_INFORMATION, False, tid)
-                    if ht:
-                        k32.SuspendThread(ht)
-                    try:
-                        ctx_raw = read_mem(view.h, rbp, 0x1000) or b''
-                        tag_dir = out_dir_ref[0]
-                        cn = 'live_ctx_%x.bin' % rbp
-                        with open(os.path.join(tag_dir, cn), 'wb') as f:
-                            f.write(ctx_raw)
-                        # 已知 IP/表槽：0x70/0x73/0xBC/0xF5/0xC4 + 全扫描
-                        slots = [0x70, 0x73, 0xBC, 0xC4, 0xF5, 0x36, 0x5B, 0xB9]
+                # v9：每轮记录 ctx 的 IP/表槽（连续采样差分 = 指令长度），
+                # 并在新页处抓 16KB 执行期现场（执行后内存会被还原，只有执行期有效）
+                ht = k32.OpenThread(THREAD_SUSPEND_RESUME |
+                                    THREAD_QUERY_INFORMATION, False, tid)
+                if ht:
+                    k32.SuspendThread(ht)
+                try:
+                    ctx_raw = read_mem(view.h, rbp, 0x200) or b''
+                    if len(ctx_raw) >= 0x200:
                         import struct as _s
-                        for sl in slots:
-                            if sl + 8 <= len(ctx_raw):
-                                ptr = _s.unpack_from('<Q', ctx_raw, sl)[0]
-                                if 0x140000000 <= ptr < 0x143000000:
-                                    buf = read_mem(view.h, ptr, 0x8000) or b''
-                                    fn = 'live_ip_%x_slot%x.bin' % (rbp, sl)
-                                    with open(os.path.join(tag_dir, fn), 'wb') as f:
+                        for sl in SLOTS:
+                            ptr = _s.unpack_from('<Q', ctx_raw, sl)[0]
+                            if 0x140000000 <= ptr < 0x143000000:
+                                trace.append({'t': round(time.time() - t0h, 5),
+                                              'tid': tid, 'ctx': rbp,
+                                              'rip': rip, 'slot': sl,
+                                              'ptr': ptr})
+                                pg = ptr & ~0xFFF
+                                if pg not in pages and len(pages) < MAX_PAGES \
+                                        and any(lo <= ptr < hi for lo, hi in ranges):
+                                    pages.add(pg)
+                                    buf = read_mem(view.h, pg, WIN) or b''
+                                    with open(os.path.join(out_dir_ref[0],
+                                              'live_p%x.bin' % pg), 'wb') as f:
                                         f.write(buf)
-                                    print('    [live] ctx=%#x slot+%#x ptr=%#x '
-                                          '抓取 %d B' % (rbp, sl, ptr, len(buf)),
-                                          flush=True)
-                    except Exception as e:
-                        print('    [live] 抓取失败: %s' % e, flush=True)
-                    finally:
-                        if ht:
-                            k32.ResumeThread(ht)
-                            k32.CloseHandle(ht)
+                                    print('    [live] ctx=%#x slot+%#x ip=%#x '
+                                          '页 %#x 抓 %d B' % (rbp, sl, ptr, pg,
+                                                             len(buf)), flush=True)
+                except Exception as e:
+                    print('    [live] 抓取失败: %s' % e, flush=True)
+                finally:
+                    if ht:
+                        k32.ResumeThread(ht)
+                        k32.CloseHandle(ht)
             for va, how in ((rbp, 'rbp:t%d' % tid), (rsp, 'rsp:t%d' % tid)):
                 if va < 0x10000 or va in probed:
                     continue
@@ -612,19 +637,10 @@ def hot_phase(view, pid, ranges, guard, seconds, out_dir_ref=['.']):
                           % (va, how, r['score'], len(r['tables']), len(r['ips'])),
                           flush=True)
                     if r['ips']:
+                        _flush()
                         return hits, k
         # hot 阶段进程刚起，偶发读失败是正常
-    if rip_hits:
-        top = sorted(rip_hits.items(), key=lambda x: -x[1])[:24]
-        print('[*] VM 执行期 RIP 直方图（top24）:', flush=True)
-        for rip, cnt in top:
-            print('    rip=%#x x%d' % (rip, cnt), flush=True)
-        try:
-            with open(os.path.join(out_dir_ref[0], 'rip_hits.json'), 'w') as f:
-                json.dump({hex(k2): v for k2, v in sorted(rip_hits.items(),
-                            key=lambda x: -x[1])[:200]}, f, indent=1)
-        except Exception:
-            pass
+    _flush()
     return hits, k
 
 
@@ -1025,7 +1041,7 @@ def main():
                     help='重启 N 次，每次启动后立刻高速采样（VM 常只在启动瞬间活跃）')
     ap.add_argument('--boot-wait', type=float, default=0.3,
                     help='启动后等多久开始抓（VM 窗口在头几秒，默认尽快）')
-    ap.add_argument('--hot-seconds', type=float, default=10.0,
+    ap.add_argument('--hot-seconds', type=float, default=25.0,
                     help='启动后先高速盯 rbp/rsp 的秒数（VM 执行期 rbp=ctx）')
     ap.add_argument('--out', default='tables.json')
     ap.add_argument('--deep', action='store_true')

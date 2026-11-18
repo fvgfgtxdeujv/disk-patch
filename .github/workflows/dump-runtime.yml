@@ -189,9 +189,8 @@ jobs:
             table_*.bin
             stream_*.bin
             ctx.bin
-            prot_*.bin
-            rbp_*.bin
             live_*.bin
+            hot_trace.json
             rip_hits.json
             dump.log
             resolve.log
