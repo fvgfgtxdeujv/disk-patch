@@ -553,6 +553,7 @@ def hot_phase(view, pid, ranges, guard, seconds, out_dir_ref=['.']):
     MAX_PAGES = 96
     WIN = 0x4000
     IP_SLOTS = [0xBC, 0x73, 0x120, 0x70]
+    TABLE_SLOTS = [0xF5, 0xC4, 0x36, 0x5B, 0xB9]
     DISP = [(0x141a352d0, 0x141a35350)]       # 已知派发器窗口（实例 B）
     rip_hits = {}
     handles = []
@@ -601,8 +602,25 @@ def hot_phase(view, pid, ranges, guard, seconds, out_dir_ref=['.']):
                 op = struct.unpack_from('<H', raw, 7)[0]
                 if not (0 <= op < 0x2000 and 4 <= rel <= 0x1000):
                     continue
+                # 强校验：table[op] 必须是指向模块内的代码指针
+                hw = None
+                for ts in TABLE_SLOTS:
+                    if ts + 8 > len(ctx_raw):
+                        continue
+                    tb = struct.unpack_from('<Q', ctx_raw, ts)[0]
+                    if not (0x140000000 <= tb < 0x143000000):
+                        continue
+                    ent = read_mem(view.h, tb + op * 8, 8) or b''
+                    if len(ent) < 8:
+                        continue
+                    h = struct.unpack_from('<Q', ent, 0)[0]
+                    if any(lo <= h < hi for lo, hi in ranges):
+                        hw = h
+                        break
+                if hw is None:
+                    continue
                 trace.append([round(time.time() - t0h, 6), tid, rbp, sl,
-                              ptr, op, rel, raw[:12].hex(), rip])
+                              ptr, op, rel, raw[:12].hex(), rip, hw])
                 pg = ptr & ~0xFFF
                 if pg not in pages and len(pages) < MAX_PAGES:
                     pages.add(pg)
@@ -610,8 +628,9 @@ def hot_phase(view, pid, ranges, guard, seconds, out_dir_ref=['.']):
                     with open(os.path.join(out_dir_ref[0],
                                            'live_p%x.bin' % pg), 'wb') as f:
                         f.write(buf)
-                print('    [hit] ctx=%#x slot+%#x ip=%#x op=%d rel=%d rip=%#x'
-                      % (rbp, sl, ptr, op, rel, rip), flush=True)
+                print('    [hit] ctx=%#x slot+%#x ip=%#x op=%d rel=%d '
+                      'handler=%#x rip=%#x' % (rbp, sl, ptr, op, rel, hw, rip),
+                      flush=True)
         except Exception as e:
             print('    [hit] 失败: %s' % e, flush=True)
         finally:
@@ -670,7 +689,7 @@ def hot_phase(view, pid, ranges, guard, seconds, out_dir_ref=['.']):
         try:
             with open(os.path.join(out_dir_ref[0], 'hot_trace.json'), 'w') as f:
                 json.dump({'n_rounds': k, 'samples': trace,
-                           'fmt': '[t,tid,ctx,slot,ip,op,rel,bytes12hex,rip]'},
+                           'fmt': '[t,tid,ctx,slot,ip,op,rel,bytes12,rip,handler]'},
                           f)
             print('[*] hot_trace: %d 条可解码采样, %d 页, %d 轮'
                   % (len(trace), len(pages), k), flush=True)
@@ -695,11 +714,17 @@ def hot_phase(view, pid, ranges, guard, seconds, out_dir_ref=['.']):
             except Exception:
                 pass
 
+    focus = {}          # v13：已确认在跑 VM 的线程（只盯它们，采样率 ×100）
     while time.time() < t_end:
         k += 1
         if k % 2000 == 0:
             refresh()
-        for tid, h in handles:
+            if focus:
+                have = dict(handles)
+                focus = {t: have[t] for t in focus if t in have}
+        todo = ([(t, h) for t, h in handles if t in focus] if focus
+                else handles)
+        for tid, h in todo:
             struct.pack_into('<I', buf, CTX_FLAGS, CONTEXT_ALL_AMD64)
             if not k32.GetThreadContext(h, buf):
                 continue
@@ -709,6 +734,8 @@ def hot_phase(view, pid, ranges, guard, seconds, out_dir_ref=['.']):
             if rbp < 0x10000 or not any(lo <= rbp < hi for lo, hi in guard):
                 continue
             rip_hits[rip] = rip_hits.get(rip, 0) + 1
+            if tid not in focus:
+                focus[tid] = h
             if any(lo <= rip < hi for lo, hi in DISP):
                 grab(tid, h, rbp, rip)
                 continue
@@ -1117,6 +1144,156 @@ def sample_process(h, pid, seconds, rounds, interval, deep, guard=None,
     return rounds_out, base, lay
 
 
+
+# ---------------------------------------------------------------- inline hook 追踪
+
+HOOK_OFF = 0x1a353b0      # 派发器内 `mov rsi,[rcx]`（实例 B）
+HOOK_BACK = 6             # 补回 5 字节后，回到 hook 点 +6
+
+
+def _build_stub(count_va, buf_va, shell_va, back_va):
+    """生成 hook 桩：记录 (ip, op, handler) 到 buf[count]，再补回被覆盖指令"""
+    b = bytearray()
+    b += bytes.fromhex('9c')                       # pushfq
+    b += bytes.fromhex('5051525356')               # push rax rcx rdx rbx rsi
+    b += bytes.fromhex('488b31')                   # mov rsi,[rcx]  (原指令)
+    b += b'\x48\xa1' + struct.pack('<Q', count_va)  # mov rax,[count]
+    b += b'\x48\x3d' + struct.pack('<I', 2600000)   # cmp rax, MAX
+    b += bytes.fromhex('4c8bc0')                   # mov r8,rax
+    b += bytes.fromhex('4d6bc018')                 # imul r8,r8,0x18
+    b += bytes.fromhex('4981c0') + struct.pack('<I', buf_va)   # add r8,buf
+    jae_pos = len(b)
+    b += bytes.fromhex('0f83') + b'\x00\x00\x00\x00'       # jae end
+    b += bytes.fromhex('488b95bc000000')           # mov rdx,[rbp+0xBC]
+    b += bytes.fromhex('498910')                   # mov [r8],rdx
+    b += bytes.fromhex('4d89d7')                   # mov rdx,r15
+    b += bytes.fromhex('48c1ea03')                 # shr rdx,3
+    b += bytes.fromhex('49895008')                 # mov [r8+8],rdx
+    b += bytes.fromhex('49897010')                 # mov [r8+0x10],rsi
+    b += bytes.fromhex('48ffc0')                   # inc rax
+    b += b'\x48\xa3' + struct.pack('<Q', count_va)  # mov [count],rax
+    end_pos = len(b)
+    b += bytes.fromhex('5e5b5a5958')               # pop rsi rbx rdx rcx rax
+    b += bytes.fromhex('9d')                       # popfq
+    b += bytes.fromhex('4889eb')                   # mov rbx,rbp  (补回被覆盖)
+    b += b'\xe9' + struct.pack('<I', back_va - (shell_va + len(b) + 5))
+    # 回填 jae 目标 = end_pos
+    off = end_pos - (jae_pos + 6)
+    b[jae_pos + 2:jae_pos + 6] = struct.pack('<i', off)
+    return bytes(b)
+
+
+def vm_hook_trace(exe, seconds, out_dir='.'):
+    """v14：inline hook 派发器，抓逐条 VM 指令轨迹 (ip, op, handler)"""
+    import ctypes
+    k32 = ctypes.WinDLL('kernel32', use_last_error=True)
+    k32.VirtualAllocEx.restype = ctypes.c_void_p
+    k32.OpenProcess.restype = ctypes.c_void_p
+    k32.CreateToolhelp32Snapshot.restype = ctypes.c_void_p
+
+    PROCESS_VM_WRITE = 0x0020
+    PROCESS_VM_OPERATION = 0x0008
+    MEM_COMMIT = 0x1000
+    MEM_RESERVE = 0x2000
+    PAGE_EXECUTE_READWRITE = 0x40
+
+    pid = launch(exe)
+    print('[*] pid=%d，等待 VM 启动…' % pid, flush=True)
+    h = k32.OpenProcess(PROCESS_VM_READ | PROCESS_VM_WRITE |
+                        PROCESS_VM_OPERATION | PROCESS_QUERY_INFORMATION |
+                        0x0400, False, pid)
+    if not h:
+        print('!! OpenProcess 失败')
+        return None
+    mods = list_modules(pid)
+    main = max(mods, key=lambda m: m[1])
+    base, size, name = main
+    print('[*] 主模块 %s base=%#x size=%#x' % (name, base, size), flush=True)
+    hook = base + HOOK_OFF
+    vlo, vhi = base + 0x19d4000, base + 0x2780000
+
+    # 等 VM 跑起来（某线程 rbp 落 .vmp）
+    t0 = time.time()
+    while time.time() - t0 < 25:
+        for tid, rip, rsp, rbp in thread_contexts(pid):
+            if vlo <= rbp < vhi:
+                print('[*] VM 已启动: tid=%d rbp=%#x rip=%#x（%.1fs）'
+                      % (tid, rbp, rip, time.time() - t0), flush=True)
+                break
+        else:
+            time.sleep(0.05)
+            continue
+        break
+
+    alloc = None
+    for hint in (0x10000000, 0x20000000, 0x30000000, 0x50000000):
+        alloc = k32.VirtualAllocEx(ctypes.c_void_p(h), ctypes.c_void_p(hint),
+                                   ctypes.c_size_t(0x4000000),
+                                   MEM_COMMIT | MEM_RESERVE,
+                                   PAGE_EXECUTE_READWRITE)
+        if alloc:
+            break
+    if not alloc:
+        print('!! VirtualAllocEx 失败')
+        return None
+    count_va, shell_va, buf_va = alloc, alloc + 0x100, alloc + 0x1000
+    print('[*] 缓冲区 %#x（count=%#x shell=%#x buf=%#x）'
+          % (alloc, count_va, shell_va, buf_va), flush=True)
+
+    stub = _build_stub(count_va, buf_va, shell_va, hook + HOOK_BACK)
+    wrote = ctypes.c_size_t(0)
+    k32.WriteProcessMemory(ctypes.c_void_p(h), ctypes.c_void_p(shell_va),
+                           stub, len(stub), ctypes.byref(wrote))
+
+    old = read_mem(h, hook, 8) or b''
+    print('[*] hook 点原字节: %s' % old[:8].hex(), flush=True)
+    oldprot = ctypes.c_uint32(0)
+    k32.VirtualProtectEx(ctypes.c_void_p(h), ctypes.c_void_p(hook & ~0xFFF),
+                         ctypes.c_size_t(0x1000), PAGE_EXECUTE_READWRITE,
+                         ctypes.byref(oldprot))
+    rel = shell_va - (hook + 5)
+    patch = b'\xe8' + struct.pack('<i', rel)
+    k32.WriteProcessMemory(ctypes.c_void_p(h), ctypes.c_void_p(hook), patch,
+                           len(patch), ctypes.byref(wrote))
+    print('[*] 已下 hook: %#x -> %#x（原 %s）'
+          % (hook, shell_va, old[:5].hex()), flush=True)
+
+    t0 = time.time()
+    last = 0
+    while time.time() - t0 < seconds:
+        time.sleep(0.5)
+        cur = read_mem(h, hook, 5) or b''
+        if cur[:1] != b'\xe8':        # 被还原就重下
+            k32.WriteProcessMemory(ctypes.c_void_p(h), ctypes.c_void_p(hook),
+                                   patch, 5, ctypes.byref(wrote))
+        cnt = struct.unpack('<Q', read_mem(h, count_va, 8) or b'\0' * 8)[0]
+        if cnt != last:
+            print('    [trace] %d 条' % cnt, flush=True)
+            last = cnt
+        if cnt >= 2599000:
+            break
+
+    cnt = struct.unpack('<Q', read_mem(h, count_va, 8) or b'\0' * 8)[0]
+    cnt = min(cnt, 2600000)
+    print('[*] 轨迹共 %d 条，导出…' % cnt, flush=True)
+    raw = read_mem(h, buf_va, cnt * 24) or b''
+    n = len(raw) // 24
+    out = []
+    for i in range(n):
+        ip, op, hd = struct.unpack_from('<QQQ', raw, i * 24)
+        out.append([ip, op, hd])
+    with open(os.path.join(out_dir, 'vm_trace.json'), 'w') as f:
+        json.dump({'n': n, 'fmt': '[ip,op,handler]', 'trace': out[:400000]}, f)
+    print('[*] 已写 vm_trace.json（%d 条，前 40 万条）' % min(n, 400000),
+          flush=True)
+
+    # 还原
+    if len(old) >= 5:
+        k32.WriteProcessMemory(ctypes.c_void_p(h), ctypes.c_void_p(hook),
+                               old[:5], 5, ctypes.byref(wrote))
+    return n
+
+
 def main():
     import argparse
     ap = argparse.ArgumentParser()
@@ -1135,6 +1312,9 @@ def main():
     ap.add_argument('--out', default='tables.json')
     ap.add_argument('--deep', action='store_true')
     ap.add_argument('--selftest', action='store_true')
+    ap.add_argument('--trace-vm', action='store_true',
+                    help='inline hook 派发器，抓逐条 VM 指令轨迹')
+    ap.add_argument('--trace-seconds', type=float, default=30.0)
     a = ap.parse_args()
 
     if a.selftest:
@@ -1146,6 +1326,15 @@ def main():
 
     print('[*] 管理员: %s' % is_admin())
     print('[*] Python: %s' % sys.version.split()[0])
+
+    if a.trace_vm:
+        if not a.exe:
+            print('[!] --trace-vm 需要 --exe')
+            return 2
+        od = os.path.dirname(os.path.abspath(a.out)) or '.'
+        n = vm_hook_trace(a.exe, a.trace_seconds, od)
+        print('[*] trace-mode 结束: %s 条' % n)
+        return 0
 
     all_rounds = []
     base = lay = None
