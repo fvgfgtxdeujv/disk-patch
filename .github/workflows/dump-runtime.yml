@@ -191,6 +191,7 @@ jobs:
             ctx.bin
             prot_*.bin
             rbp_*.bin
+            live_*.bin
             rip_hits.json
             dump.log
             resolve.log

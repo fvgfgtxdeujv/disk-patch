@@ -550,6 +550,7 @@ def hot_phase(view, pid, ranges, guard, seconds, out_dir_ref=['.']):
     hits = []
     probed = set()
     rip_hits = {}                     # v7: VM 执行时 RIP 直方图（rbp 落保护段）
+    live_ctxs = set()                 # v8: 已抓过活 ctx 的地址
     t_end = time.time() + seconds
     k = 0
     while time.time() < t_end:
@@ -563,6 +564,31 @@ def hot_phase(view, pid, ranges, guard, seconds, out_dir_ref=['.']):
             if rbp and any(lo <= rbp < hi for lo, hi in guard) \
                     and rip and any(lo <= rip < hi for lo, hi in ranges):
                 rip_hits[rip] = rip_hits.get(rip, 0) + 1
+                # v8：VM 执行瞬间抓活 ctx + IP 指向的字节码（执行后会被还原）
+                if rbp not in live_ctxs:
+                    live_ctxs.add(rbp)
+                    try:
+                        ctx_raw = read_mem(h, rbp, 0x1000) or b''
+                        tag_dir = out_dir_ref[0]
+                        cn = 'live_ctx_%x.bin' % rbp
+                        with open(os.path.join(tag_dir, cn), 'wb') as f:
+                            f.write(ctx_raw)
+                        # 已知 IP/表槽：0x70/0x73/0xBC/0xF5/0xC4 + 全扫描
+                        slots = [0x70, 0x73, 0xBC, 0xC4, 0xF5, 0x36, 0x5B, 0xB9]
+                        import struct as _s
+                        for sl in slots:
+                            if sl + 8 <= len(ctx_raw):
+                                ptr = _s.unpack_from('<Q', ctx_raw, sl)[0]
+                                if 0x140000000 <= ptr < 0x143000000:
+                                    buf = read_mem(h, ptr, 0x8000) or b''
+                                    fn = 'live_ip_%x_slot%x.bin' % (rbp, sl)
+                                    with open(os.path.join(tag_dir, fn), 'wb') as f:
+                                        f.write(buf)
+                                    print('    [live] ctx=%#x slot+%#x ptr=%#x '
+                                          '抓取 %d B' % (rbp, sl, ptr, len(buf)),
+                                          flush=True)
+                    except Exception as e:
+                        print('    [live] 抓取失败: %s' % e, flush=True)
             for va, how in ((rbp, 'rbp:t%d' % tid), (rsp, 'rsp:t%d' % tid)):
                 if va < 0x10000 or va in probed:
                     continue
