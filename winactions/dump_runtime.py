@@ -1675,7 +1675,8 @@ def table_hook_trace(exe, seconds, out_dir='.'):
     lo, hi = base + VMP_RVA, base + VMP_RVA + len(vmp)
     print('[*] .vmp %d 字节，范围 [%#x, %#x)' % (len(vmp), lo, hi), flush=True)
 
-    # 先用历史证据里的表地址探一下（事实校验），再上扫描
+    # 历史证据里的表地址逐个实证：前 8 项全落在 .vmp 且至少一半相邻差 5 才算真表；
+    # 值形如 0x1c9db1a 的是 RVA 风格表（换了 base 后语义不同），本轮不碰。
     KNOWN = [0x1421080ab, 0x141da2b42, 0x141d8df04, 0x141c50d31]
     tables = []
     for va0 in KNOWN:
@@ -1686,41 +1687,24 @@ def table_hook_trace(exe, seconds, out_dir='.'):
             continue
         q = struct.unpack('<8Q', raw)
         diffs = [q[i + 1] - q[i] for i in range(7)]
-        print('    known %#x 前 4 项 %s 差 %s 全在 .vmp=%s'
-              % (va, [hex(x) for x in q[:4]], diffs,
-                 all(lo <= x < hi for x in q)), flush=True)
-        if all(lo <= x < hi for x in q) and diffs[0] == 5:
-            tables.append((va, 0))       # 项数稍后量出来
-
-    found = []
-    for attempt in range(20):
-        found = discover_tables(vmp, lo, lo, hi)
-        if found:
-            break
-        vmp = read_mem_safe(h, base + VMP_RVA, VMPSIZE) or vmp
-        time.sleep(0.5)
-    print('[*] 扫描（差 5）找到 %d 张表: %s'
-          % (len(found), [(hex(va), n) for va, n in found]), flush=True)
-
-    # 合并已知表与扫描结果，已知表按扫描到的长度补齐
-    lenmap = {va: n for va, n in found}
-    merged = {}
-    for va, n in found:
-        merged[va] = n
-    for va, _ in tables:
-        if va in merged:
+        inrange = all(lo <= x < hi for x in q)
+        n5 = sum(1 for d in diffs if d == 5)
+        print('    known %#x 前 4 项 %s 差 %s 全在 .vmp=%s 差5=%d/7'
+              % (va, [hex(x) for x in q[:4]], diffs, inrange, n5), flush=True)
+        if not inrange:
+            print('      -> 不是绝对地址风格（或不是表），跳过', flush=True)
             continue
         big = read_mem(h, va, 4096 * 8)
-        if not big:
-            continue
-        q2 = struct.unpack('<%dQ' % (len(big) // 8), big[:len(big) // 8 * 8])
+        q2 = struct.unpack('<%dQ' % (len(big) // 8), big[:len(big) // 8 * 8]) if big else ()
         m = 0
-        while m + 1 < len(q2) and lo <= q2[m] < hi and q2[m + 1] - q2[m] == 5:
+        while m < len(q2) and lo <= q2[m] < hi:
             m += 1
-        if m + 1 >= 8:
-            merged[va] = m + 1
-            print('    known %#x 量到 %d 项' % (va, m + 1), flush=True)
-    tables = sorted(merged.items())
+        if m >= 24:
+            tables.append((va, m))
+            print('      -> 采纳，长度 %d 项（%#x..%#x）' % (m, va, va + m * 8), flush=True)
+        else:
+            print('      -> 连续在范围内只有 %d 项，跳过' % m, flush=True)
+
     total = sum(n for _, n in tables)
     print('[*] 发现 %d 张表，共 %d 项: %s'
           % (len(tables), total, [(hex(va), n) for va, n in tables]), flush=True)
