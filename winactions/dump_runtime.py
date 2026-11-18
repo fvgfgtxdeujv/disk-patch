@@ -1009,16 +1009,16 @@ def selftest():
         fails.append('guard 误杀了保护段真表')
 
     # v17 桩：结构自检（rel32 必须落在桩内、末尾必须是 jmp rsi、寄存器组复制长度=128）
-    stub = _build_stub4(2, 0x140000000, 0x142ff3000, 0x100000000,
+    stub = _build_stub5(2, 0x140000000, 0x142ff3000, 0x100000000,
                         0x100100000, 0x100001000)
     lo, hi = 0x100001000, 0x100001000 + len(stub)
-    print('  stub4: %d 字节' % len(stub))
-    if len(stub) != 254:
-        fails.append('stub4 长度异常: %d（期望 254）' % len(stub))
+    print('  stub5: %d 字节（含 3 个探针）' % len(stub))
+    if len(stub) != 294:
+        fails.append('stub5 长度异常: %d（期望 294）' % len(stub))
     if stub[-2:] != b'\xff\xe6':
-        fails.append('stub4 末尾不是 jmp rsi')
+        fails.append('stub5 末尾不是 jmp rsi')
     if stub[:1] != b'\x9c':
-        fails.append('stub4 开头不是 pushfq')
+        fails.append('stub5 开头不是 pushfq')
     n_rel = 0
     for m in re.finditer(rb'\x0f[\x80-\x8f]', stub):
         i = m.start()
@@ -1028,10 +1028,10 @@ def selftest():
         tgt = 0x100001000 + i + 6 + rel
         n_rel += 1
         if not (lo <= tgt < hi):
-            fails.append('stub4 第 %#x 处 jcc 跳到桩外 %#x' % (i, tgt))
-    print('  stub4: %d 处 rel32 跳转，全部落在桩内' % n_rel)
+            fails.append('stub5 第 %#x 处 jcc 跳到桩外 %#x' % (i, tgt))
+    print('  stub5: %d 处 rel32 跳转，全部落在桩内' % n_rel)
     if n_rel != 5:
-        fails.append('stub4 rel32 跳转数异常: %d（期望 5）' % n_rel)
+        fails.append('stub5 rel32 跳转数异常: %d（期望 5）' % n_rel)
 
     if fails:
         print('\n[FAIL]')
@@ -1249,19 +1249,17 @@ REG_ORDER = ['r15', 'r14', 'r13', 'r12', 'r11', 'r10', 'r9', 'r8',
              'rdi', 'rsi', 'rbp', 'rbx', 'rdx', 'rcx', 'rax', 'flags']
 
 
-def _build_stub4(site_no, lo_va, hi_va, count_va, buf_va, shell_va):
-    """v17 通用桩：挂 `jmp rsi`，每条记录 192 字节：
-         +0x00..+0x78  16 个 qword：r15 r14 r13 r12 r11 r10 r9 r8 rdi rsi rbp rbx rdx rcx rax flags
-         +0x80 q0=[rbp+0xBC]   +0x88 q1=[rbp+0xF5]
-         +0x90 [q0]            +0x98 [q0+8]
-         +0xA0 site_no
-       rbp 与 q0 都按 [lo,hi) 校验，越界只留零，绝不解引用野指针。
-       末尾 add rsp,8（丢掉 call 返回地址）再 jmp rsi。"""
+PROBE_ENTER = 0x08    # 桩被进入次数
+PROBE_COPY = 0x10     # 寄存器组复制完成次数
+PROBE_CTX = 0x18      # ctx 校验通过次数
+
+
+def _build_stub5(site_no, lo_va, hi_va, count_va, buf_va, shell_va):
+    """v18 诊断桩：每站点独立，记录 192 字节；并在三个关口各留一个计数器，
+    用来定位「进程到底死在桩内哪一步」：
+         count+0x00 已成条数   +0x08 进入次数   +0x10 复制完成   +0x18 ctx 通过"""
     b = bytearray()
     holes = []
-
-    def imm64(prefix, v):
-        b.extend(prefix + struct.pack('<Q', v))
 
     def jcc(op, kind):
         pos = len(b)
@@ -1269,55 +1267,62 @@ def _build_stub4(site_no, lo_va, hi_va, count_va, buf_va, shell_va):
         holes.append((pos, kind))
         return pos
 
-    b += bytes.fromhex('9c')                          # pushfq
-    b += bytes.fromhex('50515253555657')               # push rax rcx rdx rbx rbp rsi rdi
+    def counter(va):
+        b.extend(b'\x48\xb8' + struct.pack('<Q', va))   # mov rax,imm64
+        b.extend(b'\x48\xff\x00')                      # inc qword [rax]
+
+    b += b'\x9c'                                      # pushfq
+    b += bytes.fromhex('50515253555657')                # push rax rcx rdx rbx rbp rsi rdi
     b += bytes.fromhex('4150415141524153415441554156')  # push r8..r14
-    b += bytes.fromhex('4157')                        # push r15       => 栈上 16*8=128 字节
-    b += b'\x48\xa1' + struct.pack('<Q', count_va)    # mov rax,[count]
-    b += b'\x48\x3d' + struct.pack('<I', REC_MAX)     # cmp rax,REC_MAX
-    jcc(bytes.fromhex('0f83'), 'out')                 # jae out
-    b += bytes.fromhex('4889c1')                      # mov rcx,rax
-    b += bytes.fromhex('4869c9c0000000')              # imul rcx,rcx,192（imm32，imm8 会变 -64）
+    b += bytes.fromhex('4157')                          # push r15（栈上共 16*8=128 字节）
+    counter(count_va + PROBE_ENTER)
+    b += b'\x48\xa1' + struct.pack('<Q', count_va)     # mov rax,[count]
+    b += bytes.fromhex('4889c3')                        # mov rbx,rax
+    b += b'\x48\x3d' + struct.pack('<I', REC_MAX)       # cmp rax,REC_MAX
+    jcc(bytes.fromhex('0f83'), 'out')                   # jae out
+    b += bytes.fromhex('4869cbc0000000')                # imul rcx,rbx,192
     b += bytes.fromhex('48bf') + struct.pack('<Q', buf_va)  # mov rdi,buf
-    b += bytes.fromhex('4801cf')                      # add rdi,rcx
-    b += bytes.fromhex('4889e6')                      # mov rsi,rsp
-    b += bytes.fromhex('fc')                          # cld
-    b += bytes.fromhex('b910000000')                  # mov ecx,16
-    b += bytes.fromhex('f348a5')                      # rep movsq（复制 128 字节寄存器组）
+    b += bytes.fromhex('4801cf')                        # add rdi,rcx
+    b += bytes.fromhex('4889e6')                        # mov rsi,rsp
+    b += bytes.fromhex('fc')                            # cld
+    b += bytes.fromhex('b910000000')                    # mov ecx,16
+    b += bytes.fromhex('f348a5')                        # rep movsq
+    counter(count_va + PROBE_COPY)
     # ctx 校验
-    b += bytes.fromhex('4889ea')                      # mov rdx,rbp
-    b += b'\x49\xb9' + struct.pack('<Q', lo_va)       # mov r9,lo
-    b += bytes.fromhex('4c39ca')                      # cmp rdx,r9
-    jcc(bytes.fromhex('0f82'), 'fin')                 # jb fin
-    b += b'\x49\xb9' + struct.pack('<Q', hi_va)       # mov r9,hi
-    b += bytes.fromhex('4c39ca')                      # cmp rdx,r9
-    jcc(bytes.fromhex('0f83'), 'fin')                 # jae fin
-    b += bytes.fromhex('488b95bc000000')              # mov rdx,[rbp+0xBC]
-    b += bytes.fromhex('488917')                      # mov [rdi],rdx
-    b += bytes.fromhex('488b95f5000000')              # mov rdx,[rbp+0xF5]
-    b += bytes.fromhex('48895708')                    # mov [rdi+8],rdx
-    b += bytes.fromhex('488b17')                      # mov rdx,[rdi]   (q0)
-    b += b'\x49\xb9' + struct.pack('<Q', lo_va)       # mov r9,lo
-    b += bytes.fromhex('4c39ca')                      # cmp rdx,r9
-    jcc(bytes.fromhex('0f82'), 'fin')                 # jb fin
-    b += bytes.fromhex('4c8d5210')                    # lea r10,[rdx+16]
-    b += b'\x49\xb9' + struct.pack('<Q', hi_va)       # mov r9,hi
-    b += bytes.fromhex('4d39ca')                      # cmp r10,r9
-    jcc(bytes.fromhex('0f87'), 'fin')                 # ja fin
-    b += bytes.fromhex('4c8b0a')                      # mov r9,[rdx]
-    b += bytes.fromhex('4c894f10')                    # mov [rdi+0x10],r9
-    b += bytes.fromhex('4c8b4a08')                    # mov r9,[rdx+8]
-    b += bytes.fromhex('4c894f18')                    # mov [rdi+0x18],r9
+    b += bytes.fromhex('4889ea')                        # mov rdx,rbp
+    b += b'\x49\xb9' + struct.pack('<Q', lo_va)
+    b += bytes.fromhex('4c39ca')                        # cmp rdx,r9
+    jcc(bytes.fromhex('0f82'), 'fin')                   # jb fin
+    b += b'\x49\xb9' + struct.pack('<Q', hi_va)
+    b += bytes.fromhex('4c39ca')
+    jcc(bytes.fromhex('0f83'), 'fin')                   # jae fin
+    b += bytes.fromhex('488b95bc000000')                # mov rdx,[rbp+0xBC]
+    b += bytes.fromhex('488917')                        # mov [rdi],rdx
+    b += bytes.fromhex('488b95f5000000')                # mov rdx,[rbp+0xF5]
+    b += bytes.fromhex('48895708')                      # mov [rdi+8],rdx
+    b += bytes.fromhex('488b17')                        # mov rdx,[rdi]
+    b += b'\x49\xb9' + struct.pack('<Q', lo_va)
+    b += bytes.fromhex('4c39ca')
+    jcc(bytes.fromhex('0f82'), 'fin')                   # jb fin
+    b += bytes.fromhex('4c8d5210')                      # lea r10,[rdx+16]
+    b += b'\x49\xb9' + struct.pack('<Q', hi_va)
+    b += bytes.fromhex('4d39ca')                        # cmp r10,r9
+    jcc(bytes.fromhex('0f87'), 'fin')                   # ja fin
+    counter(count_va + PROBE_CTX)
+    b += bytes.fromhex('4c8b0a')                        # mov r9,[rdx]
+    b += bytes.fromhex('4c894f10')                      # mov [rdi+0x10],r9
+    b += bytes.fromhex('4c8b4a08')                      # mov r9,[rdx+8]
+    b += bytes.fromhex('4c894f18')                      # mov [rdi+0x18],r9
     fin_pos = len(b)
-    b += bytes.fromhex('48c74720') + struct.pack('<I', site_no)  # mov qword [rdi+0x20],site
-    b += bytes.fromhex('48ffc0')                      # inc rax
-    b += b'\x48\xa3' + struct.pack('<Q', count_va)    # mov [count],rax
+    b += bytes.fromhex('48c74720') + struct.pack('<I', site_no)   # mov qword [rdi+0x20],site
+    b += bytes.fromhex('488d4301')                      # lea rax,[rbx+1]
+    b += b'\x48\xa3' + struct.pack('<Q', count_va)      # mov [count],rax
     out_pos = len(b)
-    b += bytes.fromhex('415f415e415d415c415b415a41594158')  # pop r15..r8
-    b += bytes.fromhex('5f5e5d5b5a5958')               # pop rdi rsi rbp rbx rdx rcx rax
-    b += bytes.fromhex('9d')                          # popfq
-    b += bytes.fromhex('4883c408')                    # add rsp,8
-    b += bytes.fromhex('ffe6')                        # jmp rsi
+    b += bytes.fromhex('415f415e415d415c415b415a41594158')
+    b += bytes.fromhex('5f5e5d5b5a5958')
+    b += bytes.fromhex('9d')
+    b += bytes.fromhex('4883c408')
+    b += bytes.fromhex('ffe6')
     for pos, kind in holes:
         tgt = out_pos if kind == 'out' else fin_pos
         off = tgt - (pos + 6)
@@ -1419,7 +1424,7 @@ def vm_hook_trace(exe, seconds, out_dir='.'):
                   % (site, old.hex() if old else 'None'))
             continue
         shell_va = alloc + 0x1000 + si * 0x400
-        stub = _build_stub4(si, base, hi_va, count_va, buf_va, shell_va)
+        stub = _build_stub5(si, base, hi_va, count_va, buf_va, shell_va)
         k32.WriteProcessMemory(ctypes.c_void_p(h), ctypes.c_void_p(shell_va),
                                stub, len(stub), ctypes.byref(wrote))
         shells[site] = shell_va
@@ -1443,8 +1448,19 @@ def vm_hook_trace(exe, seconds, out_dir='.'):
     t0 = time.time()
     last = 0
     repatch = 0
+    dead_at = None
     while time.time() - t0 < seconds:
         time.sleep(0.5)
+        if k32.WaitForSingleObject(ctypes.c_void_p(h), 0) == 0:
+            code = ctypes.c_ulong(0)
+            k32.GetExitCodeProcess(ctypes.c_void_p(h), ctypes.byref(code))
+            dead_at = round(time.time() - t0, 1)
+            pr = {n: struct.unpack('<Q', read_mem(h, count_va + o, 8) or b'\0' * 8)[0]
+                  for n, o in (('条数', 0), ('进入', PROBE_ENTER),
+                               ('复制', PROBE_COPY), ('ctx通过', PROBE_CTX))}
+            print('[!] 进程在 %.1fs 退出，退出码 %#x，探针 %s' % (dead_at, code.value, pr),
+                  flush=True)
+            break
         for site, old in list(patches.items()):
             cur = read_mem(h, site, 5) or b''
             if cur[:1] != b'\xe8':
@@ -1466,7 +1482,15 @@ def vm_hook_trace(exe, seconds, out_dir='.'):
         if cnt >= 2599000:
             break
 
-    print('[*] 期间重下 hook %d 次' % repatch, flush=True)
+    print('[*] 期间重下 hook %d 次%s' % (repatch, '' if dead_at is None else
+                                     '（进程 %.1fs 已退出）' % dead_at), flush=True)
+    pr = {n: struct.unpack('<Q', read_mem(h, count_va + o, 8) or b'\0' * 8)[0]
+          for n, o in (('条数', 0), ('进入', PROBE_ENTER),
+                       ('复制', PROBE_COPY), ('ctx通过', PROBE_CTX))}
+    print('[*] 探针 %s' % pr, flush=True)
+    for site, va in shells.items():
+        head = read_mem(h, va, 24) or b''
+        print('    桩 %#x 前 24 字节: %s' % (va, head.hex()), flush=True)
     cnt = struct.unpack('<Q', read_mem(h, count_va, 8) or b'\0' * 8)[0]
     cnt = min(cnt, REC_MAX)
     raw = read_mem(h, buf_va, cnt * REC_SZ) or b''
