@@ -541,7 +541,7 @@ def probe_ctx(view, ctx, ranges, guard=None):
     return {'ctx': ctx, 'score': ctx_score(t, i), 'tables': t, 'ips': i}
 
 
-def hot_phase(view, pid, ranges, guard, seconds):
+def hot_phase(view, pid, ranges, guard, seconds, out_dir_ref=['.']):
     """
     高速只读线程寄存器：VM 执行期间 rbp 就是 ctx（静态已证）。
     不扫内存、不做栈扫，每轮 OpenThread+GetThreadContext，~2ms 一轮。
@@ -549,6 +549,7 @@ def hot_phase(view, pid, ranges, guard, seconds):
     """
     hits = []
     probed = set()
+    rip_hits = {}                     # v7: VM 执行时 RIP 直方图（rbp 落保护段）
     t_end = time.time() + seconds
     k = 0
     while time.time() < t_end:
@@ -558,6 +559,10 @@ def hot_phase(view, pid, ranges, guard, seconds):
         except Exception:
             ctxs = []
         for tid, rip, rsp, rbp in ctxs:
+            # v7：rbp 落在保护段 => VM 正在执行，RIP 就是派发器/handler
+            if rbp and any(lo <= rbp < hi for lo, hi in guard) \
+                    and rip and any(lo <= rip < hi for lo, hi in ranges):
+                rip_hits[rip] = rip_hits.get(rip, 0) + 1
             for va, how in ((rbp, 'rbp:t%d' % tid), (rsp, 'rsp:t%d' % tid)):
                 if va < 0x10000 or va in probed:
                     continue
@@ -574,6 +579,17 @@ def hot_phase(view, pid, ranges, guard, seconds):
                     if r['ips']:
                         return hits, k
         # hot 阶段进程刚起，偶发读失败是正常
+    if rip_hits:
+        top = sorted(rip_hits.items(), key=lambda x: -x[1])[:24]
+        print('[*] VM 执行期 RIP 直方图（top24）:', flush=True)
+        for rip, cnt in top:
+            print('    rip=%#x x%d' % (rip, cnt), flush=True)
+        try:
+            with open(os.path.join(out_dir_ref[0], 'rip_hits.json'), 'w') as f:
+                json.dump({hex(k2): v for k2, v in sorted(rip_hits.items(),
+                            key=lambda x: -x[1])[:200]}, f, indent=1)
+        except Exception:
+            pass
     return hits, k
 
 
@@ -915,7 +931,9 @@ def sample_process(h, pid, seconds, rounds, interval, deep, guard=None,
     if hot_seconds > 0:
         view = WinView(h)
         t0 = time.time()
-        hits, k = hot_phase(view, pid, ranges, guard, hot_seconds)
+        out_dir_ref[0] = out_dir
+        hits, k = hot_phase(view, pid, ranges, guard, hot_seconds,
+                            out_dir_ref)
         print('[*] hot 阶段 %d 轮 / %.1fs，命中 %d'
               % (k, time.time() - t0, len(hits)))
         for va, r in hits:
