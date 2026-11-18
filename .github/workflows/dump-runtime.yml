@@ -175,7 +175,7 @@ jobs:
             --out vm_trace.json 2>&1 | Tee-Object -FilePath trace.log
           Write-Host "退出码: $LASTEXITCODE"
           if (Test-Path vm_trace.json) {
-            python -c "import json;d=json.load(open('vm_trace.json'));print('模式',d.get('mode'),'条数',d['n'],'去重',d['distinct'],'表',d.get('tables'),'tagTop',sorted(d.get('tag_hist',{}).items(),key=lambda kv:-kv[1])[:8])" |
+            python -c "import json;d=json.load(open('vm_trace.json'));print('模式',d.get('mode'),'轨迹',d['n'],'不同IP',d.get('n_ip'),'表',d.get('tables'),'明文指令',len(d.get('insns',[])),'op自证',d.get('insns_ok_op'),'rel合理',d.get('insns_ok_rel'),'dead_at',d.get('dead_at'))" |
               Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Encoding utf8 -Append
           }
 
