@@ -36,6 +36,7 @@ dump_runtime.py —— 运行期抓取 DiskGenius 的 X86IL VM 上下文（槽�
 import base64
 import json
 import os
+import re
 import struct
 import sys
 import time
@@ -1007,6 +1008,31 @@ def selftest():
     if not ok4:
         fails.append('guard 误杀了保护段真表')
 
+    # v16 桩：结构自检（rel32 必须落在桩内、末尾必须是 jmp rsi、每处 jcc 目标是 out/inc）
+    stub = _build_stub3(0x140000000, 0x142800000, 0x100000000,
+                        0x100001000, 0x100000100)
+    lo, hi = 0x100000100, 0x100000100 + len(stub)
+    print('  stub3: %d 字节' % len(stub))
+    if len(stub) != 218:
+        fails.append('stub3 长度异常: %d（期望 218）' % len(stub))
+    if stub[-2:] != b'\xff\xe6':
+        fails.append('stub3 末尾不是 jmp rsi')
+    if stub[:2] != b'\x48\xa1' and stub[:1] != b'\x9c':
+        fails.append('stub3 开头不是 pushfq')
+    n_rel = 0
+    for m in re.finditer(rb'\x0f[\x80-\x8f]', stub):
+        i = m.start()
+        if i + 6 > len(stub):
+            continue
+        rel = struct.unpack_from('<i', stub, i + 2)[0]
+        tgt = 0x100000100 + i + 6 + rel
+        n_rel += 1
+        if not (lo <= tgt < hi):
+            fails.append('stub3 第 %#x 处 jcc 跳到桩外 %#x' % (i, tgt))
+    print('  stub3: %d 处 rel32 跳转，全部落在桩内' % n_rel)
+    if n_rel < 5:
+        fails.append('stub3 rel32 跳转数异常: %d' % n_rel)
+
     if fails:
         print('\n[FAIL]')
         for f in fails:
@@ -1217,9 +1243,80 @@ def _build_stub2(count_va, buf_va, shell_va):
     return bytes(b)
 
 
+REC_SZ = 64          # v16 每条轨迹 64 字节
+REC_MAX = 400000     # 400000*64 = 25.6 MB，落在 64MB 缓冲内
+
+
+def _build_stub3(lo_va, hi_va, count_va, buf_va, shell_va):
+    """v16 通用桩：挂 `jmp rsi`，每条记录 64 字节：
+         +0x00 ctx(=rbp)     +0x08 r15 原值      +0x10 handler(=rsi)
+         +0x18 q0=[ctx+0xBC] +0x20 q1=[ctx+0xF5]
+         +0x28 q2=[q0]       +0x30 q3=[q0+8]     （= IP 处 16 字节明文）
+       ctx 与 IP 都按 [lo,hi) 校验，越界只留零，绝不解引用野指针。"""
+    b = bytearray()
+    holes = []
+
+    def jcc(op):
+        pos = len(b)
+        b.extend(op + b'\x00\x00\x00\x00')
+        holes.append(pos)
+        return pos
+
+    b += bytes.fromhex('9c')                          # pushfq
+    b += bytes.fromhex('50515253')                    # push rax rcx rdx rbx
+    b += bytes.fromhex('4150415141524153')             # push r8 r9 r10 r11
+    b += b'\x48\xa1' + struct.pack('<Q', count_va)    # mov rax,[count]
+    b += b'\x48\x3d' + struct.pack('<I', REC_MAX)     # cmp rax,REC_MAX
+    jcc(bytes.fromhex('0f83'))                        # jae out
+    b += bytes.fromhex('4889c3')                      # mov rbx,rax
+    b += bytes.fromhex('486bdb40')                    # imul rbx,rbx,64
+    b += b'\x49\xb8' + struct.pack('<Q', buf_va)      # mov r8,buf
+    b += bytes.fromhex('4901d8')                      # add r8,rbx
+    b += bytes.fromhex('498928')                      # mov [r8],rbp
+    b += bytes.fromhex('4d897808')                    # mov [r8+8],r15
+    b += bytes.fromhex('49897010')                    # mov [r8+0x10],rsi
+    b += bytes.fromhex('4889ea')                      # mov rdx,rbp
+    b += b'\x49\xb9' + struct.pack('<Q', lo_va)       # mov r9,lo
+    b += bytes.fromhex('4c39ca')                      # cmp rdx,r9
+    jcc(bytes.fromhex('0f82'))                        # jb inc
+    b += b'\x49\xb9' + struct.pack('<Q', hi_va)       # mov r9,hi
+    b += bytes.fromhex('4c39ca')                      # cmp rdx,r9
+    jcc(bytes.fromhex('0f83'))                        # jae inc
+    b += bytes.fromhex('488b95bc000000')              # mov rdx,[rbp+0xBC]
+    b += bytes.fromhex('49895018')                    # mov [r8+0x18],rdx
+    b += bytes.fromhex('488b8df5000000')              # mov rcx,[rbp+0xF5]
+    b += bytes.fromhex('49894820')                    # mov [r8+0x20],rcx
+    b += b'\x49\xb9' + struct.pack('<Q', lo_va)       # mov r9,lo
+    b += bytes.fromhex('4c39ca')                      # cmp rdx,r9
+    jcc(bytes.fromhex('0f82'))                        # jb inc
+    b += bytes.fromhex('4c8d5210')                    # lea r10,[rdx+16]
+    b += b'\x49\xb9' + struct.pack('<Q', hi_va)       # mov r9,hi
+    b += bytes.fromhex('4d39ca')                      # cmp r10,r9
+    jcc(bytes.fromhex('0f87'))                        # ja inc
+    b += bytes.fromhex('4c8b0a')                      # mov r9,[rdx]
+    b += bytes.fromhex('4d894828')                    # mov [r8+0x28],r9
+    b += bytes.fromhex('4c8b4a08')                    # mov r9,[rdx+8]
+    b += bytes.fromhex('4d894830')                    # mov [r8+0x30],r9
+    inc_pos = len(b)
+    b += bytes.fromhex('48ffc0')                      # inc rax
+    b += b'\x48\xa3' + struct.pack('<Q', count_va)    # mov [count],rax
+    out_pos = len(b)
+    b += bytes.fromhex('415b415a41594158')            # pop r11 r10 r9 r8
+    b += bytes.fromhex('5b5a5958')                    # pop rbx rdx rcx rax
+    b += bytes.fromhex('9d')                          # popfq
+    b += bytes.fromhex('4883c408')                    # add rsp,8（丢掉 call 返回地址）
+    b += bytes.fromhex('ffe6')                        # jmp rsi
+    for i, p in enumerate(holes):
+        tgt = out_pos if i == 0 else inc_pos
+        off = tgt - (p + 6)
+        b[p + 2:p + 6] = struct.pack('<i', off)
+    return bytes(b)
+
+
 def vm_hook_trace(exe, seconds, out_dir='.'):
-    """v15：扫描 .vmp 里所有派发器（jmp rsi 前有 movsxd rcx,[rbx]），
-    在各自 `jmp rsi` 处下 5 字节 hook，记录 (ctx, op, handler) 后 jmp rsi。"""
+    """v15/v16：扫描 .vmp 里所有派发器（jmp rsi 前有 movsxd rcx,[rbx]），
+    在各自 `jmp rsi` 处下 5 字节 hook，记录
+    (ctx, r15, handler, [ctx+0xBC], [ctx+0xF5], [IP], [IP+8]) 后 jmp rsi。"""
     import ctypes
     k32 = ctypes.WinDLL('kernel32', use_last_error=True)
     k32.VirtualAllocEx.restype = ctypes.c_void_p
@@ -1297,7 +1394,11 @@ def vm_hook_trace(exe, seconds, out_dir='.'):
         print('!! VirtualAllocEx 失败')
         return None
     count_va, shell_va, buf_va = alloc, alloc + 0x100, alloc + 0x1000
-    stub = _build_stub2(count_va, buf_va, shell_va)
+    stub = _build_stub3(base, base + max(size, 0x2800000),
+                        count_va, buf_va, shell_va)
+    print('[*] 校验区间 [%#x, %#x)' % (base, base + max(size, 0x2800000)), flush=True)
+    print('[*] 桩 %d 字节（记录 %d 字节/条，上限 %d 条）'
+          % (len(stub), REC_SZ, REC_MAX), flush=True)
     wrote = ctypes.c_size_t(0)
     k32.WriteProcessMemory(ctypes.c_void_p(h), ctypes.c_void_p(shell_va),
                            stub, len(stub), ctypes.byref(wrote))
@@ -1350,17 +1451,21 @@ def vm_hook_trace(exe, seconds, out_dir='.'):
 
     print('[*] 期间重下 hook %d 次' % repatch, flush=True)
     cnt = struct.unpack('<Q', read_mem(h, count_va, 8) or b'\0' * 8)[0]
-    cnt = min(cnt, 2600000)
-    raw = read_mem(h, buf_va, cnt * 24) or b''
-    n = len(raw) // 24
+    cnt = min(cnt, REC_MAX)
+    raw = read_mem(h, buf_va, cnt * REC_SZ) or b''
+    n = len(raw) // REC_SZ
     out = []
     for i in range(n):
-        ctx, op, hd = struct.unpack_from('<QQQ', raw, i * 24)
-        out.append([ctx, op, hd])
+        ctx, r15, hd, q0, q1, q2, q3 = struct.unpack_from('<7Q', raw, i * REC_SZ)
+        out.append([ctx, r15, hd, q0, q1, q2, q3])
+    keys = {(e[0], e[1], e[2], e[3]) for e in out}
+    valid = sum(1 for e in out if e[3])
     with open(os.path.join(out_dir, 'vm_trace.json'), 'w') as f:
-        json.dump({'n': n, 'fmt': '[ctx,op,handler]', 'sites':
-                   [hex(x) for x in patches], 'trace': out[:400000]}, f)
-    print('[*] 已写 vm_trace.json（%d 条）' % min(n, 400000), flush=True)
+        json.dump({'n': n, 'fmt': '[ctx,r15,handler,[ctx+0xBC],[ctx+0xF5],[ip],[ip+8]]',
+                   'rec_size': REC_SZ, 'sites': [hex(x) for x in patches],
+                   'distinct': len(keys), 'ctx_ok': valid, 'trace': out}, f)
+    print('[*] 已写 vm_trace.json（%d 条，去重 %d，ctx 有效 %d）'
+          % (n, len(keys), valid), flush=True)
 
     for site, old in patches.items():
         if len(old) >= 5:
@@ -1389,7 +1494,7 @@ def main():
     ap.add_argument('--selftest', action='store_true')
     ap.add_argument('--trace-vm', action='store_true',
                     help='inline hook 派发器，抓逐条 VM 指令轨迹')
-    ap.add_argument('--trace-seconds', type=float, default=30.0)
+    ap.add_argument('--trace-seconds', type=float, default=60.0)
     a = ap.parse_args()
 
     if a.selftest:

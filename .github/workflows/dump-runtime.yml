@@ -149,11 +149,11 @@ jobs:
         run: |
           python winactions/dump_runtime.py `
             --exe "${{ steps.dl.outputs.exe }}" `
-            --trace-vm --trace-seconds 30 `
+            --trace-vm --trace-seconds 60 `
             --out vm_trace.json 2>&1 | Tee-Object -FilePath trace.log
           Write-Host "退出码: $LASTEXITCODE"
           if (Test-Path vm_trace.json) {
-            Get-Content vm_trace.json -Raw | Select-Object -First 1 |
+            python -c "import json,collections;d=json.load(open('vm_trace.json'));t=d['trace'];c=collections.Counter((e[0],e[1],e[2],e[3]) for e in t);print('条数',d['n'],'去重',d['distinct'],'ctx有效',d['ctx_ok']);[print([hex(x) for x in k],v) for k,v in c.most_common(10)]" |
               Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Encoding utf8 -Append
           }
 
