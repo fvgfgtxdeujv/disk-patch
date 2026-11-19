@@ -245,6 +245,8 @@ jobs:
             bc_window_*.bin
             ctx_*.bin
             ctx_ring.bin
+            hit_*.bin
+            low_snap_*.bin
             handler_*.bin
             handlerbody_*.bin
             hot_trace.json
