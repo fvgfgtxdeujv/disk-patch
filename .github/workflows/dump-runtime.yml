@@ -156,7 +156,7 @@ jobs:
           New-Item -Path $k -Force | Out-Null
           Set-ItemProperty -Path $k -Name user       -Value 'probe'
           Set-ItemProperty -Path $k -Name email      -Value 'probe@probe.test'
-          Set-ItemProperty -Path $k -Name regcode    -Value 'AAAA-BBBB-CCCC-DDDD-EEEE'
+          Set-ItemProperty -Path $k -Name regcode    -Value 'QK7X-M2PV-ZLHD-W8CT-RBNQ'
           Set-ItemProperty -Path $k -Name regver     -Value '6'
           Set-ItemProperty -Path $k -Name VerifyDate -Value '20991231'
           Get-ItemProperty $k | Format-List
@@ -172,6 +172,7 @@ jobs:
           python winactions/dump_runtime.py `
             --exe "${{ steps.dl.outputs.exe }}" `
             --trace-vm fullctx --trace-seconds 30 `
+            --marker 'QK7X-M2PV-ZLHD-W8CT-RBNQ,probe@probe.test,probe,20991231' `
             --out vm_trace.json 2>&1 | Tee-Object -FilePath trace.log
           Write-Host "退出码: $LASTEXITCODE"
           if (Test-Path vm_trace.json) {

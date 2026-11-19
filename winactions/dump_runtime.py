@@ -2229,6 +2229,42 @@ def table_hook_trace(exe, seconds, out_dir='.'):
     snap = (0, b'')
     snap_slots = b''
     snap_ent = b''
+    def marker_scan(ts):
+        if not markers:
+            return
+        pats = []
+        for s2 in markers:
+            if not s2:
+                continue
+            pats.append((s2, s2.encode('utf-8', 'surrogateescape')))
+            pats.append((s2, s2.encode('utf-16-le', 'surrogateescape')))
+        try:
+            regs = enum_regions(h)
+        except Exception as e2:
+            print('[!] marker_scan 区域枚举失败:', e2, flush=True)
+            return
+        hits = 0
+        for base, size, _prot in regs:
+            if size > 0x10000000:
+                continue
+            blob = read_mem_safe(h, base, min(size, 0x10000000))
+            if not blob:
+                continue
+            for s2, p2 in pats:
+                i2 = blob.find(p2)
+                while i2 >= 0 and hits < 200:
+                    hits += 1
+                    lo = max(0, i2 - 0x1000)
+                    hi = min(len(blob), i2 + len(p2) + 0x1000)
+                    fn2 = os.path.join(out_dir, 'hit_%s_%d.bin' % (ts, hits))
+                    with open(fn2, 'wb') as f3:
+                        f3.write(blob[lo:hi])
+                    print('[HIT] %s %r @ %#x（区 %#x +%#x）存 %s'
+                          % (ts, s2, base + i2, base, size,
+                             os.path.basename(fn2)), flush=True)
+                    i2 = blob.find(p2, i2 + 1)
+        print('[*] marker_scan %s：%d 处命中' % (ts, hits), flush=True)
+
     while time.time() - t0 < seconds:
         time.sleep(0.5)
         tick += 1
@@ -2348,7 +2384,7 @@ def table_hook_trace(exe, seconds, out_dir='.'):
     return n
 
 
-def table_hook_fullctx(exe, seconds, out_dir='.'):
+def table_hook_fullctx(exe, seconds, out_dir='.', markers=None):
     """v25：在 v22 表钩基础上，每条派发记录附带
     (a) 32B 包窗口（[IP]..[IP+0x20]），(b) ctx 页 4KB 快照（vreg 全状态），
     (c) 2MB 字节码区多时刻 dump（base+0x2140000..+0x2320000）。
@@ -2569,6 +2605,42 @@ def table_hook_fullctx(exe, seconds, out_dir='.'):
     ring_snap = None
     low_snaps = {}
     dumped = set()
+    def marker_scan(ts):
+        if not markers:
+            return
+        pats = []
+        for s2 in markers:
+            if not s2:
+                continue
+            pats.append((s2, s2.encode('utf-8', 'surrogateescape')))
+            pats.append((s2, s2.encode('utf-16-le', 'surrogateescape')))
+        try:
+            regs = enum_regions(h)
+        except Exception as e2:
+            print('[!] marker_scan 区域枚举失败:', e2, flush=True)
+            return
+        hits = 0
+        for base, size, _prot in regs:
+            if size > 0x10000000:
+                continue
+            blob = read_mem_safe(h, base, min(size, 0x10000000))
+            if not blob:
+                continue
+            for s2, p2 in pats:
+                i2 = blob.find(p2)
+                while i2 >= 0 and hits < 200:
+                    hits += 1
+                    lo = max(0, i2 - 0x1000)
+                    hi = min(len(blob), i2 + len(p2) + 0x1000)
+                    fn2 = os.path.join(out_dir, 'hit_%s_%d.bin' % (ts, hits))
+                    with open(fn2, 'wb') as f3:
+                        f3.write(blob[lo:hi])
+                    print('[HIT] %s %r @ %#x（区 %#x +%#x）存 %s'
+                          % (ts, s2, base + i2, base, size,
+                             os.path.basename(fn2)), flush=True)
+                    i2 = blob.find(p2, i2 + 1)
+        print('[*] marker_scan %s：%d 处命中' % (ts, hits), flush=True)
+
     while time.time() - t0 < seconds:
         time.sleep(0.5)
         tick += 1
@@ -2593,6 +2665,11 @@ def table_hook_fullctx(exe, seconds, out_dir='.'):
                 dumped.add(key)
                 snap_window('%ds' % key)
                 snap_ctx('%ds' % key)
+        for wt in (1.5, 3.0, 6.0):
+            mkey = ('m%s' % wt)
+            if ts >= wt and mkey not in dumped:
+                dumped.add(mkey)
+                marker_scan('%.1fs' % wt)
         code = ctypes.c_ulong(0)
         oka = k32.GetExitCodeProcess(ctypes.c_void_p(h), ctypes.byref(code))
         pr = _read_probes(read_mem, h, count_va, len(tables))
@@ -2851,6 +2928,42 @@ def vm_hook_trace(exe, seconds, out_dir='.'):
     repatch = 0
     dead_at = None
     tick = 0
+    def marker_scan(ts):
+        if not markers:
+            return
+        pats = []
+        for s2 in markers:
+            if not s2:
+                continue
+            pats.append((s2, s2.encode('utf-8', 'surrogateescape')))
+            pats.append((s2, s2.encode('utf-16-le', 'surrogateescape')))
+        try:
+            regs = enum_regions(h)
+        except Exception as e2:
+            print('[!] marker_scan 区域枚举失败:', e2, flush=True)
+            return
+        hits = 0
+        for base, size, _prot in regs:
+            if size > 0x10000000:
+                continue
+            blob = read_mem_safe(h, base, min(size, 0x10000000))
+            if not blob:
+                continue
+            for s2, p2 in pats:
+                i2 = blob.find(p2)
+                while i2 >= 0 and hits < 200:
+                    hits += 1
+                    lo = max(0, i2 - 0x1000)
+                    hi = min(len(blob), i2 + len(p2) + 0x1000)
+                    fn2 = os.path.join(out_dir, 'hit_%s_%d.bin' % (ts, hits))
+                    with open(fn2, 'wb') as f3:
+                        f3.write(blob[lo:hi])
+                    print('[HIT] %s %r @ %#x（区 %#x +%#x）存 %s'
+                          % (ts, s2, base + i2, base, size,
+                             os.path.basename(fn2)), flush=True)
+                    i2 = blob.find(p2, i2 + 1)
+        print('[*] marker_scan %s：%d 处命中' % (ts, hits), flush=True)
+
     while time.time() - t0 < seconds:
         time.sleep(0.5)
         tick += 1
@@ -2942,6 +3055,8 @@ def main():
     ap.add_argument('--out', default='tables.json')
     ap.add_argument('--deep', action='store_true')
     ap.add_argument('--selftest', action='store_true')
+    ap.add_argument('--marker', default='',
+                    help='逗号分隔的标记串，运行时全内存扫描命中上下文')
     ap.add_argument('--trace-vm', nargs='?', const='table', default=None,
                     choices=['table', 'site', 'fullctx'],
                     help='抓逐条 VM 指令轨迹：table=换派发表(默认)，site=给派发器下 hook')
@@ -2966,7 +3081,7 @@ def main():
         fn = {'table': table_hook_trace, 'site': vm_hook_trace,
               'fullctx': table_hook_fullctx}[a.trace_vm]
         print('[*] 追踪方式: %s' % a.trace_vm)
-        n = fn(a.exe, a.trace_seconds, od)
+        n = fn(a.exe, a.trace_seconds, od, markers=a.marker)
         print('[*] trace-mode 结束: %s 条' % n)
         return 0
 
