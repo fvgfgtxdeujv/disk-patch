@@ -2509,6 +2509,7 @@ def table_hook_fullctx(exe, seconds, out_dir='.'):
     dead_at = None
     tick = 0
     snap = (0, b'')
+    ring_snap = None
     dumped = set()
     while time.time() - t0 < seconds:
         time.sleep(0.5)
@@ -2521,6 +2522,10 @@ def table_hook_fullctx(exe, seconds, out_dir='.'):
                 raw0 = read_mem(h, buf_va, c0 * REC12_SZ)
                 if raw0:
                     snap = (len(raw0) // REC12_SZ, raw0)
+                # 活体读 ctx 环（进程死后页被释放，死后读全零——v26 实证）
+                ring_live = read_mem_safe(h, ctxring_va, c0 * 0x1000)
+                if ring_live and ring_live.count(0) < len(ring_live) - 0x1000:
+                    ring_snap = ring_live
         for wt in (1.0, 2.0, 3.0, 4.0, 6.0, 8.0):
             key = int(wt)
             if ts >= wt and key not in dumped:
@@ -2557,13 +2562,17 @@ def table_hook_fullctx(exe, seconds, out_dir='.'):
     print('[*] 轨迹 %d 条（不同 IP %d），tag %d 种 top10 %s'
           % (n, len(ips), len(tags),
              sorted(tags.items(), key=lambda x: -x[1])[:10]), flush=True)
-    # ctx 环整体落盘
+    # ctx 环整体落盘（优先活体快照）
     if n:
-        ring = read_mem_safe(h, ctxring_va, min(n, REC12_MAX) * 0x1000)
-        if ring:
+        ring = ring_snap or read_mem_safe(h, ctxring_va, min(n, REC12_MAX) * 0x1000)
+        if ring and ring.count(0) < len(ring) - 0x1000:
             with open(os.path.join(out_dir, 'ctx_ring.bin'), 'wb') as f2:
                 f2.write(ring)
-            print('[*] ctx_ring.bin %d 槽 × 4KB' % (len(ring) // 0x1000), flush=True)
+            print('[*] ctx_ring.bin %d 槽 × 4KB（%s）'
+                  % (len(ring) // 0x1000, '活体快照' if ring_snap else '死后读'),
+                  flush=True)
+        else:
+            print('[!] ctx_ring 内容全零/读失败，跳过落盘', flush=True)
     snap_window('end')
     snap_ctx('end')
     with open(os.path.join(out_dir, 'vm_trace.json'), 'w') as f:
