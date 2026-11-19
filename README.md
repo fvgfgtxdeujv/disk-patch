@@ -34,6 +34,9 @@ reports/
   REPORT_dispatch_v2.md   v1.1：性能 11x、集成进 v2、真实载荷首测
   REPORT_ipslot.md        IP 槽：3314 个派发点、槽 0x18/0x92/0x120
   REPORT_runtime_dump.md  表指针槽 0x4/0x8/0xF5 + 坐标系换算
+  REPORT_wine_auth_dynamic.md    Wine 下授权校验的行为实证（纯本地 / key 触发 / 删除出口）
+  REPORT_vmp_probe_20261119.md   VM 指令级探针：改派发表 + 记录桩 + 影子表回跳（本机跑通）
+tools_local/dyn/     运行期动态取证脚本（镜像 dump / 断点回溯 / key 契约二分 / VM 桩）
 ```
 
 ---
@@ -87,6 +90,7 @@ python3 tableresolve.py <payload.bin> --ipslots ipslots.json
 ## 状态
 
 - 静态分析部分：回归 16 项全过
+- 运行期动态（本机 Wine 9.0 + Xvfb）：授权校验行为实证完成；VM 派发表插桩成立，字节码序列尚未拿到
 - Actions 方案：**已在真实 GitHub Actions（windows-2025）上跑通**，job 绿，产物 `vm-tables` 有内容
   - 目标启动、提权、PE 段表解析、`.vmp` 定位、内存镜像落盘全部正常
   - 目前拿到的是 `mode=arrays`：32 张「整段指向 `.vmp`」的指针数组，合计 593 项
@@ -115,3 +119,34 @@ python -m pyauth code QK7X-M2PV-ZLHD-W8CT-RBNQ
 ```
 
 结论与证据见 `reports/REPORT_auth_python.md`：**本地只做"存 + 判有无"，签发在服务端**。
+
+---
+
+## 运行期动态实证（Wine，本机）
+
+`tools_local/dyn/` 是不走 Actions 的本机取证线：Wine 里把加壳程序跑起来 → dump 运行期解密镜像 →
+断点回溯 → 给 VM 派发表插桩。两份报告：
+
+`reports/REPORT_wine_auth_dynamic.md` —— 授权行为：
+
+- 校验**完全不联网**（全程跟踪系统调用，一次外网连接都没有），是纯本地判定
+- 只有 `key` 字段触发校验；`user` 像人名 + `email` 带 `@` 同时满足才进校验分支，否则当没注册数据
+- 校验失败 → 整个 `Options.ini` 被 unlink 掉；删除出口精确到 `0x14020b2d1`，打成空操作后配置文件保住
+- 删文件那条调用链穿过 `0x14216xxxx` 字节码区 → 判定在 VM 里做
+- 主程序没有任何系统验签 API 导入（crypt32 只导了个读证书名的）→ 验签自实现或壳内
+- `license` 值长度 1–344 全进校验、不挑长度 → 不像定长 RSA 签名块
+
+`reports/REPORT_vmp_probe_20261119.md` —— VM 探针：
+
+- 三张派发表在运行期都是绝对 VA，`v[2k+1]=v[2k]+5` 规律成立
+- 661 项那张表改了就 3 秒退出 → 表在热路径上；49 / 1096 两张被非派发路径引用，钩即死
+- int3 填充洞不可用（PE 异常分发吃掉 SIGTRAP）→ 改走「记录桩 + 影子表回跳」，桩在 `.vmp` 零洞里
+- 桩进热路径成功，拿到 `IP 0x142160496  bytes ec26000031011200`，地址落在 `0x14216xxxx`
+- **但这只 1 条、且字节判读可疑**，`[rbp+0xBC]` 是否真是 VM IP 待证伪，见报告 §5.3 / §7
+
+---
+
+## 状态一览
+
+- 静态分析部分：回归 16 项全过
+- 运行期动态（本机 Wine）：授权行为实证完成；VM 派发表插桩成立，**字节码序列尚未拿到**
