@@ -272,18 +272,43 @@ op 序列一致）。**授权算法的数据在 0x1d0000 堆区**（marker 扫�
 - v39/v40：heap_snap（RPM dump 0x100000-0x1400000 20MB，含 0x1d0000 授权结构区）
 - decoder 已支持 heap_snap 写回 → 下一步用真实堆数据重放 err 记录 → 还原授权结构布局
 
-### 13.6 Themida 资源容器（0x1d0000 处 PE）
-heap_snap 实证：0x1d0000 处映射一个 12KB PE32+（ImageBase 0x180000000，无入口点，
-.rdata+.rsrc 两节），.rsrc 含 **TEMP/PRVAH/OPCO/LEVL 四个资源**（Themida/WinLicense
-标准资源容器）。授权门（op897）写入的 0x1d0000→0x1d0045→0x1d7000→0x1d7d2d 指针
-即遍历该容器：DOS 头→e_lfanew→资源数据。TEMP 资源含 32B 二进制 blob
-（00 1a 33 13 23 a8 7a 5b 8a 02 e7 7d 8c bc ea a7...）。
-快照时序问题：VM 运行期（0.5-4s）该窗口 RPM 跨未提交区整体失败，仅 5.1s 后有快照
-→ 运行期堆数据仍待捕获（需逐 region 读）。
+## §14 资源容器再解析：§13.6 修正（TEMP/PRVAH/OPCO/LEVL ≠ Themida 密钥材料）
 
-### 13.7 最终定位结论
-授权校验算法的执行体 = WinLicense VM 主程序（2504 op，每次运行多态再生字节码，
-语义不变）；数据 = 原生侧读注册表后立即加密的授权结构（明文不驻留内存，marker
-全扫实证）；入口 = op≈897 的 9-op 授权存在门；输出 = 写入 VM 低区栈的 32-bit
-哈希分量序列（0x50fa8461/0x9aa3a68d/0x80739dfb/0x6e6a072/0x1ea9d/0x9dfb/0x5fb0c）。
-校验配置/密钥材料在 Themida 资源容器（TEMP/PRVAH/OPCO/LEVL）中。
+### 14.1 容器提取
+art41/heap_snap_5.4s.bin（20MB，VA 0x100000..0x1400000）内偏移 0xd0000（=VA 0x1d0000）
+发现 MZ/PE：12KB PE32+，ImageBase 0x180000000，无入口点，两节
+.rdata（vsz 0x100）+ .rsrc（vsz 0xd78）。已存
+`/workspace/dgwork/res_parse/themida_container_0x1d0000.bin`（名沿用，见 14.4 修正）。
+
+### 14.2 .rsrc 标准目录树解析（决定性）
+遍历资源目录得到 **MUI(1/1033, 240B)、WEVT_TEMPLATE(1/1033, 1986B)、16(1/1033, 944B)**
+三个标准资源类型——不是 TEMP/PRVAH/OPCO/LEVL 四个"Themida 资源"。
+
+### 14.3 TEMP/PRVAH/OPCO/LEVL 的真实身份
+四个标记位于 .rsrc 原始数据内（0x224c/0x2650/0x2698/0x2710），是
+**WEVT_TEMPLATE 二进制格式的标准 chunk 标签**（TTBL/TEMP/PRVAH/OPCO/LEVL，
+Windows 事件模板格式：PRVAH=provider 头、TTBL=模板表、TEMP=模板、
+OPCO=opcode 表、LEVL=level 表）。邻近 UTF-16 明文
+`Microsoft-Windows-OLEACC/Debug` 证实该 12KB PE 是 **oleacc.dll 的
+ETW 事件提供程序模板资源**在堆里的拷贝（运行期 ETW 注册的正常产物），
+与 Themida/WinLicense 授权机制无关。
+
+### 14.4 交叉验证
+art42/heap_snap_5.1s.bin（0x1b0000 窗口 256KB）同一内容出现在 VA 0x1b0000，
+ImageBase 0x100000000000（≠0x180000000）——两次运行同款 PE、不同 ImageBase、
+不同堆地址：是系统侧复制的资源对象，不是固定授权容器。
+TEMP 内 32B blob（001a3313 23a87a5b 8a02e77d 8cbccea7…）实为 ETW 模板元数据，
+**§13.7"密钥材料在 TEMP/PRVAH/OPCO/LEVL 中"作废**。
+
+### 14.5 授权结构位置修正
+5.4s 快照中 0x1d0000..0x1d3000 之后全部为零，0x1e0000 处是 "Actx " 头的
+SxS Activation Context 结构（含 shell32/Common-Controls manifest 路径）——
+5.4s 时低区堆只剩 Windows 运行时对象，**VM 运行期（0.5-4s）的授权结构已被释放**。
+门写入指针 0x1d0000/0x1d7000 指向的堆块在快照时刻不存在 →
+必须抓 VM 运行期逐 region 快照（v42）。
+
+### 14.6 v42（已推 master，commit 14c97e9fdd）
+- 热区 [0x1b0000,0x2000000) 每 0.5s tick 用 VirtualQueryEx 枚举 committed 区逐 region
+  RPM 读（hotr_<ts>_<base>.bin），解决 v41 固定 256KB 窗口跨未提交区失败；
+- 全景 [0x100000,0x2000000) 在 1/2/3/4/6/8s 逐 region 落盘（heapr_<s>_<base>.bin）；
+- 每 region 打印基址/大小/非零数 → 直接确认 0.5-4s 授权结构堆块的实际位置与寿命。
