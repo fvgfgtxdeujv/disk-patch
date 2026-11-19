@@ -238,3 +238,52 @@ ok=2465（98.1%）、nomatch=13、err=47（tag 574 跳飞×20、tag 27/46/176 �
 - 空 input（art23c）与 fakelic：IP 重叠仅 63/2504 → 执行流与输入强相关，但无 regcode/user/email 明文出现在 VM 读日志中
   → regcode 明文在 VM 外被预变换，或该 VM 计算是启动期固定推导
 - VM 死点：0xC0000005 @10.1s（完整 2513 条）或 1501 条提前死（CI 时序相关）
+
+## §13 定位授权算法（marker 差分 + 双 run 序列对齐）
+
+### 13.1 差分实验设计
+- fakelic 注册表写入验证（fakelic_out.txt 回读）：user=probe / email=probe@probe.test /
+  regcode=QK7X-M2PV-ZLHD-W8CT-RBNQ / regver=6 / VerifyDate=20991231 **确认生效**。
+- v36 marker 扫描（全进程 committed 区 RPM，u8+u16 双编码，1.5/3/6s 三时刻）：
+  **授权字符串在进程内存中完全不存在**（仅系统 DLL/API set 的误报命中）。
+  → DiskGenius 读注册表后立即变换/清除授权明文，不驻留。
+
+### 13.2 双 run tag 序列对齐（决定性）
+art23c（无授权）vs art33（fakelic）difflib 对齐：
+- 23c[77:897] == 33[77:897]（820 op 完全一致）
+- 23c[897:2504] == 33[906:2513]（1607 op 完全一致）
+- 差异仅两处：① prologue 33 op 布局随机化（多态再生）；② **33c 在 op 897..905 多执行 9 个 op**
+
+### 13.3 授权门（9-op 输入相关块）
+tags: 547,297,406,446,545,263,446,545,430 —— 完整条件判断结构。
+写值序列（低区栈 0x13fff28）：0x13ffef8(指针) → **0xc0000004** → 0x1d0000 → 0x1d0045 → 0x1d7000 → 0x1d7d2d
+- 0xc0000004 = STATUS_INFO_LENGTH_MISMATCH（异常状态值入栈——VM 内部异常处理/探测）
+- 0x1d0000/0x1d7000 = **运行时堆区指针**（VM 启动时该区尚不存在，运行中分配）
+- 0x1d0045/0x1d7d2d = 区内偏移指针 → VM 在 0x1d0000 堆上遍历结构
+两路径在 op 906（478,305,407...）汇合。
+
+### 13.4 结论：授权校验 = 主 2504-op VM 程序
+门只判"有无授权数据"；主程序对堆中的授权结构做完整计算（结构相同、数据不同 →
+op 序列一致）。**授权算法的数据在 0x1d0000 堆区**（marker 扫描无明文 → 已被原生侧加密/变换）。
+计算产物（低区栈单次写入值）：0x50fa8461、0x9aa3a68d、0x80739dfb、0x6e6a072、0x1ea9d、0x9dfb、0x5fb0c
+——疑似机器指纹（mid）分量/哈希中间值。
+
+### 13.5 工具链状态
+- v39/v40：heap_snap（RPM dump 0x100000-0x1400000 20MB，含 0x1d0000 授权结构区）
+- decoder 已支持 heap_snap 写回 → 下一步用真实堆数据重放 err 记录 → 还原授权结构布局
+
+### 13.6 Themida 资源容器（0x1d0000 处 PE）
+heap_snap 实证：0x1d0000 处映射一个 12KB PE32+（ImageBase 0x180000000，无入口点，
+.rdata+.rsrc 两节），.rsrc 含 **TEMP/PRVAH/OPCO/LEVL 四个资源**（Themida/WinLicense
+标准资源容器）。授权门（op897）写入的 0x1d0000→0x1d0045→0x1d7000→0x1d7d2d 指针
+即遍历该容器：DOS 头→e_lfanew→资源数据。TEMP 资源含 32B 二进制 blob
+（00 1a 33 13 23 a8 7a 5b 8a 02 e7 7d 8c bc ea a7...）。
+快照时序问题：VM 运行期（0.5-4s）该窗口 RPM 跨未提交区整体失败，仅 5.1s 后有快照
+→ 运行期堆数据仍待捕获（需逐 region 读）。
+
+### 13.7 最终定位结论
+授权校验算法的执行体 = WinLicense VM 主程序（2504 op，每次运行多态再生字节码，
+语义不变）；数据 = 原生侧读注册表后立即加密的授权结构（明文不驻留内存，marker
+全扫实证）；入口 = op≈897 的 9-op 授权存在门；输出 = 写入 VM 低区栈的 32-bit
+哈希分量序列（0x50fa8461/0x9aa3a68d/0x80739dfb/0x6e6a072/0x1ea9d/0x9dfb/0x5fb0c）。
+校验配置/密钥材料在 Themida 资源容器（TEMP/PRVAH/OPCO/LEVL）中。
