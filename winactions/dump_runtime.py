@@ -1780,7 +1780,7 @@ LOW_SZ = LOW_HI - LOW_LO
 
 def _build_stub12(orig_va, tag, probe_base, seen_va, lo_va, hi_va,
                   count_va, buf_va, ctxring_va,
-                  low_lo=LOW_LO, low_hi=LOW_HI, rec_max=REC12_MAX):
+                  low_lo=None, low_hi=None, rec_max=REC12_MAX):
     """v25 表项桩（compact 语义 + 增强）：
     - 同一 IP 只记一次（64K 槽去重，v23 实证 VM 一次性线性执行 2504 包）
     - 记录 80B：+0 IP +8 [IP] +0x10 [IP+8] +0x18 [IP+16] +0x20 [IP+24]
@@ -1867,16 +1867,19 @@ def _build_stub12(orig_va, tag, probe_base, seen_va, lo_va, hi_va,
     B += b'\xfc'                                          # cld
     B += bytes.fromhex('4889ee')                          # mov rsi,rbp
     B += bytes.fromhex('4889df')                          # mov rdi,rbx
-    B += b'\x48\x69\xdf' + struct.pack('<i', 0x15000)   # imul rdi,rbx,0x15000
+    B += b'\x48\x69\xdf' + struct.pack('<i', 0x1000)     # imul rdi,rbx,0x1000
     B += imm64(b'\x48\xb8', ctxring_va)                  # mov rax,ring
     B += bytes.fromhex('4801c7')                          # add rdi,rax
     B += b'\xb9' + struct.pack('<I', 0x200)               # mov ecx,0x200
     B += b'\xf3\x48\xa5'                                # rep movsq
-    B += imm64(b'\x48\xb8', low_lo)                      # mov rax,low_lo
-    B += bytes.fromhex('4889c6')                          # mov rsi,rax
-    B += bytes.fromhex('4881c7') + struct.pack('<I', 0x1000)  # add rdi,0x1000
-    B += b'\xb9' + struct.pack('<I', (low_hi - low_lo) // 8)  # mov ecx,0x2800
-    B += b'\xf3\x48\xa5'                                # rep movsq
+    if low_lo is not None:
+        # 仅当低区是 CPU 可读页时才生成（NOACCESS 陷阱页不可 CPU 读——
+        # v27/v28/v29/run10 四次实证：CPU 读必触发 VM 的 SEH 陷阱 → 进程死）
+        B += imm64(b'\x48\xb8', low_lo)                  # mov rax,low_lo
+        B += bytes.fromhex('4889c6')                      # mov rsi,rax
+        B += bytes.fromhex('4881c7') + struct.pack('<I', 0x1000)  # add rdi,0x1000
+        B += b'\xb9' + struct.pack('<I', (low_hi - low_lo) // 8)
+        B += b'\xf3\x48\xa5'                            # rep movsq
     # count++
     B += bytes.fromhex('488d4301')                        # lea rax,[rbx+1]
     B += imm64(b'\x48\xa3', count_va)                    # mov [count],rax
@@ -2433,9 +2436,8 @@ def table_hook_fullctx(exe, seconds, out_dir='.'):
         print('!! 没找到 661 表')
         return None
 
-    ALLOC_SIZE = 0x20000000   # 512MB：ring 84KB×2504=210MB + 桩/缓冲；
-                              # hint 0x100000000（远离 VM 低区堆，v29 实证
-                              # alloc=0x14000000 压住 VM 堆路径 → 第 1 桩后即崩）
+    ALLOC_SIZE = 0x8000000    # 128MB（ring 4KB×8192=32MB）；hint 0x100000000
+                              # 远离 VM 低区堆（v29 实证 alloc=0x14000000 压堆）
     alloc = None
     for hint in (0x100000000, 0x140000000, 0x160000000, None):
         alloc = k32.VirtualAllocEx(ctypes.c_void_p(h), ctypes.c_void_p(hint),
@@ -2452,8 +2454,8 @@ def table_hook_fullctx(exe, seconds, out_dir='.'):
     seen_va = alloc + 0x100000            # 64K × 8B = 512KB 去重表
     stub_va = alloc + 0x2100000
     buf_va = alloc + 0x2200000            # 8000 × 80B = 640KB
-    ctxring_va = alloc + 0x3000000        # 槽 = 0x15000（ctx 4KB + 低区 80KB）
-    RING_SLOTS = (alloc + ALLOC_SIZE - ctxring_va) // 0x15000
+    ctxring_va = alloc + 0x3000000        # 槽 = 4KB（低区改走 RPM 快照 low_snap_*.bin）
+    RING_SLOTS = (alloc + ALLOC_SIZE - ctxring_va) // 0x1000
     print('[*] 缓冲: count=%#x seen=%#x stub=%#x buf=%#x ring=%#x'
           % (count_va, seen_va, stub_va, buf_va, ctxring_va), flush=True)
 
@@ -2513,7 +2515,6 @@ def table_hook_fullctx(exe, seconds, out_dir='.'):
             sv = stub_va + k * STUB12_SZ
             st = _build_stub12(orig, (ti << 20) | ei, pb, seen_va, lo, hi,
                                count_va, buf_va, ctxring_va,
-                               low_lo=low_lo, low_hi=low_hi,
                                rec_max=min(REC12_MAX, RING_SLOTS))
             blob_stubs += st + b'\xcc' * (STUB12_SZ - len(st))
             ptrs.append(sv if form == 'abs' else sv - base)
@@ -2564,6 +2565,7 @@ def table_hook_fullctx(exe, seconds, out_dir='.'):
     tick = 0
     snap = (0, b'')
     ring_snap = None
+    low_snaps = {}
     dumped = set()
     while time.time() - t0 < seconds:
         time.sleep(0.5)
@@ -2577,9 +2579,12 @@ def table_hook_fullctx(exe, seconds, out_dir='.'):
                 if raw0:
                     snap = (len(raw0) // REC12_SZ, raw0)
                 # 活体读 ctx 环（进程死后页被释放，死后读全零——v26 实证）
-                ring_live = read_mem_safe(h, ctxring_va, c0 * 0x15000)
-                if ring_live and ring_live.count(0) < len(ring_live) - 0x15000:
+                ring_live = read_mem_safe(h, ctxring_va, c0 * 0x1000)
+                if ring_live and ring_live.count(0) < len(ring_live) - 0x1000:
                     ring_snap = ring_live
+                low_live = read_mem_safe(h, LOW_LO, LOW_SZ)
+                if low_live and sum(1 for b in low_live if b):
+                    low_snaps[round(ts, 1)] = low_live
         for wt in (1.0, 2.0, 3.0, 4.0, 6.0, 8.0):
             key = int(wt)
             if ts >= wt and key not in dumped:
@@ -2619,24 +2624,29 @@ def table_hook_fullctx(exe, seconds, out_dir='.'):
     # ctx 环整体落盘（优先活体快照）
     if n:
         ring = ring_snap or read_mem_safe(h, ctxring_va,
-                                          min(n, REC12_MAX) * 0x15000)
-        if ring and ring.count(0) < len(ring) - 0x15000:
+                                          min(n, REC12_MAX) * 0x1000)
+        if ring and ring.count(0) < len(ring) - 0x1000:
             with open(os.path.join(out_dir, 'ctx_ring.bin'), 'wb') as f2:
                 f2.write(ring)
-            print('[*] ctx_ring.bin %d 槽 × 84KB（%s）'
-                  % (len(ring) // 0x15000, '活体快照' if ring_snap else '死后读'),
+            print('[*] ctx_ring.bin %d 槽 × 4KB（%s）'
+                  % (len(ring) // 0x1000, '活体快照' if ring_snap else '死后读'),
                   flush=True)
         else:
             print('[!] ctx_ring 内容全零/读失败，跳过落盘', flush=True)
+    for ts2, blob2 in sorted(low_snaps.items()):
+        with open(os.path.join(out_dir, 'low_snap_%ss.bin' % ts2), 'wb') as f2:
+            f2.write(blob2)
+        nz2 = sum(1 for b in blob2 if b)
+        print('[*] low_snap_%ss.bin 80KB 非零 %d' % (ts2, nz2), flush=True)
+
     snap_window('end')
     snap_ctx('end')
     with open(os.path.join(out_dir, 'vm_trace.json'), 'w') as f:
         json.dump({'n': n, 'mode': 'table-fullctx', 'rec_size': REC12_SZ,
                    'fmt': '[ip,[ip],[ip+8],[ip+16],[ip+24],tag,orig,rbp,tbl,0]',
                    'dead_at': dead_at, 'n_ip': len(ips),
-                   'ring_layout': {'slot': 0x15000, 'ctx': [0, 0x1000],
-                                   'low': [0x1000, 0x1000 + (low_hi - low_lo)],
-                                   'low_va': low_lo},
+                   'ring_layout': {'slot': 0x1000, 'ctx': [0, 0x1000],
+                                   'low': None, 'low_va': LOW_LO},
                    'tables': [(hex(va), nn, fm) for va, nn, fm in tables],
                    'tag_hist': tags, 'trace': out}, f)
     for tva, (raw0, nn) in originals.items():
