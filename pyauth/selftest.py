@@ -84,6 +84,43 @@ def main() -> int:
     _eq("带 appname", body.endswith("&appname=DiskGenius"), True)
     _eq("percent 模式可用", protocol.build_register_body("6.2", code, "a b", "e@x", const.SAMPLE_MID, percent=True).split("&")[1], "code=QK7X%2dM2PV%2dZLHD%2dW8CT%2dRBNQ")
 
+    print("[10] 离线注册（OfflineReg.dat / Options.ini）")
+    from . import offline as off
+
+    plain = off.make_plain("https://test.example.com/reg?appname=DiskGenius&license=SIG")
+    dat = off.encode_dat(plain)
+    _eq("dat 固定 2048 字节", len(dat), off.DAT_SIZE)
+    _eq("dat 往返", off.decode_dat(dat)[off.URL_OFFSET:off.URL_OFFSET + 20],
+        b"https://test.example")
+    _eq("read_url", off.read_url(off.decode_dat(dat)),
+        "https://test.example.com/reg?appname=DiskGenius&license=SIG")
+    try:
+        off.decode_dat(dat[:-1])
+        raise AssertionError("短 dat 应该报错")
+    except ValueError:
+        print("  ok  dat 长度校验")
+
+    ep = off.parse_endpoint("https://test.example.com/reg?appname=DiskGenius&license=SIG")
+    _eq("443 走 TLS", ep.secure, True)
+    _eq("query 原样当 body", ep.body, "appname=DiskGenius&license=SIG")
+
+    _eq("响应判定(通过)", off.response_ok("appname=DiskGenius&license=SIG&user=a"), True)
+    _eq("响应判定(license 打头被拒)", off.response_ok("license=SIG&appname=DiskGenius"), False)
+
+    res = off.OfflineResult(regver="6.2.0.1829_x64_pro_eng",
+                            key="appname=DiskGenius&license=TEST123&user=ZakaTest&email=zaka@example.com")
+    text = off.render_options_ini(res)
+    _eq("段名是 [license]", text.splitlines()[0], "[license]")
+    _eq("key 原样保存", 'key = "%s"' % res.key in text, True)
+    tmp2 = os.path.join(tmp, "Options_offline.ini")
+    off.write_options_ini(tmp2, res)
+    _eq("写出是 UTF-16 BOM", open(tmp2, "rb").read(2), b"\xff\xfe")
+    fields, _ = off.read_options_ini(tmp2)
+    _eq("读回 regver", fields.get("regver"), "6.2.0.1829_x64_pro_eng")
+    _eq("读回 key", fields.get("key"), res.key)
+    _eq("默认 user 为空", fields.get("user"), "")
+    _eq("默认 email", fields.get("email"), "license@eassos.com")
+
     print("\nALL PASS")
     return 0
 

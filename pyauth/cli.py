@@ -74,6 +74,49 @@ def _cmd_decode_value(args) -> int:
     return 0
 
 
+def _cmd_offline_dat(args) -> int:
+    from . import offline as off
+    url = args.url
+    plain = off.make_plain(url)
+    dat = off.encode_dat(plain, bytes(off.DAT_KEY_SIZE))
+    out = args.out or "OfflineReg.dat"
+    with open(out, "wb") as fh:
+        fh.write(dat)
+    print("已写出 %s (%d 字节)" % (out, len(dat)))
+    print("  URL        : %s" % url)
+    print("  host:port  : %s (客户端固定 port=443 -> %s)" % (
+        off.parse_endpoint(url).host, "TLS" if off.parse_endpoint(url).secure else "明文"))
+    print("  POST body  : %s" % off.parse_endpoint(url).body)
+    return 0
+
+
+def _cmd_offline_ini(args) -> int:
+    from . import offline as off
+    resp = args.response
+    if os.path.exists(resp):
+        resp = open(resp, encoding="utf-8", errors="replace").read().strip()
+    if not off.response_ok(resp):
+        print("客户端会拒绝这个响应：第一个字段必须是 %r" % off.RESPONSE_PREFIX)
+        return 1
+    res = off.OfflineResult(regver=args.regver, key=resp, raw=resp)
+    out = args.out or "Options.ini"
+    off.write_options_ini(out, res)
+    print("已写出 %s" % out)
+    print(off.render_options_ini(res))
+    return 0
+
+
+def _cmd_offline_show(args) -> int:
+    from . import offline as off
+    fields, text = off.read_options_ini(args.path)
+    if not fields:
+        print("没有 [%s] 段" % off.INI_SECTION_ACTUAL)
+        return 1
+    for k in off.INI_ORDER:
+        print("%-8s = %s" % (k, fields.get(k, "")))
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(prog="pyauth", description="DiskGenius 授权层 Python 还原工具")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -110,6 +153,21 @@ def build_parser() -> argparse.ArgumentParser:
     p = sub.add_parser("decode-value", help="解析注册表 license 值的字节（文件或 hex）")
     p.add_argument("source")
     p.set_defaults(func=_cmd_decode_value)
+
+    p = sub.add_parser("offline-dat", help="生成 OfflineReg.dat（2048 字节，可指到自己的服务器）")
+    p.add_argument("url", help="明文里的 URL，query 会原样成为 POST body")
+    p.add_argument("--out", default="")
+    p.set_defaults(func=_cmd_offline_dat)
+
+    p = sub.add_parser("offline-ini", help="用服务端响应文本生成 Options.ini")
+    p.add_argument("response", help="响应原文，或含响应原文的文件")
+    p.add_argument("--regver", default="6.2.0.1829_x64_pro_eng")
+    p.add_argument("--out", default="")
+    p.set_defaults(func=_cmd_offline_ini)
+
+    p = sub.add_parser("offline-show", help="解析 Options.ini 的 [license] 段")
+    p.add_argument("path")
+    p.set_defaults(func=_cmd_offline_show)
 
     return ap
 
