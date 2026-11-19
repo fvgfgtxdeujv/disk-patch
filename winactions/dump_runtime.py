@@ -1823,7 +1823,7 @@ def _build_stub12(orig_va, tag, probe_base, seen_va, lo_va, hi_va,
     B += bytes.fromhex('4c39d2')
     jcc(b'\x0f\x82', 'fin')                              # IP < lo
     B += bytes.fromhex('4c8d5220')                        # lea r10,[rdx+0x20]
-    B += imm64(b'\x49\xb9', hi_va)                       # mov r11,hi
+    B += imm64(b'\x49\xbb', hi_va)                       # mov r11,hi
     B += bytes.fromhex('4c39da')                          # cmp r11,r10
     jcc(b'\x0f\x82', 'fin')                              # hi < IP+0x20
     # 读 32B 窗口
@@ -1840,7 +1840,7 @@ def _build_stub12(orig_va, tag, probe_base, seen_va, lo_va, hi_va,
     B += bytes.fromhex('4c01f9')                          # add rcx,r15
     B += bytes.fromhex('483911')                          # cmp [rcx],rdx
     je_pos = len(B)
-    B += b'\x74\x00'
+    B += b'\x0f\x84\x00\x00\x00\x00'                   # je fin（rel32，防 rel8 溢出）
     B += bytes.fromhex('488911')                          # mov [rcx],rdx
     counter(probe_base + 8)
     # 写 80B 记录
@@ -1880,8 +1880,7 @@ def _build_stub12(orig_va, tag, probe_base, seen_va, lo_va, hi_va,
     B += b'\xff\xe6'
     for pos, kind in holes:
         B[pos + 2:pos + 6] = struct.pack('<i', fin_pos - (pos + 6))
-    rel = fin_pos - (je_pos + 2)
-    B[je_pos + 1] = rel & 0xFF
+    B[je_pos + 2:je_pos + 6] = struct.pack('<i', fin_pos - (je_pos + 6))
     assert len(B) <= STUB12_SZ, 'stub12 超长 %d' % len(B)
     return bytes(B)
 
