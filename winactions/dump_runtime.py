@@ -1824,8 +1824,8 @@ def _build_stub12(orig_va, tag, probe_base, seen_va, lo_va, hi_va,
     jcc(b'\x0f\x82', 'fin')                              # IP < lo
     B += bytes.fromhex('4c8d5220')                        # lea r10,[rdx+0x20]
     B += imm64(b'\x49\xbb', hi_va)                       # mov r11,hi
-    B += bytes.fromhex('4c39da')                          # cmp r11,r10
-    jcc(b'\x0f\x82', 'fin')                              # hi < IP+0x20
+    B += bytes.fromhex('4d39da')                          # cmp r10, r11（REX.B=1 才是 r10）
+    jcc(b'\x0f\x83', 'fin')                              # jae: IP+0x20 >= hi → fin
     # 读 32B 窗口
     B += bytes.fromhex('4c8b02')                          # r8=[rdx]
     B += bytes.fromhex('4c8b4a08')                        # r9=[rdx+8]
@@ -1851,7 +1851,7 @@ def _build_stub12(orig_va, tag, probe_base, seen_va, lo_va, hi_va,
     B += bytes.fromhex('4c894708')                        # [rdi+8]
     B += bytes.fromhex('4c894f10')                        # [rdi+0x10]
     B += bytes.fromhex('4c895718')                        # [rdi+0x18]
-    B += bytes.fromhex('4c895f20')                        # [rdi+0x20]
+    B += bytes.fromhex('4c896720')                        # [rdi+0x20]=r12（[IP+0x18]）
     B += b'\x48\xc7\x47\x28' + struct.pack('<i', tag & 0xFFFFFFFF)
     B += imm64(b'\x49\xb8', orig_va)                     # mov r8,orig
     B += bytes.fromhex('4c894730')                        # [rdi+0x30]=orig
