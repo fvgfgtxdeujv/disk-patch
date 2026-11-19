@@ -1773,9 +1773,9 @@ REC12_SZ = 80           # +0 IP +8 [IP] +0x10 [IP+8] +0x18 [IP+16] +0x20 [IP+24]
                         # +0x28 tag +0x30 orig +0x38 rbp +0x40 [rbp+0xF5] +0x48 0
 REC12_MAX = 8000        # ctx 环 8192 槽 × 4KB = 32MB
 CTXRING_SLOTS = 8192
-LOW_LO = 0x13FEC000     # VM 低区工作区（0x13FFEF8 等高频访问，紧贴模块基址下方）
-LOW_HI = 0x14000000     # 80KB，随每记录复制进 ring 槽（v27 实证 err 全集中于此）
-LOW_SZ = LOW_HI - LOW_LO
+LOW_LO = 0x1D00000      # VM 低区工作区（7 位 hex！0x13FFEF8=20,971,256、
+LOW_HI = 0x1400000      # 0x1DC4D8=1,945,048 → [0x1D00000, 0x1400000)≈19.5MB；
+LOW_SZ = LOW_HI - LOW_LO  # v33 重放实证：此前 0x13FEC000(8 位)整个窗口搞错
 
 
 def _build_stub12(orig_va, tag, probe_base, seen_va, lo_va, hi_va,
@@ -2469,10 +2469,10 @@ def table_hook_fullctx(exe, seconds, out_dir='.'):
     # 必须用 VirtualQueryEx 选出「commit + 可读 + 无 guard」的页；v27-v29 三次
     # 第 1 桩即崩的疑因即固定窗口含不可访问页。
     lo_run = None
-    qaddr = 0x13E00000
+    qaddr = 0x10000
     mbi = MBI()
     low_regions = []
-    while qaddr < 0x14000000:
+    while qaddr < LOW_HI:
         if not k32.VirtualQueryEx(ctypes.c_void_p(h), ctypes.c_void_p(qaddr),
                                   ctypes.byref(mbi), ctypes.sizeof(mbi)):
             break
@@ -2490,13 +2490,13 @@ def table_hook_fullctx(exe, seconds, out_dir='.'):
     low_lo, low_hi = None, None
     for b2, sz2, prot2 in low_regions:
         if b2 <= 0x13FFEF8 < b2 + sz2:      # VM 高频工作点
-            low_hi = min(b2 + sz2, 0x14000000)
-            low_lo = max(b2, low_hi - LOW_SZ)
+            low_hi = min(b2 + sz2, LOW_HI)
+            low_lo = max(b2, 0x10000)
             break
     if low_lo is None and low_regions:
         b2, sz2, _p = low_regions[-1]
-        low_hi = min(b2 + sz2, 0x14000000)
-        low_lo = max(b2, low_hi - LOW_SZ)
+        low_hi = min(b2 + sz2, LOW_HI)
+        low_lo = max(b2, 0x10000)
     if low_lo is None:
         low_lo, low_hi = LOW_LO, LOW_HI
         print('[!] 低区未找到可读 region，退回固定窗口', flush=True)
