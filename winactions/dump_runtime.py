@@ -3081,7 +3081,8 @@ def main():
         fn = {'table': table_hook_trace, 'site': vm_hook_trace,
               'fullctx': table_hook_fullctx}[a.trace_vm]
         print('[*] 追踪方式: %s' % a.trace_vm)
-        n = fn(a.exe, a.trace_seconds, od, markers=a.marker)
+        n = fn(a.exe, a.trace_seconds, od,
+               markers=a.marker.split(',') if a.marker else None)
         print('[*] trace-mode 结束: %s 条' % n)
         return 0
 
