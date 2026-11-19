@@ -2604,6 +2604,7 @@ def table_hook_fullctx(exe, seconds, out_dir='.', markers=None):
     snap = (0, b'')
     ring_snap = None
     low_snaps = {}
+    heap_snaps = {}
     dumped = set()
     def marker_scan(ts):
         if not markers:
@@ -2659,6 +2660,9 @@ def table_hook_fullctx(exe, seconds, out_dir='.', markers=None):
                 low_live = read_mem_safe(h, LOW_LO, LOW_SZ)
                 if low_live and sum(1 for b in low_live if b):
                     low_snaps[round(ts, 1)] = low_live
+                heap_live = read_mem_safe(h, 0x100000, 0x1400000 - 0x100000)
+                if heap_live and sum(1 for b in heap_live if b):
+                    heap_snaps[round(ts, 1)] = heap_live
         for wt in (1.0, 2.0, 3.0, 4.0, 6.0, 8.0):
             key = int(wt)
             if ts >= wt and key not in dumped:
@@ -2717,6 +2721,11 @@ def table_hook_fullctx(exe, seconds, out_dir='.', markers=None):
             f2.write(blob2)
         nz2 = sum(1 for b in blob2 if b)
         print('[*] low_snap_%ss.bin 80KB 非零 %d' % (ts2, nz2), flush=True)
+    for ts2, blob2 in sorted(heap_snaps.items()):
+        with open(os.path.join(out_dir, 'heap_snap_%ss.bin' % ts2), 'wb') as f2:
+            f2.write(blob2)
+        nz2 = sum(1 for b in blob2 if b)
+        print('[*] heap_snap_%ss.bin 20MB 非零 %d' % (ts2, nz2), flush=True)
 
     snap_window('end')
     snap_ctx('end')
