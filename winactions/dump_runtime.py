@@ -2475,6 +2475,7 @@ def table_hook_fullctx(exe, seconds, out_dir='.'):
             sv = stub_va + k * STUB12_SZ
             st = _build_stub12(orig, (ti << 20) | ei, pb, seen_va, lo, hi,
                                count_va, buf_va, ctxring_va,
+                               low_lo=low_lo, low_hi=low_hi,
                                rec_max=min(REC12_MAX, RING_SLOTS))
             blob_stubs += st + b'\xcc' * (STUB12_SZ - len(st))
             ptrs.append(sv if form == 'abs' else sv - base)
@@ -2493,10 +2494,43 @@ def table_hook_fullctx(exe, seconds, out_dir='.'):
                                   newtab, len(newtab), ctypes.byref(wrote)):
             print('   表 %#x（%d 项）已换 v25 桩' % (tva, n), flush=True)
 
-    low_probe = read_mem_safe(h, LOW_LO, LOW_SZ)
-    print('[*] 低区 [%#x, %#x) 可读=%s 非零=%d'
-          % (LOW_LO, LOW_HI, low_probe is not None,
-             sum(1 for b in (low_probe or b'') if b)), flush=True)
+    # 低区动态确定（v30）：RPM 可读 ≠ CPU 可读（NOACCESS/guard 页 RPM 照样读成功），
+    # 必须用 VirtualQueryEx 选出「commit + 可读 + 无 guard」的页；v27-v29 三次
+    # 第 1 桩即崩的疑因即固定窗口含不可访问页。
+    lo_run = None
+    qaddr = 0x13E00000
+    mbi = MBI()
+    low_regions = []
+    while qaddr < 0x14000000:
+        if not k32.VirtualQueryEx(ctypes.c_void_p(h), ctypes.c_void_p(qaddr),
+                                  ctypes.byref(mbi), ctypes.sizeof(mbi)):
+            break
+        b2 = mbi.BaseAddress or qaddr
+        sz2 = mbi.RegionSize or 0x1000
+        prot2 = mbi.Protect
+        if (mbi.State == MEM_COMMIT and not (prot2 & PAGE_GUARD_)
+                and (prot2 & 0xFF) in PAGE_READABLE):
+            low_regions.append((b2, sz2, prot2))
+        if b2 + sz2 <= qaddr:
+            break
+        qaddr = b2 + sz2
+    for b2, sz2, prot2 in low_regions:
+        print('    [低区] [%#x, %#x) prot=%#x' % (b2, b2 + sz2, prot2), flush=True)
+    low_lo, low_hi = None, None
+    for b2, sz2, prot2 in low_regions:
+        if b2 <= 0x13FFEF8 < b2 + sz2:      # VM 高频工作点
+            low_hi = min(b2 + sz2, 0x14000000)
+            low_lo = max(b2, low_hi - LOW_SZ)
+            break
+    if low_lo is None and low_regions:
+        b2, sz2, _p = low_regions[-1]
+        low_hi = min(b2 + sz2, 0x14000000)
+        low_lo = max(b2, low_hi - LOW_SZ)
+    if low_lo is None:
+        low_lo, low_hi = LOW_LO, LOW_HI
+        print('[!] 低区未找到可读 region，退回固定窗口', flush=True)
+    print('[*] 桩低区窗口 [%#x, %#x) %dKB' % (low_lo, low_hi,
+          (low_hi - low_lo) // 1024), flush=True)
 
     WIN_LO, WIN_SZ = base + 0x2140000, 0x1E0000   # 字节码大窗口 2MB
 
@@ -2600,7 +2634,8 @@ def table_hook_fullctx(exe, seconds, out_dir='.'):
                    'fmt': '[ip,[ip],[ip+8],[ip+16],[ip+24],tag,orig,rbp,tbl,0]',
                    'dead_at': dead_at, 'n_ip': len(ips),
                    'ring_layout': {'slot': 0x15000, 'ctx': [0, 0x1000],
-                                   'low': [0x1000, 0x15000], 'low_va': LOW_LO},
+                                   'low': [0x1000, 0x1000 + (low_hi - low_lo)],
+                                   'low_va': low_lo},
                    'tables': [(hex(va), nn, fm) for va, nn, fm in tables],
                    'tag_hist': tags, 'trace': out}, f)
     for tva, (raw0, nn) in originals.items():
