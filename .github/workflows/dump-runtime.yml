@@ -159,8 +159,9 @@ jobs:
           Set-ItemProperty -Path $k -Name regcode    -Value 'QK7X-M2PV-ZLHD-W8CT-RBNQ'
           Set-ItemProperty -Path $k -Name regver     -Value '6'
           Set-ItemProperty -Path $k -Name VerifyDate -Value '20991231'
-          Get-ItemProperty $k | Format-List
+          Get-ItemProperty $k | Format-List | Out-File -FilePath fakelic_out.txt -Encoding utf8
           Write-Host "已写入假授权"
+          Get-Content fakelic_out.txt
 
       # ---- v14：inline hook 逐条追踪（trace=true 时走这条，替代采样） ----
       - name: 逐条 VM 指令追踪（inline hook）
@@ -246,6 +247,7 @@ jobs:
             ctx_*.bin
             ctx_ring.bin
             hit_*.bin
+            fakelic_out.txt
             low_snap_*.bin
             handler_*.bin
             handlerbody_*.bin
