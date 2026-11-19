@@ -36,7 +36,9 @@ reports/
   REPORT_runtime_dump.md  表指针槽 0x4/0x8/0xF5 + 坐标系换算
   REPORT_wine_auth_dynamic.md    Wine 下授权校验的行为实证（纯本地 / key 触发 / 删除出口）
   REPORT_vmp_probe_20261119.md   VM 指令级探针：改派发表 + 记录桩 + 影子表回跳（本机跑通）
+  REPORT_opcode_layout_20261119.md  opcode 指令布局：跳板层 / ctx 布局 / 661 个 op 的 packet 字段与 rel 偏移
 tools_local/dyn/     运行期动态取证脚本（镜像 dump / 断点回溯 / key 契约二分 / VM 桩）
+tools_local/vm/      opcode 布局提取（表→跳板→handler / 字段与 rel 偏移 / unicorn 差分沙箱）
 ```
 
 ---
@@ -90,7 +92,9 @@ python3 tableresolve.py <payload.bin> --ipslots ipslots.json
 ## 状态
 
 - 静态分析部分：回归 16 项全过
-- 运行期动态（本机 Wine 9.0 + Xvfb）：授权校验行为实证完成；VM 派发表插桩成立，字节码序列尚未拿到
+- 运行期动态（本机 Wine 9.0 + Xvfb）：授权校验行为实证完成；VM 派发表插桩成立
+- VM 结构：1806 个唯一 handler（跳板层已解）、ctx 布局已确认、661 个 op 的 packet 布局解出 650；
+  **handler 语义与授权函数反编译仍未完成**（缺真实 ctx 快照做差分）
 - Actions 方案：**已在真实 GitHub Actions（windows-2025）上跑通**，job 绿，产物 `vm-tables` 有内容
   - 目标启动、提权、PE 段表解析、`.vmp` 定位、内存镜像落盘全部正常
   - 目前拿到的是 `mode=arrays`：32 张「整段指向 `.vmp`」的指针数组，合计 593 项
