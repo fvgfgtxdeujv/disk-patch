@@ -2433,9 +2433,11 @@ def table_hook_fullctx(exe, seconds, out_dir='.'):
         print('!! 没找到 661 表')
         return None
 
-    ALLOC_SIZE = 0x10000000
+    ALLOC_SIZE = 0x20000000   # 512MB：ring 84KB×2504=210MB + 桩/缓冲；
+                              # hint 0x100000000（远离 VM 低区堆，v29 实证
+                              # alloc=0x14000000 压住 VM 堆路径 → 第 1 桩后即崩）
     alloc = None
-    for hint in (0x14000000, 0x100000000, 0x110000000, 0x160000000, None):
+    for hint in (0x100000000, 0x140000000, 0x160000000, None):
         alloc = k32.VirtualAllocEx(ctypes.c_void_p(h), ctypes.c_void_p(hint),
                                    ctypes.c_size_t(ALLOC_SIZE),
                                    MEM_COMMIT | MEM_RESERVE,
