@@ -1867,7 +1867,9 @@ def _build_stub12(orig_va, tag, probe_base, seen_va, lo_va, hi_va,
     B += b'\xfc'                                          # cld
     B += bytes.fromhex('4889ee')                          # mov rsi,rbp
     B += bytes.fromhex('4889df')                          # mov rdi,rbx
-    B += b'\x48\x69\xdf' + struct.pack('<i', 0x1000)     # imul rdi,rbx,0x1000
+    B += b'\x48\x69\xfb' + struct.pack('<i', 0x1000)     # imul rdi,rbx,0x1000
+    # ModRM fb = 11 111 011：reg=rdi(dst)、rm=rbx(src)。此前 48 69 df 的
+    # reg=rbx → 实际是 imul rbx,rdi → rdi 未乘、写 ring+idx 逐字节错位
     B += imm64(b'\x48\xb8', ctxring_va)                  # mov rax,ring
     B += bytes.fromhex('4801c7')                          # add rdi,rax
     B += b'\xb9' + struct.pack('<I', 0x200)               # mov ecx,0x200
