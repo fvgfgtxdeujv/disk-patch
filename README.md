@@ -99,3 +99,19 @@ python3 tableresolve.py <payload.bin> --ipslots ipslots.json
 |---|---|---|
 | `ctx` | 找到带 `0x4/0x8/0xF5` 槽位的 VM 上下文，表项是明文 VA | 多表按 index 合并成一个 opcode 空间 |
 | `arrays` | 没找到上下文，抓到的是「整段指向 VM 代码区」的指针数组 | 只取最大一张当 `HANDLERS`，其余单列进 `TABLES`（跨表合并会互相打架） |
+
+---
+
+## 授权层（pyauth/）
+
+`pyauth/` 是基于 6.2.0.1829 实测还原的授权层 Python 实现：授权记录结构、Options.ini
+（UTF-16/BOM，`[LicenseInfo]` 段）、注册表 `HKCU\Software\Eassos\DiskGenius\Reg\license`、
+状态/注册请求串（逐字节对齐运行期实测）、`mid` 编解码、授权门判定模型。
+
+```bash
+python -m pyauth.selftest        # 9 组断言，全部字节级
+python -m pyauth query           # 打印实测请求串
+python -m pyauth code QK7X-M2PV-ZLHD-W8CT-RBNQ
+```
+
+结论与证据见 `reports/REPORT_auth_python.md`：**本地只做"存 + 判有无"，签发在服务端**。
