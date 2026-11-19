@@ -249,6 +249,7 @@ jobs:
             hit_*.bin
             fakelic_out.txt
             low_snap_*.bin
+            heap_snap_*.bin
             handler_*.bin
             handlerbody_*.bin
             hot_trace.json
