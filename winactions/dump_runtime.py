@@ -2605,6 +2605,7 @@ def table_hook_fullctx(exe, seconds, out_dir='.', markers=None):
     ring_snap = None
     low_snaps = {}
     heap_snaps = {}
+    hot_frames = {}
     dumped = set()
     def marker_scan(ts):
         if not markers:
@@ -2663,12 +2664,55 @@ def table_hook_fullctx(exe, seconds, out_dir='.', markers=None):
                 heap_live = read_mem_safe(h, 0x1b0000, 0x40000)
                 if heap_live and sum(1 for b in heap_live if b) > 64:
                     heap_snaps[round(ts, 1)] = heap_live
+                # v42：热区 [0x1b0000,0x2000000) 每 tick 逐 committed region 读
+                try:
+                    regs = enum_regions(h)
+                except Exception:
+                    regs = []
+                hot = []
+                for rb, rs, rp in regs:
+                    lo2 = max(rb, 0x1b0000)
+                    hi2 = min(rb + rs, 0x2000000)
+                    if hi2 <= lo2:
+                        continue
+                    blob2 = read_mem_safe(h, lo2, hi2 - lo2)
+                    nz2 = sum(1 for x in (blob2 or b'') if x)
+                    if blob2 and nz2:
+                        hot.append((lo2, blob2))
+                if hot:
+                    hot_frames[round(ts, 1)] = hot
+                    print('[hot %s] %d region 非零（%s）' % (
+                        ts, len(hot),
+                        ' '.join('%#x+%#x' % (r2[0], len(r2[1]))
+                                 for r2 in hot[:8])), flush=True)
         for wt in (1.0, 2.0, 3.0, 4.0, 6.0, 8.0):
             key = int(wt)
             if ts >= wt and key not in dumped:
                 dumped.add(key)
                 snap_window('%ds' % key)
                 snap_ctx('%ds' % key)
+                # v42：低区堆全景 [0x100000,0x2000000) 逐 committed region 存
+                try:
+                    regs = enum_regions(h)
+                except Exception:
+                    regs = []
+                nfr = 0
+                for rb, rs, rp in regs:
+                    lo2 = max(rb, 0x100000)
+                    hi2 = min(rb + rs, 0x2000000)
+                    if hi2 <= lo2:
+                        continue
+                    blob2 = read_mem_safe(h, lo2, hi2 - lo2)
+                    if not blob2 or not any(blob2):
+                        continue
+                    fn2 = os.path.join(out_dir, 'heapr_%ds_%#x.bin' % (key, lo2))
+                    with open(fn2, 'wb') as f4:
+                        f4.write(blob2)
+                    print('[heapr %ds] %#x +%#x 非零 %d' % (
+                        key, lo2, len(blob2), sum(1 for x in blob2 if x)),
+                        flush=True)
+                    nfr += 1
+                print('[heapr %ds] 共 %d region' % (key, nfr), flush=True)
         for wt in (1.5, 3.0, 6.0):
             mkey = ('m%s' % wt)
             if ts >= wt and mkey not in dumped:
@@ -2726,6 +2770,12 @@ def table_hook_fullctx(exe, seconds, out_dir='.', markers=None):
             f2.write(blob2)
         nz2 = sum(1 for b in blob2 if b)
         print('[*] heap_snap_%ss.bin 256KB 非零 %d' % (ts2, nz2), flush=True)
+    # v42：热区逐 tick 逐 region 落盘
+    for ts2, regs2 in sorted(hot_frames.items()):
+        for lo2, blob2 in regs2:
+            fn2 = os.path.join(out_dir, 'hotr_%s_%#x.bin' % (ts2, lo2))
+            with open(fn2, 'wb') as f2:
+                f2.write(blob2)
 
     snap_window('end')
     snap_ctx('end')
