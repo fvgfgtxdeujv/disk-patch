@@ -2461,39 +2461,6 @@ def table_hook_fullctx(exe, seconds, out_dir='.'):
     originals = {}
     stubs = []
     k = 0
-    for ti, (tva, n, form) in enumerate(tables):
-        raw = read_mem(h, tva, n * 8)
-        if not raw or len(raw) != n * 8:
-            continue
-        originals[tva] = (raw, n)
-        ents = struct.unpack('<%dQ' % n, raw)
-        pb = probe_va + ti * PROBE_STRIDE
-        blob_stubs = bytearray()
-        ptrs = []
-        for ei, e0 in enumerate(ents):
-            orig = e0 if form == 'abs' else base + e0
-            sv = stub_va + k * STUB12_SZ
-            st = _build_stub12(orig, (ti << 20) | ei, pb, seen_va, lo, hi,
-                               count_va, buf_va, ctxring_va,
-                               low_lo=low_lo, low_hi=low_hi,
-                               rec_max=min(REC12_MAX, RING_SLOTS))
-            blob_stubs += st + b'\xcc' * (STUB12_SZ - len(st))
-            ptrs.append(sv if form == 'abs' else sv - base)
-            stubs.append((ti, ei, sv, orig))
-            k += 1
-        args = [ctypes.c_void_p(h), ctypes.c_void_p(stub_va), bytes(blob_stubs),
-                len(blob_stubs), ctypes.byref(wrote)]
-        if not k32.WriteProcessMemory(*args):
-            print('   写桩失败 %#x err=%d' % (tva, ctypes.get_last_error()))
-            continue
-        op = ctypes.c_uint32(0)
-        k32.VirtualProtectEx(ctypes.c_void_p(h), ctypes.c_void_p(tva),
-                             ctypes.c_size_t(n * 8), PAGE_READWRITE, ctypes.byref(op))
-        newtab = struct.pack('<%dQ' % n, *ptrs)
-        if k32.WriteProcessMemory(ctypes.c_void_p(h), ctypes.c_void_p(tva),
-                                  newtab, len(newtab), ctypes.byref(wrote)):
-            print('   表 %#x（%d 项）已换 v25 桩' % (tva, n), flush=True)
-
     # 低区动态确定（v30）：RPM 可读 ≠ CPU 可读（NOACCESS/guard 页 RPM 照样读成功），
     # 必须用 VirtualQueryEx 选出「commit + 可读 + 无 guard」的页；v27-v29 三次
     # 第 1 桩即崩的疑因即固定窗口含不可访问页。
@@ -2531,6 +2498,40 @@ def table_hook_fullctx(exe, seconds, out_dir='.'):
         print('[!] 低区未找到可读 region，退回固定窗口', flush=True)
     print('[*] 桩低区窗口 [%#x, %#x) %dKB' % (low_lo, low_hi,
           (low_hi - low_lo) // 1024), flush=True)
+
+    for ti, (tva, n, form) in enumerate(tables):
+        raw = read_mem(h, tva, n * 8)
+        if not raw or len(raw) != n * 8:
+            continue
+        originals[tva] = (raw, n)
+        ents = struct.unpack('<%dQ' % n, raw)
+        pb = probe_va + ti * PROBE_STRIDE
+        blob_stubs = bytearray()
+        ptrs = []
+        for ei, e0 in enumerate(ents):
+            orig = e0 if form == 'abs' else base + e0
+            sv = stub_va + k * STUB12_SZ
+            st = _build_stub12(orig, (ti << 20) | ei, pb, seen_va, lo, hi,
+                               count_va, buf_va, ctxring_va,
+                               low_lo=low_lo, low_hi=low_hi,
+                               rec_max=min(REC12_MAX, RING_SLOTS))
+            blob_stubs += st + b'\xcc' * (STUB12_SZ - len(st))
+            ptrs.append(sv if form == 'abs' else sv - base)
+            stubs.append((ti, ei, sv, orig))
+            k += 1
+        args = [ctypes.c_void_p(h), ctypes.c_void_p(stub_va), bytes(blob_stubs),
+                len(blob_stubs), ctypes.byref(wrote)]
+        if not k32.WriteProcessMemory(*args):
+            print('   写桩失败 %#x err=%d' % (tva, ctypes.get_last_error()))
+            continue
+        op = ctypes.c_uint32(0)
+        k32.VirtualProtectEx(ctypes.c_void_p(h), ctypes.c_void_p(tva),
+                             ctypes.c_size_t(n * 8), PAGE_READWRITE, ctypes.byref(op))
+        newtab = struct.pack('<%dQ' % n, *ptrs)
+        if k32.WriteProcessMemory(ctypes.c_void_p(h), ctypes.c_void_p(tva),
+                                  newtab, len(newtab), ctypes.byref(wrote)):
+            print('   表 %#x（%d 项）已换 v25 桩' % (tva, n), flush=True)
+
 
     WIN_LO, WIN_SZ = base + 0x2140000, 0x1E0000   # 字节码大窗口 2MB
 
