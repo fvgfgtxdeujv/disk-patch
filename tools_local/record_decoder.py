@@ -8,7 +8,7 @@
 输出：默认 artdir/decoded.json（读写日志、截断点、next_op 反查）
 验证：执行流截断于下一记录的桩入口；原生 API / ret 边界需结合 err、hit_next、stop 分析。
 """
-import argparse, json, struct, os, re
+import argparse, bisect, json, struct, os, re, sys
 from unicorn import *
 from unicorn.x86_const import *
 from capstone import Cs, CS_ARCH_X86, CS_MODE_64
@@ -56,6 +56,121 @@ def follow_chain(va):
             va = int(i.op_str, 16)
         else:
             return va
+
+
+# ---- 原生 API 归属 ----------------------------------------------------------
+# op574/op46/op27 的 handler 尾部是 pop ...; ret，ret 目标 = ctx[0x32] + u32@ip，
+# 即 VM 主动跳进系统 DLL。系统 DLL 在同一次开机内跨进程基址一致，故可用本进程
+# 模块表解析；导出名按 RVA 就近查 PE 导出表。
+MODRANGES = []
+EXP_CACHE = {}
+
+
+def _module_ranges():
+    try:
+        if ROOT not in sys.path:
+            sys.path.insert(0, ROOT)
+        from winactions.dump_runtime import list_modules
+        return [(b, b + s, n) for b, s, n in list_modules(os.getpid())
+                if b >= 0x7FF000000000]
+    except Exception:
+        return []
+
+
+def _exp_str(e):
+    n = e.name if e.name is not None else ('#%d' % e.ordinal)
+    return n.decode('latin1') if isinstance(n, bytes) else str(n)
+
+
+def _export_name(module, rva):
+    key = module.lower()
+    if key not in EXP_CACHE:
+        try:
+            import pefile
+            p = pefile.PE(os.path.join(os.environ['SystemRoot'], 'System32',
+                                       module), fast_load=True)
+            p.parse_data_directories(directories=[0])
+            es = sorted((e.address, _exp_str(e))
+                        for e in p.DIRECTORY_ENTRY_EXPORT.symbols)
+            EXP_CACHE[key] = ([a for a, _ in es], es)
+        except Exception:
+            EXP_CACHE[key] = ([], [])
+    addrs, es = EXP_CACHE[key]
+    if not addrs:
+        return None
+    i = bisect.bisect_right(addrs, rva) - 1
+    if i < 0:
+        return None
+    a, n = es[i]
+    return n if rva - a < 0x1000 else None
+
+
+def resolve_native(addr):
+    global MODRANGES
+    if not MODRANGES:
+        MODRANGES = _module_ranges()
+    for lo, hi, name in MODRANGES:
+        if lo <= addr < hi:
+            rva = addr - lo
+            return {'module': name, 'rva': rva,
+                    'export': _export_name(name, rva)}
+    return None
+
+
+def _read_cstr(uc, ptr, wide=False, limit=96):
+    if not ptr or ptr < 0x10000:
+        return None
+    try:
+        raw = uc.mem_read(ptr, limit)
+    except UcError:
+        return None
+    if wide:
+        s = raw[:len(raw) & ~1].decode('utf-16-le', 'replace')
+        return s.split('\x00')[0]
+    return raw.split(b'\x00')[0].decode('latin1')
+
+
+EXIT_BODIES = {}
+
+
+def _is_exit_body(body):
+    """原生边界类 op：handler 尾部是 pop...; popfq; ret，不派发下一条 VM 指令。
+
+    op574 用它 ret 进 Win32/ntdll；op27 用它离开 VM 回到原生调用方。这类记录
+    天然到不了「下一条桩」，不能按 nomatch 计。
+    """
+    if body not in EXIT_BODIES:
+        ok = False
+        if VBASE <= body < DEND:
+            prev = None
+            for i in MD.disasm(DUMP[body - VBASE:body - VBASE + 0x400], body):
+                if i.mnemonic == 'ret' and prev == 'popfq':
+                    ok = True
+                    break
+                prev = i.mnemonic
+        EXIT_BODIES[body] = ok
+    return EXIT_BODIES[body]
+
+
+def _native_args(uc, addr):
+    """x64 前四个参数：rcx/rdx/r8/r9；对已知字符串 API 顺带取实参内容。"""
+    info = resolve_native(addr)
+    if not info:
+        return None
+    args = {'rcx': uc.reg_read(UC_X86_REG_RCX),
+            'rdx': uc.reg_read(UC_X86_REG_RDX),
+            'r8': uc.reg_read(UC_X86_REG_R8),
+            'r9': uc.reg_read(UC_X86_REG_R9)}
+    info['args'] = args
+    exp = (info['export'] or '').lower()
+    if exp.startswith('lstrcmpi'):
+        wide = exp.endswith('w')
+        info['str'] = [_read_cstr(uc, args['rcx'], wide),
+                       _read_cstr(uc, args['rdx'], wide)]
+    elif exp == 'getprocaddress':
+        info['str'] = [_read_cstr(uc, args['rdx'])]
+    return info
+
 
 
 def main(artdir, dump_path=None, out_path=None, runtime_script=None):
@@ -158,7 +273,7 @@ def main(artdir, dump_path=None, out_path=None, runtime_script=None):
     uc.reg_write(UC_X86_REG_GS_BASE, 0x70000000)
 
     out = []
-    stats = {'ok': 0, 'nomatch': 0, 'err': 0, 'skip': 0}
+    stats = {'ok': 0, 'native': 0, 'exit': 0, 'bad': 0, 'skip': 0}
     ctx0 = None
     bc_base = bc_len = 0
     woff = 0
@@ -221,21 +336,42 @@ def main(artdir, dump_path=None, out_path=None, runtime_script=None):
         # 截断：到达下一记录的桩入口
         next_stub = STUB_VA + nxt[5] * STUB12_SZ
         stop_ip = [None]
+        last_insn = [0]
+        tail = []
+        natives = []
+        native_addr = [0]
+        seen_stub = [None]
 
         def hk_code(uc, address, size, ud):
+            last_insn[0] = address
+            tail.append(address)
+            if len(tail) > 12:
+                del tail[0]
             if address == next_stub:
                 stop_ip[0] = address
                 uc.emu_stop()
+            elif STUB_VA <= address < STUB_VA + n_ent * STUB12_SZ:
+                if seen_stub[0] is None:
+                    seen_stub[0] = (address - STUB_VA) // STUB12_SZ
             elif not (VBASE <= address < DEND) and \
-                    not (STUB_VA <= address < STUB_VA + n_ent * STUB12_SZ) and \
                     not (ALLOC <= address < ALLOC + 0x10000):
-                stop_ip[0] = 'out:%#x' % address
+                if 0x7FF000000000 <= address < 0x800000000000:
+                    native_addr[0] = address
+                    stop_ip[0] = 'native:%#x' % address
+                else:
+                    stop_ip[0] = 'out:%#x' % address
                 uc.emu_stop()
 
         bad = []
 
         def hk_unmapped(uc, access, address, size, value, ud):
-            bad.append((access, address, size))
+            if access == UC_MEM_FETCH_UNMAPPED and \
+                    0x7FF000000000 <= address < 0x800000000000:
+                # 系统 DLL 未映射：op574 的原生 API 边界，不是解码失败
+                native_addr[0] = address
+                stop_ip[0] = 'native:%#x' % address
+            else:
+                bad.append((access, address, size))
             uc.emu_stop()
 
         h_code = uc.hook_add(UC_HOOK_CODE, hk_code)
@@ -255,19 +391,26 @@ def main(artdir, dump_path=None, out_path=None, runtime_script=None):
         uc.hook_del(h_unmapped)
         hit = stop_ip[0] == next_stub
         nop = stub2op.get(rip)
+        if native_addr[0]:
+            info = _native_args(uc, native_addr[0])
+            natives.append(info or {'addr': native_addr[0]})
+        if natives:
+            kind = 'native'
+        elif hit:
+            kind = 'ok'
+        elif _is_exit_body(body):
+            kind = 'exit'
+        else:
+            kind = 'bad'
         rec = {'ri': ri, 'ip': ip, 'tag': tag, 'orig': orig, 'body': body,
                'n_reads': len(reads), 'n_writes': len(writes),
                'err': err, 'hit_next': bool(hit), 'rip': rip, 'stop': stop_ip[0],
-               'next_op_by_tbl': nop, 'tag_next': nxt[5],
-               'bad': bad[:8],
+               'next_op_by_tbl': nop, 'tag_next': nxt[5], 'kind': kind,
+               'natives': natives, 'last_insn': last_insn[0],
+               'tail': tail, 'stub_op': seen_stub[0], 'bad': bad[:8],
                'reads': reads[:80], 'writes': writes[:80]}
         out.append(rec)
-        if err:
-            stats['err'] += 1
-        elif hit and (nop is None or nop == nxt[5]):
-            stats['ok'] += 1
-        else:
-            stats['nomatch'] += 1
+        stats[kind] += 1
         if ri % 200 == 0:
             print('  %d/%d %s' % (ri, nrec, stats), flush=True)
     print('统计:', stats)

@@ -386,6 +386,7 @@ SxS Activation Context 结构（含 shell32/Common-Controls manifest 路径）�
   相关，是授权路径后续语义还原的重点观测点，但本轮尚未证明其具体信息类别。
 - op574 另有 2 条 nomatch；op46 的 ri1497 尚有 1 次 `0x3e3b3e6f` invalid-fetch，
   原因未定。最终原始统计保持为 **2481 ok / 8 nomatch / 20 err**，不隐藏这些边界。
+  （§16 已把这两类重新归类为原生边界，最终统计口径见 16.1。）
 
 复现：
 
@@ -394,3 +395,68 @@ SxS Activation Context 结构（含 shell32/Common-Controls manifest 路径）�
 python winactions\dump_runtime.py --exe out\runtime\DiskGenius\DiskGenius.exe --trace-vm fullctx --trace-seconds 10 --out out\fullctx-win2\vm_trace.json
 python tools_local\record_decoder.py out\fullctx-win2
 ```
+
+## §16 原生 API intrinsic 与边界记录归类（2026-11-21 续）
+
+### 16.1 判定口径
+
+§15 把「到不了下一桩」一律记成 nomatch/err，掩盖了两类本来就该终止的记录。本轮改成四类：
+
+| kind | 含义 |
+|---|---|
+| `ok` | 正常 a 链，执行流到达下一条记录的桩入口 |
+| `native` | ret 进入系统 DLL 导出函数（Win32/ntdll 调用） |
+| `exit` | handler 尾部是 `pop …; popfq; ret`，VM 主动离开表派发链（原生调用/返回） |
+| `bad` | 其余异常 |
+
+同一份 `out/fullctx-win2` 重放结果变为 **ok 2481 / native 14 / exit 14 / bad 0**（共 2509 次转移），
+不再有无法归类的记录。
+
+`exit` 的判据来自代码形态而非硬编码 tag：handler 内出现 `popfq` 紧接 `ret` 即视为原生边界
+（op574/op46 用它跳到原生代码，op27 用它返回原生调用方）。判据实现见
+`tools_local/record_decoder.py` 的 `_is_exit_body`。
+
+### 16.2 op574 = 间接调用 .vmp 内的 API 指针槽
+
+14 次 `native` 记录的 ret 目标，有 13 条能在解包镜像里唯一定位到一个 qword 指针槽，
+且该槽在本次重放中被 handler 真实读取（`('code', 0x141ed8feb, 8)` 之类）：
+
+| ri | tag | API | rs/arg 实测 |
+|---|---|---|---|
+| 76 / 145 / 222 / 372 | 574 | `KERNEL32!IsBadReadPtr` | ptr=`0x1e9697`/`0x1e96a4`/`0x1e969d`/`0x1e97a8`，size=4/4/0x1e/4 |
+| 299 | 574 | `KERNEL32!lstrcmpiA` | rcx=`0x142039907`，rdx=`0x1e969d` |
+| 455 | 574 | `KERNEL32!VirtualFree` | ptr=`0x1e0000`，size=0，type=`0x8000`(MEM_RELEASE) |
+| 676 / 1664 | 574 | `KERNEL32!VirtualAlloc` | addr=0，size=`0x10000`/`0x13298`，`0x1000`(MEM_COMMIT)，`0x4`(PAGE_READWRITE) |
+| 793 | 574 | `KERNEL32!GetProcAddress` | hmod=`0x7ffbeb4d0000`(ntdll)，name=`0x14201fea0` |
+| 966 / 1268 | 574 | `KERNEL32!GetProcessHeap` | — |
+| 867 | 574 | `ntdll!ZwQuerySystemInformation` | class=`0xb`，buf=`0x1e0000`，len=`0x10000` |
+| 1040 | 574 | `ntdll!RtlAllocateHeap` | heap=`0x1530000`，flags=`8`，size=`0x10` |
+| 1335 | 574 | `ntdll!RtlFreeHeap` | heap=`0x1530000`，flags=0，ptr=`0x15837d0` |
+
+结论：**op574 是 VM 的原生调用 op**，目标来自 .vmp 数据区里按 API 预置的指针槽（等价于 VM 自己的 IAT），
+参数走被恢复的 rcx/rdx/r8/r9。这与 §13.3 门块里出现的 `0xc0000004`
+（`STATUS_INFO_LENGTH_MISMATCH`）对上了：`ZwQuerySystemInformation(class=0xb)` 先取长度再分配，
+是机器信息采集的典型两次调用模式，属授权路径的强候选观测点。
+
+未定项：ri867 的目标 qword 在镜像里没有直接命中，其值出现在 `ctx+0x5b`，可能是运行期重定位后的槽，
+需要更多样本确认。
+
+### 16.3 op574 nomatch 与 op46 异常控制流
+
+| ri | tag | ret 落点 | 结论 |
+|---|---|---|---|
+| 511 | 574 | `0x141f05665`（.vmp 内） | 调用 .vmp 内部辅助函数，不走派发表 |
+| 734 | 574 | `0x142076312`（.vmp 内） | 同上 |
+| 1497 | 46 | `0x3e3b3e6f`（非规范地址） | 同族原生边界，目标指针在重放环境里不可解 |
+
+三条记录在离开 handler 后都继续执行了大量 .vmp 代码，并把 `0x141c9ad6e` 等值写入真实 VM 栈区
+`0x13ffe80-0x13fff58`，但 2 万条指令内始终没有经过被替换的派发表（`stub_op` 为空）。
+即：**它们不是解码错误，而是原生续链不经过表派发**，单记录重放无法自证到下一条记录。
+
+### 16.4 剩余缺口与下一步
+
+- op27 的 11 条里，4 条干净地 `ret` 到合成栈上的 0（`last_insn=0x141a33ee8`），其余在
+  `std; movsq` 现场恢复段发散——该段按原生栈布局搬运上下文，ctx 快照里没有这段数据。
+- 共同根因：**原生边界的目标/续链依赖原生栈与运行期堆，而 stub12 只快照 ctx 4KB**。
+- 下一步（尚未实施）：在 `_build_stub12` 里追加一份 `rsp` 附近的窗口快照（例如
+  `[rsp-0x200, rsp+0x400]`），decoder 写回后再重放 op27/op46/op574-exit，即可验证是否全部续到下一条桩。
