@@ -41,7 +41,8 @@ def _load_stub_builder(runtime_script):
         src = f.read()
     i0 = src.index('def _build_stub12')
     i1 = src.index('def _build_stub11')
-    ns = {'struct': struct, 'STUB12_SZ': STUB12_SZ, 'REC12_MAX': REC12_MAX}
+    ns = {'struct': struct, 'STUB12_SZ': STUB12_SZ, 'REC12_MAX': REC12_MAX,
+          'STK_SZ': 0x400}
     exec(compile(src[i0:i1], 'stub12', 'exec'), ns)
     return ns['_build_stub12']
 
@@ -207,6 +208,14 @@ def main(artdir, dump_path=None, out_path=None, runtime_script=None):
         print('堆区快照: %s（%d 字节，非零 %d）'
               % (hsnap[-1], len(heap_data), sum(1 for b in heap_data if b)),
               flush=True)
+    # 原生栈窗口（采集端 stub12 从 handler 入口 rsp 起复制）。
+    # 仅作证据保留：真实栈注入会让 op574 跳出沙箱并污染重放状态，见报告 §17。
+    stk_path = os.path.join(artdir, 'stack_ring.bin')
+    stk = b''
+    if os.path.exists(stk_path):
+        stk = open(stk_path, 'rb').read()
+        print('栈窗口: %s（%d 槽 × %d 字节，仅记录不注入）'
+              % (stk_path, len(stk) // 0x400, 0x400), flush=True)
     print('记录 %d，ring %.1f MB (%d 槽，槽 %#x)'
           % (nrec, len(ring) / 1048576, len(ring) // SLOT, SLOT), flush=True)
     win = open(os.path.join(artdir, 'bc_window_1s.bin'), 'rb').read()
@@ -266,7 +275,7 @@ def main(artdir, dump_path=None, out_path=None, runtime_script=None):
             len(heap_regions),
             ' '.join('%#x+%d' % (va, len(b)) for va, b in heap_regions[:8])),
             flush=True)
-    uc.mem_map(0x50000000, 0x100000)          # 栈
+    uc.mem_map(0x50000000, 0x100000)          # 合成栈
     uc.reg_write(UC_X86_REG_RSP, 0x50080000)
     uc.mem_map(0x70000000, 0x2000)            # 最小 TEB（gs:[0x30] = TEB 自指针）
     uc.mem_write(0x70000030, struct.pack('<Q', 0x70000000))
@@ -303,8 +312,8 @@ def main(artdir, dump_path=None, out_path=None, runtime_script=None):
     for ri in range(nrec - 1):
         e = t[ri]
         nxt = t[ri + 1]
-        # fmt: [ip, [ip], [ip+8], [ip+16], [ip+24], tag, orig, rbp, tbl, 0]
-        ip, b0, b8, b16, b24, tag, orig, rbp, tblb, _z = e
+        # fmt: [ip, [ip], [ip+8], [ip+16], [ip+24], tag, orig, rbp, tbl, rsp]
+        ip, b0, b8, b16, b24, tag, orig, rbp, tblb, _rsp = e
         if not ip or not (VBASE <= orig < DEND):
             stats['skip'] += 1
             continue

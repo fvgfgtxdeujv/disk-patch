@@ -460,3 +460,42 @@ python tools_local\record_decoder.py out\fullctx-win2
 - 共同根因：**原生边界的目标/续链依赖原生栈与运行期堆，而 stub12 只快照 ctx 4KB**。
 - 下一步（尚未实施）：在 `_build_stub12` 里追加一份 `rsp` 附近的窗口快照（例如
   `[rsp-0x200, rsp+0x400]`），decoder 写回后再重放 op27/op46/op574-exit，即可验证是否全部续到下一条桩。
+
+## §17 原生栈窗口：采集已加，重放验证为负（2026-11-21 续）
+
+### 17.1 采集端改动
+
+`_build_stub12` 增加两项（记录仍为 80B）：
+
+- `+0x48` 由恒 0 改为 **handler 入口 rsp**（`lea r13,[rsp+0x88]`，0x88 = pushfq + 16 push）。
+- 新环形区 `stack_ring`（`alloc+0x5000000`，槽 0x400）：把 `[rsp, rsp+0x400)` 复制一份。
+  只读 rsp 以上，避开栈底与保护页；不读低区 NOACCESS 陷阱页（§13 的踩坑教训）。
+
+`vm_trace.json` 的 `fmt` 末位改为 `rsp`，`ring_layout.stack = {slot: 0x400, rsp_field: 0x48}`。
+新产物 `out/fullctx-win3/`：2510 条记录、`stack_ring.bin` 2510 槽全非零，rsp 全部落在
+VM 栈区 `0x13ffeXX`（如 `0x13ffea0`/`0x13ffea8`/…），逐条递增 8 字节，与 VM 压栈行为一致。
+
+### 17.2 重放验证：真实栈注入不成立
+
+在 decoder 里对 exit 类 op 写回窗口并把 RSP 设为真实值后：
+
+| 产物 | 模式 | ok | native | exit | bad |
+|---|---|---|---|---|---|
+| win2 | 合成栈（基线） | 2481 | 14 | 14 | 0 |
+| win3 | 真实栈注入 | 368 | 3 | 37 | 2101 |
+| win3 | 合成栈（基线） | 2432 | 8 | 20 | 49 |
+
+真实栈让 op574 第一次真正跳进 `KERNEL32!IsBadReadPtr`（ri372），随后 Unicorn 抛
+`UC_ERR_EXCEPTION`，并且**之后所有记录**都在 handler 入口报同样的异常——说明沙箱里
+没有可执行的系统 DLL，一旦进入原生代码就无法回来。这不是栈数据缺失，而是缺少原生
+代码仿真。已回退注入逻辑，`stack_ring.bin` 仅作证据保留（不参与重放）。
+
+### 17.3 结论
+
+- op27 / op46 / op574(exit) 的本质是 **VM→原生边界**，单记录重放无法续到下一条桩；
+  要让它们闭环，必须同时实现被调用原生函数的 intrinsic（至少 IsBadReadPtr、
+  VirtualAlloc/Free、GetProcAddress、堆三件套、ZwQuerySystemInformation），并让
+  原生返回值回灌 VM。
+- win3 基线重放多出 49 条 bad，访问的是本轮运行才出现的堆地址（如 `0x57c1f094`），
+  超出固定采集窗口 `[0x1b0000, 0x2000000)`。这是**采集覆盖**问题，与栈窗口无关；
+  后续应改为按 region 全量采集而非固定窗口。
