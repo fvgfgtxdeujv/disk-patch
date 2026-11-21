@@ -499,3 +499,57 @@ VM 栈区 `0x13ffeXX`（如 `0x13ffea0`/`0x13ffea8`/…），逐条递增 8 字�
 - win3 基线重放多出 49 条 bad，访问的是本轮运行才出现的堆地址（如 `0x57c1f094`），
   超出固定采集窗口 `[0x1b0000, 0x2000000)`。这是**采集覆盖**问题，与栈窗口无关；
   后续应改为按 region 全量采集而非固定窗口。
+
+## §18 原生 intrinsic 与 region 全量采集（已落地）
+
+### 18.1 重放端的原生调用模型
+
+三段契约：**返回值**（RAX）+ **续链地址**（API 入口 `[rsp]`，即原生函数 ret 的目标）
++ **内存副作用**。实现方式：
+
+1. 取指落到 `0x7FF0_0000_0000` 段时，把该页铺满 `0xCC`（int3）。
+2. `UC_HOOK_INTR` 取 `RIP-1` 反查模块/导出，执行 intrinsic，写 RAX，
+   `RSP += 8`，`RIP = [rsp]`，继续跑。
+3. 未知导出返回 0 并继续，不伪造 ok；真正被调用的 `GetProcAddress` 结果是指向
+   `0xA1000000` 合成桩的地址（桩上也是 int3），会显式暴露而不是崩。
+
+已实现的语义：`IsBadReadPtr`（沙箱可读性判定）、`lstrcmpiA/W`、
+`GetProcessHeap`、`RtlAllocateHeap/FreeHeap`、`VirtualAlloc/Free`、
+`GetProcAddress`、`ZwQuerySystemInformation`（len 不足 → `0xC0000004` 并写所需长度）。
+
+本轮实际命中 10 次：`IsBadReadPtr`×4 → 0、`VirtualAlloc`×2 → `0x90000000`/`0x90010000`、
+`GetProcessHeap`×2 → `0x1E00000`、`GetProcAddress` → `0xA1000000`、
+`ZwQuerySystemInformation` → 0（本次缓冲已够，未走长度不足分支）。
+10 条记录全部**续到了下一条桩**（next_tag 均为 478），说明原生返回值回灌链路成立。
+
+### 18.2 采集端：按 region 全量快照
+
+`fullctx` 结束后对目标做一次 region 全量快照（`snapshot_all_regions`）：
+
+- 跳过所有模块镜像（代码页不重放，避免执行真实 DLL 代码）；
+- 跳过 >64MB 的单块，总量上限 512MB；
+- 跳过的块写入 `mem_index.json`，覆盖范围可审计。
+
+本次产物 `out/fullctx-win6`：397 个 region，落盘 105 块 37.5MB，
+跳过 291 块模块镜像、1 块 too_large。decoder 用 `paged_map` 按缺页惰性映射，
+只在真正访问时读那一页。
+
+### 18.3 结果
+
+| 产物 | 配置 | ok | native | exit | bad |
+|---|---|---|---|---|---|
+| win2 | 合成栈，无 region 快照 | 2495 | 0 | 14 | 0 |
+| win3 | 合成栈，无 region 快照 | 2432 | 8 | 20 | 49 |
+| win6 | 合成栈 + region 快照 | 2491 | 0 | 18 | 0 |
+
+win6 相比同代产物 win3，bad 从 49 降到 0，ok 增加 59 条——越界访问已被 region
+快照补齐；native 归零是因为全部转入 intrinsic 并续链成功。
+
+### 18.4 残留与注意
+
+- 18 条 `exit`：op27 ×11（VM→原生返回，需原生调用方栈帧）、op574 ×6、op46 ×1。
+  其中 4 条 op574 的 ret 目标在合成栈上是噪声（`0x70057500`/`0x4250d778` 等），
+  真实目标存在栈窗口里；尝试只补 `[rsp+0x80, rsp+0x90)` 两个槽会导致 ok 2491→2421、
+  bad 0→69（合成栈指针在记录间漂移，命中位置不固定），已回退，保持现有口径。
+- 采集注意：目标空闲启动时不会执行 VM（两次 0 条）。需在采集窗口内触发磁盘刷新
+  （脚本 `out/run-capture.ps1` 用 F5 触发），否则拿到的是空轨迹。

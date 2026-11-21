@@ -338,6 +338,40 @@ if os.name == 'nt':
             addr = nxt
         return out
 
+    def snapshot_all_regions(h, out_dir, mod_ranges, cap=512 << 20,
+                             skip_over=64 << 20):
+        """按 region 全量快照目标的数据页。
+
+        跳过所有模块镜像（代码页不重放，避免执行真实 DLL 代码）与超过
+        skip_over 的超大区域；总量受 cap 限制。跳过的块也写进索引，
+        保证覆盖范围可审计。"""
+        idx, total = [], 0
+        for b, s, prot in enum_regions(h):
+            if any(lo <= b < hi for lo, hi in mod_ranges):
+                idx.append({'base': b, 'size': s, 'skipped': 'module_image'})
+                continue
+            if s > skip_over:
+                idx.append({'base': b, 'size': s, 'skipped': 'too_large'})
+                continue
+            if total + s > cap:
+                idx.append({'base': b, 'size': s, 'skipped': 'cap'})
+                continue
+            blob = read_mem_safe(h, b, s)
+            if not blob:
+                idx.append({'base': b, 'size': s, 'skipped': 'read_failed'})
+                continue
+            fn = 'mem_%x.bin' % b
+            with open(os.path.join(out_dir, fn), 'wb') as f2:
+                f2.write(blob)
+            idx.append({'base': b, 'size': len(blob), 'prot': prot, 'file': fn})
+            total += len(blob)
+        with open(os.path.join(out_dir, 'mem_index.json'), 'w') as f2:
+            json.dump(idx, f2)
+        nskip = sum(1 for e in idx if e.get('skipped'))
+        print('[*] region 全量快照 %d 块 %.1fMB（跳过 %d 块）'
+              % (len(idx) - nskip, total / 1048576.0, nskip), flush=True)
+        return idx
+
     def list_modules(pid):
         snap = k32.CreateToolhelp32Snapshot(
             TH32CS_SNAPMODULE | TH32CS_SNAPMODULE32, pid)
@@ -2758,6 +2792,13 @@ def table_hook_fullctx(exe, seconds, out_dir='.', markers=None):
             break
 
     cnt = min(struct.unpack('<Q', read_mem(h, count_va, 8) or b'\0' * 8)[0], REC12_MAX)
+    if not dead_at:
+        try:
+            mods = list_modules(pid)
+            snapshot_all_regions(h, out_dir,
+                                 [(b, b + s) for b, s, _n in mods if s])
+        except Exception as ex:
+            print('[!] region 全量快照失败: %s' % ex, flush=True)
     raw = read_mem(h, buf_va, cnt * REC12_SZ) or b''
     if not raw and snap[1]:
         raw, cnt = snap[1], snap[0]

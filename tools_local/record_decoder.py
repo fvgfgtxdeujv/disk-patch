@@ -133,6 +133,85 @@ def _read_cstr(uc, ptr, wide=False, limit=96):
 
 EXIT_BODIES = {}
 
+# ---- 原生 intrinsic 沙箱 -----------------------------------------------------
+FAKE_HEAP = 0x1E00000
+NAT_HEAP = 0x90000000          # 堆/虚拟内存 bump 区
+NAT_STUB = 0xA1000000          # GetProcAddress 合成桩区
+HEAP_TOP = [NAT_HEAP]
+STUB_TOP = [NAT_STUB]
+
+
+def _ensure_rw(uc, addr, size):
+    lo = addr & ~0xFFF
+    hi = (addr + max(1, size) + 0xFFF) & ~0xFFF
+    for p in range(lo, hi, 0x1000):
+        try:
+            uc.mem_map(p, 0x1000)
+        except UcError:
+            pass
+
+
+def _nat_alloc(uc, size):
+    size = (max(1, size) + 0xFFF) & ~0xFFF
+    p = HEAP_TOP[0]
+    HEAP_TOP[0] = p + size
+    _ensure_rw(uc, p, size)      # 新映射页本身为零，等价于 HEAP_ZERO_MEMORY
+    return p
+
+
+def emu_intrinsic(uc, info):
+    """原生 API 的最小语义：返回值 + 必要内存副作用（新页天然清零）。"""
+    if not info:
+        return 0
+    exp = (info.get('export') or '').lower()
+    a = {'rcx': uc.reg_read(UC_X86_REG_RCX),
+         'rdx': uc.reg_read(UC_X86_REG_RDX),
+         'r8': uc.reg_read(UC_X86_REG_R8),
+         'r9': uc.reg_read(UC_X86_REG_R9)}
+    if exp == 'isbadreadptr':
+        try:
+            uc.mem_read(a['rcx'], max(1, a['rdx']))
+            return 0
+        except UcError:
+            return 1
+    if exp.startswith('lstrcmpi'):
+        wide = exp.endswith('w')
+        s1 = (_read_cstr(uc, a['rcx'], wide) or '')
+        s2 = (_read_cstr(uc, a['rdx'], wide) or '')
+        s1, s2 = s1.lower(), s2.lower()
+        return 0 if s1 == s2 else (-1 if s1 < s2 else 1)
+    if exp == 'getprocessheap':
+        return FAKE_HEAP
+    if exp == 'rtlallocateheap':
+        return _nat_alloc(uc, a['r8'])
+    if exp == 'rtlfreeheap':
+        return 1
+    if exp == 'virtualalloc':
+        return _nat_alloc(uc, a['rdx'])
+    if exp == 'virtualfree':
+        return 1
+    if exp == 'getprocaddress':
+        p = STUB_TOP[0]
+        STUB_TOP[0] = p + 0x10
+        _ensure_rw(uc, p, 0x10)
+        uc.mem_write(p, b'\xcc')   # 真被调用时再次进 INTR，显式暴露
+        return p
+    if exp == 'zwquerysysteminformation':
+        # 两类调用：先问长度 → STATUS_INFO_LENGTH_MISMATCH(0xC0000004)，
+        # 给够缓冲再查 → STATUS_SUCCESS
+        need = 0x30
+        if not a['rdx'] or a['r8'] < need:
+            if a['r9']:
+                _ensure_rw(uc, a['r9'], 8)
+                uc.mem_write(a['r9'], struct.pack('<I', need))
+            return 0xC0000004
+        _ensure_rw(uc, a['rdx'], need)
+        if a['r9']:
+            _ensure_rw(uc, a['r9'], 8)
+            uc.mem_write(a['r9'], struct.pack('<I', need))
+        return 0
+    return 0
+
 
 def _is_exit_body(body):
     """原生边界类 op：handler 尾部是 pop...; popfq; ret，不派发下一条 VM 指令。
@@ -216,6 +295,19 @@ def main(artdir, dump_path=None, out_path=None, runtime_script=None):
         stk = open(stk_path, 'rb').read()
         print('栈窗口: %s（%d 槽 × %d 字节，仅记录不注入）'
               % (stk_path, len(stk) // 0x400, 0x400), flush=True)
+    # region 全量快照：数据页按需分页映射（代码页/模块镜像不在快照内）
+    STK = ((lay.get('stack') or {}).get('slot')) or 0x400
+    MEMREG = []
+    mi = os.path.join(artdir, 'mem_index.json')
+    if os.path.exists(mi):
+        with open(mi, encoding='utf-8') as f:
+            for ent in json.load(f):
+                if ent.get('file'):
+                    MEMREG.append((ent['base'], ent['size'],
+                                   os.path.join(artdir, ent['file'])))
+        print('region 快照: %d 块 %.1f MB'
+              % (len(MEMREG), sum(s for _b, s, _p in MEMREG) / 1048576.0),
+              flush=True)
     print('记录 %d，ring %.1f MB (%d 槽，槽 %#x)'
           % (nrec, len(ring) / 1048576, len(ring) // SLOT, SLOT), flush=True)
     win = open(os.path.join(artdir, 'bc_window_1s.bin'), 'rb').read()
@@ -288,6 +380,33 @@ def main(artdir, dump_path=None, out_path=None, runtime_script=None):
     woff = 0
     reads = writes = None
 
+    # 原生调用前预热：把模块表/导出表建好，钩子里只做纯 Python 查表
+    resolve_native(0)
+    for _m in ('kernel32.dll', 'ntdll.dll'):
+        _export_name(_m, 0)
+    PAGED = set()
+
+    def paged_map(uc, addr):
+        """region 快照按需分页：命中则映射并写入该页，返回 True 继续执行。"""
+        page = addr & ~0xFFF
+        if page in PAGED:
+            return False
+        for base, size, path in MEMREG:
+            if base <= page < base + size:
+                try:
+                    uc.mem_map(page, 0x1000)
+                except UcError:
+                    pass
+                off = page - base
+                with open(path, 'rb') as f:
+                    f.seek(off)
+                    data = f.read(min(0x1000, size - off))
+                if data:
+                    uc.mem_write(page, data)
+                PAGED.add(page)
+                return True
+        return False
+
     def hk_mem(uc, access, address, size, value, ud):
         if access == UC_MEM_READ:
             if ctx0 is not None and rbp <= address < rbp + 0x1000:
@@ -350,6 +469,7 @@ def main(artdir, dump_path=None, out_path=None, runtime_script=None):
         natives = []
         native_addr = [0]
         seen_stub = [None]
+        intrinsics = []
 
         def hk_code(uc, address, size, ud):
             last_insn[0] = address
@@ -363,31 +483,58 @@ def main(artdir, dump_path=None, out_path=None, runtime_script=None):
                 if seen_stub[0] is None:
                     seen_stub[0] = (address - STUB_VA) // STUB12_SZ
             elif not (VBASE <= address < DEND) and \
-                    not (ALLOC <= address < ALLOC + 0x10000):
-                if 0x7FF000000000 <= address < 0x800000000000:
-                    native_addr[0] = address
-                    stop_ip[0] = 'native:%#x' % address
-                else:
-                    stop_ip[0] = 'out:%#x' % address
+                    not (ALLOC <= address < ALLOC + 0x10000) and \
+                    not (0x7FF000000000 <= address < 0x800000000000):
+                # 系统 DLL 区不在这里停机：那里是 int3 陷阱页，交给 hk_intr
+                stop_ip[0] = 'out:%#x' % address
                 uc.emu_stop()
 
         bad = []
 
         def hk_unmapped(uc, access, address, size, value, ud):
-            if access == UC_MEM_FETCH_UNMAPPED and \
-                    0x7FF000000000 <= address < 0x800000000000:
-                # 系统 DLL 未映射：op574 的原生 API 边界，不是解码失败
-                native_addr[0] = address
-                stop_ip[0] = 'native:%#x' % address
-            else:
+            if access == UC_MEM_FETCH_UNMAPPED:
+                if 0x7FF000000000 <= address < 0x800000000000:
+                    # 原生 API 入口：铺一字节 int3，重试取指后由 hk_intr 接管
+                    page = address & ~0xFFF
+                    try:
+                        uc.mem_map(page, 0x1000)
+                    except UcError:
+                        pass
+                    # 整页填 int3：目标若落在页内其它偏移，也会立刻回到 hk_intr，
+                    # 而不是把零字节当指令执行
+                    uc.mem_write(page, b'\xcc' * 0x1000)
+                    return True
                 bad.append((access, address, size))
+                uc.emu_stop()
+                return
+            if not (VBASE <= address < DEND) and paged_map(uc, address):
+                return True
+            bad.append((access, address, size))
             uc.emu_stop()
+
+        def hk_intr(uc, intno, ud):
+            """int3 分发：按导出名执行 intrinsic，然后 ret 到栈上的续链地址。"""
+            a = uc.reg_read(UC_X86_REG_RIP) - 1
+            info = resolve_native(a)
+            rsp = uc.reg_read(UC_X86_REG_RSP)
+            try:
+                cont = struct.unpack('<Q', bytes(uc.mem_read(rsp, 8)))[0]
+            except UcError:
+                uc.emu_stop()
+                return
+            retv = emu_intrinsic(uc, info) & 0xFFFFFFFFFFFFFFFF
+            uc.reg_write(UC_X86_REG_RAX, retv)
+            uc.reg_write(UC_X86_REG_RSP, rsp + 8)
+            uc.reg_write(UC_X86_REG_RIP, cont)
+            intrinsics.append({'api': (info or {}).get('export'),
+                               'addr': a, 'ret': retv, 'cont': cont})
 
         h_code = uc.hook_add(UC_HOOK_CODE, hk_code)
         h_mem = uc.hook_add(UC_HOOK_MEM_READ | UC_HOOK_MEM_WRITE, hk_mem)
         h_unmapped = uc.hook_add(
             UC_HOOK_MEM_READ_UNMAPPED | UC_HOOK_MEM_WRITE_UNMAPPED |
             UC_HOOK_MEM_FETCH_UNMAPPED, hk_unmapped)
+        h_intr = uc.hook_add(UC_HOOK_INTR, hk_intr)
         reads, writes = [], []
         err = None
         try:
@@ -398,6 +545,7 @@ def main(artdir, dump_path=None, out_path=None, runtime_script=None):
         uc.hook_del(h_code)
         uc.hook_del(h_mem)
         uc.hook_del(h_unmapped)
+        uc.hook_del(h_intr)
         hit = stop_ip[0] == next_stub
         nop = stub2op.get(rip)
         if native_addr[0]:
@@ -407,7 +555,7 @@ def main(artdir, dump_path=None, out_path=None, runtime_script=None):
             kind = 'native'
         elif hit:
             kind = 'ok'
-        elif _is_exit_body(body):
+        elif intrinsics or _is_exit_body(body):
             kind = 'exit'
         else:
             kind = 'bad'
@@ -415,7 +563,8 @@ def main(artdir, dump_path=None, out_path=None, runtime_script=None):
                'n_reads': len(reads), 'n_writes': len(writes),
                'err': err, 'hit_next': bool(hit), 'rip': rip, 'stop': stop_ip[0],
                'next_op_by_tbl': nop, 'tag_next': nxt[5], 'kind': kind,
-               'natives': natives, 'last_insn': last_insn[0],
+               'natives': natives, 'intrinsics': intrinsics,
+               'last_insn': last_insn[0],
                'tail': tail, 'stub_op': seen_stub[0], 'bad': bad[:8],
                'reads': reads[:80], 'writes': writes[:80]}
         out.append(rec)
