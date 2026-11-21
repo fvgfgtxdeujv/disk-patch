@@ -15,3 +15,9 @@ merge.log
 # 凭据
 .git-credentials
 *.token
+
+# 本地实验密钥/证书
+out/_mitm_ca.key
+out/_mitm_chain.pem
+out/_mitm_ca.pem
+out/runtime/

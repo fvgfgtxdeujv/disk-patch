@@ -1,0 +1,132 @@
+﻿start 2026-11-21T14:37:08.8565550+08:00
+top windows: 26
+TOP [3933242] cls= vis=False title=Error Message
+   CHILD cls= vis=False text=
+SHOT C:\Users\tfvtd\Desktop\项目\disk-patch\out\_dlg_1_Error_Message.png
+TOP [1639980] cls= vis=False title=
+TOP [2164074] cls= vis=False title=
+TOP [1508728] cls= vis=False title=
+TOP [2098554] cls= vis=False title=
+TOP [1443236] cls= vis=False title=
+TOP [1312174] cls= vis=False title=
+TOP [1443088] cls= vis=False title=
+TOP [984730] cls= vis=False title=
+TOP [1508614] cls= vis=False title=
+TOP [3342900] cls= vis=False title=
+TOP [2950068] cls= vis=False title=
+TOP [1508648] cls= vis=False title=
+TOP [1377708] cls= vis=True title=DiskGenius V6.2.0.1829 x64 
+   CHILD cls= vis=True text=
+   CHILD cls= vis=True text=Tab1
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=
+   CHILD cls= vis=True text=
+   CHILD cls= vis=True text=
+   CHILD cls= vis=True text=
+   CHILD cls= vis=True text=
+   CHILD cls= vis=True text=Analyze
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=Details
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=Current Endian: Little
+   CHILD cls= vis=False text=8 bits(±):
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=8 bits(+):
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=16 bits(±):
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=16 bits(+):
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=24 bits(±):
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=24 bits(+):
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=32 bits(±):
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=32 bits(+):
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=40 bits(±):
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=40 bits(+):
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=48 bits(±):
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=48 bits(+):
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=56 bits(±):
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=56 bits(+):
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=64 bits(±):
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=64 bits(+):
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=Binary:
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=C Date:
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=DOS Date:
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=FILETIME:
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=GUID:
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=
+   CHILD cls= vis=False text=
+   CHILD cls= vis=True text=
+   CHILD cls= vis=True text=
+   CHILD cls= vis=True text=
+   CHILD cls= vis=True text=ShareOnFacebookTwitterControl
+   CHILD cls= vis=True text=
+   CHILD cls= vis=True text=
+   CHILD cls= vis=True text=
+   CHILD cls= vis=True text=Disk Bar
+   CHILD cls= vis=True text=
+   CHILD cls= vis=True text=
+   CHILD cls= vis=True text=
+   CHILD cls= vis=True text=
+   CHILD cls= vis=True text=Basic
+GPT
+   CHILD cls= vis=True text=Disk 0 Adapter:SATA  Model:Teclast256GBA850  S/N:6680693304101609532  Capacity:238.5GB(244198MB)  Cylinders:31130  Heads:255  Sectors per Track:63  Total Sectors:500118192
+   CHILD cls= vis=True text=
+   CHILD cls= vis=True text=
+   CHILD cls= vis=True text=Partition Bar
+   CHILD cls= vis=True text=Partition Bar
+   CHILD cls= vis=True text=
+   CHILD cls= vis=True text=
+   CHILD cls= vis=False text=
+   CHILD cls= vis=True text=
+SHOT C:\Users\tfvtd\Desktop\项目\disk-patch\out\_dlg_2_DiskGenius_V6_2_0_1829_x64_.png
+TOP [3343558] cls= vis=False title=
+TOP [1443170] cls= vis=False title=
+TOP [1115810] cls= vis=False title=
+TOP [1574224] cls= vis=False title=
+TOP [2163524] cls= vis=False title=
+TOP [1640012] cls= vis=False title=MSCTFIME UI
+TOP [3540162] cls= vis=False title=Default IME
+TOP [1574342] cls= vis=False title=MSCTFIME UI
+TOP [2229710] cls= vis=False title=HintWnd
+TOP [2229712] cls= vis=False title=
+TOP [1574356] cls= vis=False title=Sogou_TSF_UI
+TOP [2622834] cls= vis=False title=Default IME
+RESTORED
+DONE

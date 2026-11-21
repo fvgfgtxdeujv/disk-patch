@@ -1,0 +1,9 @@
+pid 8816
+modules 102
+found DiskGenius.exe 0x140000000 0x2ff3000
+pages ok 12275 bad 0
+saved out\moddump_140000000.bin 50278400
+str [license] None
+str Options.ini 0x1406a1328
+str appname= 0x1406b37ec
+str regver 0x1406b36a0

@@ -1,0 +1,15 @@
+﻿start 2026-11-21T13:43:48.2084595+08:00
+fake_sample t=8 exists=True size=482
+fake_sample t=16 exists=True size=482
+fake_sample t=26 exists=True size=482
+reg=<none>
+plain_check t=8 exists=True size=716
+plain_check t=16 exists=True size=716
+plain_check t=26 exists=True size=716
+reg=<none>
+enc_check t=8 exists=True size=738
+enc_check t=16 exists=True size=738
+enc_check t=26 exists=True size=738
+reg=<none>
+restored
+DONE

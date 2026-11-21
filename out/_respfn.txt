@@ -1,0 +1,583 @@
+
+#### 1406d7b82 'lid=' refs=0
+
+#### 1406d7b92 'lid=%s' refs=0
+
+#### 1406d7fbc 'lid=%s' refs=0
+
+#### 1406d7fac '&mid=%s&lid=%s' refs=0
+
+#### 1406d800a 'iplan=%C' refs=0
+
+#### 1406d8022 'appname=' refs=0
+
+#### 1406d8052 'again=yes' refs=0
+
+#### 1406d0308 'ShowLicense' refs=6
+   140159dc9 lea ecx, [rip + 0x576539]      func=(5370125564, 5370125956)
+140159d49 add      byte ptr [rbp + 0xf1474c0], al                
+140159d4f mov      bh, 0x85                                      
+140159d51 xor      byte ptr [rdx], al                            
+140159d53 add      byte ptr [rax], al                            
+140159d55 sub      ax, si                                        
+140159d58 mov      ecx, 0xffdf                                   
+140159d5d test     cx, ax                                        
+140159d60 je       0x140159d67                                   
+140159d62 mov      ebx, 1                                        
+140159d67 lea      rcx, [rsp + 0x30]                             
+140159d6c call     0x1400c9138                                   
+140159d71 nop                                                    
+140159d72 xor      edx, edx                                      
+140159d74 lea      rcx, [rbp + 0x250]                            
+140159d7b call     0x140195948                                   
+140159d80 mov      dword ptr [rbp + 0x12c], 1                    
+140159d8a mov      dword ptr [rbp + 0x130], ebx                  
+140159d90 mov      dword ptr [rbp + 0x128], 0                    
+140159d9a mov      dword ptr [rbp + 0x120], 1                    
+140159da4 lea      rcx, [rsp + 0x30]                             
+140159da9 call     0x1403f3f94                                   
+140159dae cmp      rax, 1                                        
+140159db2 jne      0x140159e3f                                   
+140159db8 or       ebx, 0xffffffff                               
+140159dbb mov      r9d, ebx                                      
+140159dbe xor      r8d, r8d                                      
+140159dc1 lea      rdx, [rbp + 0x250]                            
+140159dc8 lea      rcx, [rip + 0x576539]                            ; 1406d0308 'ShowLicense'
+140159dcf call     0x14024feec                                   
+140159dd4 mov      eax, dword ptr [rbp + 0x130]                  
+140159dda mov      dword ptr [rip + 0x7bfaa4], eax                  ; 140919884 None
+140159de0 lea      r8, [rip + 0x5354d9]                             ; 14068f2c0 'Y'
+140159de7 lea      rdx, [rip + 0x534712]                            ; 14068e500 'N'
+140159dee test     eax, eax                                      
+140159df0 cmovne   rdx, r8                                       
+140159df4 mov      r9d, ebx                                      
+140159df7 xor      r8d, r8d                                      
+140159dfa lea      rcx, [rip + 0x57552f]                            ; 1406cf330 'Improveplan'
+140159e01 call     0x14024feec                                   
+140159e06 mov      ecx, 1                                        
+140159e0b call     0x140250148                                   
+140159e10 mov      rbx, rax                                      
+140159e13 test     rax, rax                                      
+140159e16 je       0x140159e3f                                   
+140159e18 lea      r9, [rbp + 0x250]                             
+140159e1f lea      r8, [rip + 0x5764fa]                             ; 1406d0320 'Show'
+140159e26 lea      rdx, [rip + 0x559773]                            ; 1406b35a0 'LicenseInfo'
+140159e2d mov      rcx, rax                                      
+140159e30 call     0x1402aecd0                                   
+140159e35 xor      edx, edx                                      
+140159e37 mov      rcx, rbx                                      
+140159e3a call     0x140250428                                   
+140159e3f lea      r8, [rip + 0x534376]                             ; 14068e1bc None
+140159e46 mov      edx, 1                                        
+140159e4b mov      ecx, 0x121                                    
+140159e50 call     0x14004653c                                   
+140159e55 nop                                                    
+140159e56 lea      rcx, [rsp + 0x30]                             
+140159e5b call     0x1400c9230                                   
+140159e60 mov      rcx, qword ptr [rbp + 0x290]                  
+140159e67 xor      rcx, rsp                                      
+140159e6a call     0x140589e90                                   
+140159e6f lea      r11, [rsp + 0x3a0]                            
+140159e77 mov      rbx, qword ptr [r11 + 0x10]                   
+140159e7b mov      rsi, qword ptr [r11 + 0x18]                   
+140159e7f mov      rsp, r11                                      
+140159e82 pop      rbp                                           
+140159e83 ret                                                    
+140159e84 push     rbx                                           
+140159e86 sub      rsp, 0x640                                    
+140159e8d mov      rax, qword ptr [rip + 0x665a6c]                  ; 1407bf900 None
+140159e94 xor      rax, rsp                                      
+140159e97 mov      qword ptr [rsp + 0x630], rax                  
+140159e9f xor      edx, edx                                      
+140159ea1 lea      rcx, [rsp + 0x20]                             
+140159ea6 call     0x14004232c                                   
+140159eab xor      ebx, ebx                                      
+140159ead cmp      dword ptr [rsp + 0x20], ebx                   
+140159eb1 je       0x140159ec3                                   
+140159eb3 call     0x1403ef628                                   
+140159eb8 mov      rcx, qword ptr [rax + 8]                      
+140159ebc call     0x14013abb0                                   
+140159ec1 jmp      0x140159f23                                   
+140159ec3 lea      rcx, [rsp + 0x30]                             
+   140199ef5 lea ecx, [rip + 0x53640d]      func=(5370387424, 5370389082)
+140199e75 add      byte ptr [r15], cl                            
+140199e78 mov      bh, 0x84                                      
+140199e7a and      al, 0xf0                                      
+140199e7c adc      al, 0                                         
+140199e7e add      byte ptr [rsi - 0x7d], ah                     
+140199e81 call     0x13ff957d4                                   
+140199e86 add      byte ptr [rax], al                            
+140199e88 test     cx, ax                                        
+140199e8b jne      0x140199e9d                                   
+140199e8d movups   xmm0, xmmword ptr [rip + 0x53e70c]               ; 1406d85a0 '0.0.0.0'
+140199e94 movdqu   xmmword ptr [rsp + 0x14f0], xmm0              
+140199e9d lea      rdx, [rsp + 0x1530]                           
+140199ea5 lea      rcx, [rsp + 0x14f0]                           
+140199ead call     0x1405a1210                                   
+140199eb2 test     eax, eax                                      
+140199eb4 jns      0x140199ec9                                   
+140199eb6 mov      eax, edi                                      
+140199eb8 mov      dword ptr [rsp + 0x40], eax                   
+140199ebc mov      dword ptr [rsp + 0x48], eax                   
+140199ec0 mov      r13d, edi                                     
+140199ec3 mov      dword ptr [rsp + 0x4c], edi                   
+140199ec7 jmp      0x140199ecd                                   
+140199ec9 mov      dword ptr [rsp + 0x38], edi                   
+140199ecd lea      rdx, [rsp + 0x1530]                           
+140199ed5 lea      rcx, [rsp + 0x14f0]                           
+140199edd call     0x1405a1210                                   
+140199ee2 test     eax, eax                                      
+140199ee4 js       0x140199f4a                                   
+140199ee6 mov      r8d, 0x20                                     
+140199eec lea      rdx, [rsp + 0x14f0]                           
+140199ef4 lea      rcx, [rip + 0x53640d]                            ; 1406d0308 'ShowLicense'
+140199efb call     0x14025004c                                   
+140199f00 movzx    eax, word ptr [rsp + 0x14f0]                  
+140199f08 sub      ax, 0x4e                                      
+140199f0c mov      ecx, 0xffdf                                   
+140199f11 test     cx, ax                                        
+140199f14 jne      0x140199f26                                   
+140199f16 movups   xmm0, xmmword ptr [rip + 0x53e683]               ; 1406d85a0 '0.0.0.0'
+140199f1d movdqu   xmmword ptr [rsp + 0x14f0], xmm0              
+140199f26 lea      rdx, [rsp + 0x1530]                           
+140199f2e lea      rcx, [rsp + 0x14f0]                           
+140199f36 call     0x1405a1210                                   
+140199f3b test     eax, eax                                      
+140199f3d jns      0x140199f4a                                   
+140199f3f mov      dword ptr [rsp + 0x38], ebx                   
+140199f43 mov      r13d, edi                                     
+140199f46 mov      dword ptr [rsp + 0x4c], edi                   
+140199f4a test     r12d, r12d                                    
+140199f4d jne      0x14019a071                                   
+140199f53 test     r13d, r13d                                    
+140199f56 je       0x14019a071                                   
+140199f5c lea      rcx, [rsp + 0x60]                             
+140199f61 call     0x1400c9138                                   
+140199f66 nop                                                    
+140199f67 mov      eax, dword ptr [rsp + 0x38]                   
+140199f6b mov      dword ptr [rsp + 0x25c], eax                  
+140199f72 mov      eax, dword ptr [rsp + 0x40]                   
+140199f76 mov      dword ptr [rsp + 0x260], eax                  
+140199f7d mov      dword ptr [rsp + 0x258], edi                  
+140199f84 mov      dword ptr [rsp + 0x250], edi                  
+140199f8b lea      rcx, [rsp + 0x60]                             
+140199f90 call     0x1403f3f94                                   
+140199f95 cmp      rax, rdi                                      
+140199f98 je       0x140199fde                                   
+140199f9a mov      rcx, rsi                                      
+140199f9d call     0x14019a354                                   
+140199fa2 mov      rcx, rsi                                      
+140199fa5 call     0x140198fa4                                   
+140199faa nop                                                    
+140199fab lea      rcx, [rsp + 0x60]                             
+140199fb0 call     0x1400c9230                                   
+140199fb5 nop                                                    
+140199fb6 mov      rdx, qword ptr [rsp + 0x30]                   
+140199fbb add      rdx, -0x18                                    
+140199fbf or       ecx, 0xffffffff                               
+140199fc2 lock xadd dword ptr [rdx + 0x10], ecx                   
+140199fc7 sub      ecx, 1                                        
+140199fca jg       0x140199fd6                                   
+140199fcc mov      rcx, qword ptr [rdx]                          
+140199fcf mov      r8, qword ptr [rcx]                           
+140199fd2 call     qword ptr [r8 + 8]                            
+140199fd6 mov      rax, rdi                                      
+140199fd9 jmp      0x14019a20c                                   
+140199fde or       r13d, 0xffffffff                              
+140199fe2 mov      r9d, r13d                                     
+140199fe5 xor      r8d, r8d                                      
+140199fe8 lea      rdx, [rsp + 0x1530]                           
+   140199ff1 lea ecx, [rip + 0x536311]      func=(5370387424, 5370389082)
+140199f71 add      byte ptr [rbx - 0x76bfdbbc], cl               
+140199f77 test     byte ptr [rax + riz*2], ah                    
+140199f7a add      al, byte ptr [rax]                            
+140199f7c add      byte ptr [rcx + 0x25824bc], cl                
+140199f82 add      byte ptr [rax], al                            
+140199f84 mov      dword ptr [rsp + 0x250], edi                  
+140199f8b lea      rcx, [rsp + 0x60]                             
+140199f90 call     0x1403f3f94                                   
+140199f95 cmp      rax, rdi                                      
+140199f98 je       0x140199fde                                   
+140199f9a mov      rcx, rsi                                      
+140199f9d call     0x14019a354                                   
+140199fa2 mov      rcx, rsi                                      
+140199fa5 call     0x140198fa4                                   
+140199faa nop                                                    
+140199fab lea      rcx, [rsp + 0x60]                             
+140199fb0 call     0x1400c9230                                   
+140199fb5 nop                                                    
+140199fb6 mov      rdx, qword ptr [rsp + 0x30]                   
+140199fbb add      rdx, -0x18                                    
+140199fbf or       ecx, 0xffffffff                               
+140199fc2 lock xadd dword ptr [rdx + 0x10], ecx                   
+140199fc7 sub      ecx, 1                                        
+140199fca jg       0x140199fd6                                   
+140199fcc mov      rcx, qword ptr [rdx]                          
+140199fcf mov      r8, qword ptr [rcx]                           
+140199fd2 call     qword ptr [r8 + 8]                            
+140199fd6 mov      rax, rdi                                      
+140199fd9 jmp      0x14019a20c                                   
+140199fde or       r13d, 0xffffffff                              
+140199fe2 mov      r9d, r13d                                     
+140199fe5 xor      r8d, r8d                                      
+140199fe8 lea      rdx, [rsp + 0x1530]                           
+140199ff0 lea      rcx, [rip + 0x536311]                            ; 1406d0308 'ShowLicense'
+140199ff7 call     0x14024feec                                   
+140199ffc mov      eax, dword ptr [rsp + 0x260]                  
+14019a003 mov      dword ptr [rip + 0x77f87b], eax                  ; 140919884 None
+14019a009 lea      r8, [rip + 0x4f52b0]                             ; 14068f2c0 'Y'
+14019a010 lea      rdx, [rip + 0x4f44e9]                            ; 14068e500 'N'
+14019a017 test     eax, eax                                      
+14019a019 cmovne   rdx, r8                                       
+14019a01d mov      r9d, r13d                                     
+14019a020 xor      r8d, r8d                                      
+14019a023 lea      rcx, [rip + 0x535306]                            ; 1406cf330 'Improveplan'
+14019a02a call     0x14024feec                                   
+14019a02f mov      ecx, edi                                      
+14019a031 call     0x140250148                                   
+14019a036 mov      r13, rax                                      
+14019a039 test     rax, rax                                      
+14019a03c je       0x14019a067                                   
+14019a03e lea      r9, [rsp + 0x1530]                            
+14019a046 lea      r8, [rip + 0x5362d3]                             ; 1406d0320 'Show'
+14019a04d lea      rdx, [rip + 0x51954c]                            ; 1406b35a0 'LicenseInfo'
+14019a054 mov      rcx, rax                                      
+14019a057 call     0x1402aecd0                                   
+14019a05c xor      edx, edx                                      
+14019a05e mov      rcx, r13                                      
+14019a061 call     0x140250428                                   
+14019a066 nop                                                    
+14019a067 lea      rcx, [rsp + 0x60]                             
+14019a06c call     0x1400c9230                                   
+14019a071 mov      rcx, rsi                                      
+14019a074 call     0x14019708c                                   
+14019a079 xor      edx, edx                                      
+14019a07b mov      rcx, rsi                                      
+14019a07e call     0x14019b2ec                                   
+14019a083 call     0x14000eb4c                                   
+14019a088 lea      rdx, [rip + 0x53e521]                            ; 1406d85b0 'authorize@email.eassos.cn'
+14019a08f lea      rcx, [rsp + 0x1570]                           
+14019a097 call     0x1405a1210                                   
+14019a09c test     eax, eax                                      
+14019a09e je       0x14019a10b                                   
+14019a0a0 mov      rax, qword ptr [rsp + 0x30]                   
+14019a0a5 cmp      dword ptr [rax - 0x10], ebx                   
+14019a0a8 jl       0x14019a24e                                   
+14019a0ae cmp      word ptr [rax], 0x74                          
+14019a0b2 je       0x14019a10b                                   
+14019a0b4 cmp      dword ptr [rax - 0x10], ebx                   
+14019a0b7 je       0x14019a157                                   
+14019a0bd cmp      dword ptr [rip + 0x787fc1], ebx                  ; 140922084 None
+14019a0c3 je       0x14019a157                                   
+14019a0c9 lea      rcx, [rsp + 0xef0]                            
+14019a0d1 call     0x1400d65a4                                   
+14019a0d6 nop                                                    
+14019a0d7 mov      dword ptr [rsp + 0x10e0], edi                 
+14019a0de lea      rcx, [rsp + 0xef0]                            
+14019a0e6 call     0x1403f3f94                                   
+14019a0eb xor      r9d, r9d                                      
+14019a0ee xor      r8d, r8d                                      
+   140329443 lea eax, [rip + 0x3a6ebf]      func=(5372023228, 5372024291)
+1403293c3 cld                                                    
+1403293c4 movdqu   xmmword ptr [rsp + 0x40], xmm0                
+1403293ca call     0x14000cbe4                                   
+1403293cf mov      rbx, rax                                      
+1403293d2 test     rax, rax                                      
+1403293d5 je       0x14032959f                                   
+1403293db lea      r9, [rbp - 0x80]                              
+1403293df mov      rcx, rax                                      
+1403293e2 lea      r8, [rbp]                                     
+1403293e6 lea      rdx, [rip + 0x3d840b]                            ; 1407017f8 'SOFTWARE\\Eassos\\%s\\%s'
+1403293ed call     0x1400049ec                                   
+1403293f2 xor      r9d, r9d                                      
+1403293f5 mov      dword ptr [rsp + 0x20], r12d                  
+1403293fa lea      r8, [rip + 0x38a1ef]                             ; 1406b35f0 'license'
+140329401 mov      rdx, rbx                                      
+140329404 call     0x140323884                                   
+140329409 mov      r14d, eax                                     
+14032940c test     eax, eax                                      
+14032940e je       0x14032943a                                   
+140329410 mov      ecx, r14d                                     
+140329413 mov      r15d, r14d                                    
+140329416 call     0x14000cbe4                                   
+14032941b mov      rdi, rax                                      
+14032941e test     rax, rax                                      
+140329421 je       0x14032943a                                   
+140329423 mov      r9, rax                                       
+140329426 mov      dword ptr [rsp + 0x20], r14d                  
+14032942b lea      r8, [rip + 0x38a1be]                             ; 1406b35f0 'license'
+140329432 mov      rdx, rbx                                      
+140329435 call     0x140323884                                   
+14032943a xor      r9d, r9d                                      
+14032943d mov      dword ptr [rsp + 0x20], r12d                  
+140329442 lea      r8, [rip + 0x3a6ebf]                             ; 1406d0308 'ShowLicense'
+140329449 mov      rdx, rbx                                      
+14032944c call     0x140323884                                   
+140329451 test     eax, eax                                      
+140329453 je       0x14032946d                                   
+140329455 lea      r9, [rsp + 0x40]                              
+14032945a mov      dword ptr [rsp + 0x20], eax                   
+14032945e lea      r8, [rip + 0x3a6ea3]                             ; 1406d0308 'ShowLicense'
+140329465 mov      rdx, rbx                                      
+140329468 call     0x140323884                                   
+14032946d test     rdi, rdi                                      
+140329470 je       0x14032958a                                   
+140329476 test     r15d, r15d                                    
+140329479 je       0x14032958a                                   
+14032947f lea      r14, [r13 + 0x40438]                          
+140329486 mov      r8, rsi                                       
+140329489 mov      r13, 0xffffffff80000002                       
+140329490 mov      rdx, r14                                      
+140329493 mov      rcx, r13                                      
+140329496 call     qword ptr [rip + 0x305b7c]                       ; 14062f018 None
+14032949c test     eax, eax                                      
+14032949e jne      0x14032958a                                   
+1403294a4 mov      r8, r14                                       
+1403294a7 lea      rdx, [rip + 0x3d83b2]                            ; 140701860 '%s\\Eassos'
+1403294ae mov      rcx, rbx                                      
+1403294b1 call     0x1400049ec                                   
+1403294b6 mov      rdx, rbx                                      
+1403294b9 call     0x1401a0874                                   
+1403294be test     eax, eax                                      
+1403294c0 jne      0x1403294d2                                   
+1403294c2 mov      rdx, rbx                                      
+1403294c5 call     0x14019ed6c                                   
+1403294ca test     eax, eax                                      
+1403294cc je       0x14032957e                                   
+1403294d2 lea      r9, [rbp]                                     
+1403294d6 mov      r8, r14                                       
+1403294d9 lea      rdx, [rip + 0x3d8360]                            ; 140701840 '%s\\Eassos\\%s'
+1403294e0 mov      rcx, rbx                                      
+1403294e3 call     0x1400049ec                                   
+1403294e8 mov      rdx, rbx                                      
+1403294eb call     0x1401a0874                                   
+1403294f0 test     eax, eax                                      
+1403294f2 jne      0x140329500                                   
+1403294f4 mov      rdx, rbx                                      
+1403294f7 call     0x14019ed6c                                   
+1403294fc test     eax, eax                                      
+1403294fe je       0x14032957e                                   
+140329500 lea      rax, [rbp - 0x80]                             
+140329504 mov      r8, r14                                       
+140329507 lea      r9, [rbp]                                     
+14032950b mov      qword ptr [rsp + 0x20], rax                   
+140329510 lea      rdx, [rip + 0x3d8361]                            ; 140701878 '%s\\Eassos\\%s\\%s'
+140329517 mov      rcx, rbx                                      
+14032951a call     0x1400049ec                                   
+14032951f mov      rdx, rbx                                      
+140329522 call     0x1401a0874                                   
+140329527 test     eax, eax                                      
+140329529 jne      0x140329537                                   
+14032952b mov      rdx, rbx                                      
+14032952e call     0x14019ed6c                                   
+140329533 test     eax, eax                                      
+140329535 je       0x14032957e                                   
+140329537 mov      dword ptr [rsp + 0x28], 3                     
+   14032945f lea eax, [rip + 0x3a6ea3]      func=(5372023228, 5372024291)
+1403293df mov      rcx, rax                                      
+1403293e2 lea      r8, [rbp]                                     
+1403293e6 lea      rdx, [rip + 0x3d840b]                            ; 1407017f8 'SOFTWARE\\Eassos\\%s\\%s'
+1403293ed call     0x1400049ec                                   
+1403293f2 xor      r9d, r9d                                      
+1403293f5 mov      dword ptr [rsp + 0x20], r12d                  
+1403293fa lea      r8, [rip + 0x38a1ef]                             ; 1406b35f0 'license'
+140329401 mov      rdx, rbx                                      
+140329404 call     0x140323884                                   
+140329409 mov      r14d, eax                                     
+14032940c test     eax, eax                                      
+14032940e je       0x14032943a                                   
+140329410 mov      ecx, r14d                                     
+140329413 mov      r15d, r14d                                    
+140329416 call     0x14000cbe4                                   
+14032941b mov      rdi, rax                                      
+14032941e test     rax, rax                                      
+140329421 je       0x14032943a                                   
+140329423 mov      r9, rax                                       
+140329426 mov      dword ptr [rsp + 0x20], r14d                  
+14032942b lea      r8, [rip + 0x38a1be]                             ; 1406b35f0 'license'
+140329432 mov      rdx, rbx                                      
+140329435 call     0x140323884                                   
+14032943a xor      r9d, r9d                                      
+14032943d mov      dword ptr [rsp + 0x20], r12d                  
+140329442 lea      r8, [rip + 0x3a6ebf]                             ; 1406d0308 'ShowLicense'
+140329449 mov      rdx, rbx                                      
+14032944c call     0x140323884                                   
+140329451 test     eax, eax                                      
+140329453 je       0x14032946d                                   
+140329455 lea      r9, [rsp + 0x40]                              
+14032945a mov      dword ptr [rsp + 0x20], eax                   
+14032945e lea      r8, [rip + 0x3a6ea3]                             ; 1406d0308 'ShowLicense'
+140329465 mov      rdx, rbx                                      
+140329468 call     0x140323884                                   
+14032946d test     rdi, rdi                                      
+140329470 je       0x14032958a                                   
+140329476 test     r15d, r15d                                    
+140329479 je       0x14032958a                                   
+14032947f lea      r14, [r13 + 0x40438]                          
+140329486 mov      r8, rsi                                       
+140329489 mov      r13, 0xffffffff80000002                       
+140329490 mov      rdx, r14                                      
+140329493 mov      rcx, r13                                      
+140329496 call     qword ptr [rip + 0x305b7c]                       ; 14062f018 None
+14032949c test     eax, eax                                      
+14032949e jne      0x14032958a                                   
+1403294a4 mov      r8, r14                                       
+1403294a7 lea      rdx, [rip + 0x3d83b2]                            ; 140701860 '%s\\Eassos'
+1403294ae mov      rcx, rbx                                      
+1403294b1 call     0x1400049ec                                   
+1403294b6 mov      rdx, rbx                                      
+1403294b9 call     0x1401a0874                                   
+1403294be test     eax, eax                                      
+1403294c0 jne      0x1403294d2                                   
+1403294c2 mov      rdx, rbx                                      
+1403294c5 call     0x14019ed6c                                   
+1403294ca test     eax, eax                                      
+1403294cc je       0x14032957e                                   
+1403294d2 lea      r9, [rbp]                                     
+1403294d6 mov      r8, r14                                       
+1403294d9 lea      rdx, [rip + 0x3d8360]                            ; 140701840 '%s\\Eassos\\%s'
+1403294e0 mov      rcx, rbx                                      
+1403294e3 call     0x1400049ec                                   
+1403294e8 mov      rdx, rbx                                      
+1403294eb call     0x1401a0874                                   
+1403294f0 test     eax, eax                                      
+1403294f2 jne      0x140329500                                   
+1403294f4 mov      rdx, rbx                                      
+1403294f7 call     0x14019ed6c                                   
+1403294fc test     eax, eax                                      
+1403294fe je       0x14032957e                                   
+140329500 lea      rax, [rbp - 0x80]                             
+140329504 mov      r8, r14                                       
+140329507 lea      r9, [rbp]                                     
+14032950b mov      qword ptr [rsp + 0x20], rax                   
+140329510 lea      rdx, [rip + 0x3d8361]                            ; 140701878 '%s\\Eassos\\%s\\%s'
+140329517 mov      rcx, rbx                                      
+14032951a call     0x1400049ec                                   
+14032951f mov      rdx, rbx                                      
+140329522 call     0x1401a0874                                   
+140329527 test     eax, eax                                      
+140329529 jne      0x140329537                                   
+14032952b mov      rdx, rbx                                      
+14032952e call     0x14019ed6c                                   
+140329533 test     eax, eax                                      
+140329535 je       0x14032957e                                   
+140329537 mov      dword ptr [rsp + 0x28], 3                     
+14032953f lea      r8, [rip + 0x38a0aa]                             ; 1406b35f0 'license'
+140329546 mov      r9, rdi                                       
+140329549 mov      dword ptr [rsp + 0x20], r15d                  
+14032954e mov      rdx, rbx                                      
+140329551 call     0x1401a0b84                                   
+140329556 test     eax, eax                                      
+140329558 je       0x14032957e                                   
+   140329568 lea eax, [rip + 0x3a6d9a]      func=(5372023228, 5372024291)
+1403294e8 mov      rdx, rbx                                      
+1403294eb call     0x1401a0874                                   
+1403294f0 test     eax, eax                                      
+1403294f2 jne      0x140329500                                   
+1403294f4 mov      rdx, rbx                                      
+1403294f7 call     0x14019ed6c                                   
+1403294fc test     eax, eax                                      
+1403294fe je       0x14032957e                                   
+140329500 lea      rax, [rbp - 0x80]                             
+140329504 mov      r8, r14                                       
+140329507 lea      r9, [rbp]                                     
+14032950b mov      qword ptr [rsp + 0x20], rax                   
+140329510 lea      rdx, [rip + 0x3d8361]                            ; 140701878 '%s\\Eassos\\%s\\%s'
+140329517 mov      rcx, rbx                                      
+14032951a call     0x1400049ec                                   
+14032951f mov      rdx, rbx                                      
+140329522 call     0x1401a0874                                   
+140329527 test     eax, eax                                      
+140329529 jne      0x140329537                                   
+14032952b mov      rdx, rbx                                      
+14032952e call     0x14019ed6c                                   
+140329533 test     eax, eax                                      
+140329535 je       0x14032957e                                   
+140329537 mov      dword ptr [rsp + 0x28], 3                     
+14032953f lea      r8, [rip + 0x38a0aa]                             ; 1406b35f0 'license'
+140329546 mov      r9, rdi                                       
+140329549 mov      dword ptr [rsp + 0x20], r15d                  
+14032954e mov      rdx, rbx                                      
+140329551 call     0x1401a0b84                                   
+140329556 test     eax, eax                                      
+140329558 je       0x14032957e                                   
+14032955a mov      dword ptr [rsp + 0x28], 1                     
+140329562 lea      r9, [rsp + 0x40]                              
+140329567 lea      r8, [rip + 0x3a6d9a]                             ; 1406d0308 'ShowLicense'
+14032956e mov      dword ptr [rsp + 0x20], 0x40                  
+140329576 mov      rdx, rbx                                      
+140329579 call     0x1401a0b84                                   
+14032957e mov      rdx, r14                                      
+140329581 mov      rcx, r13                                      
+140329584 call     qword ptr [rip + 0x305a96]                       ; 14062f020 None
+14032958a mov      rcx, rbx                                      
+14032958d call     0x140003c54                                   
+140329592 test     rdi, rdi                                      
+140329595 je       0x14032959f                                   
+140329597 mov      rcx, rdi                                      
+14032959a call     0x140003c54                                   
+14032959f mov      rcx, rsi                                      
+1403295a2 call     0x140003c54                                   
+1403295a7 mov      rax, qword ptr [rsp + 0x30]                   
+1403295ac test     rax, rax                                      
+1403295af je       0x1403295b9                                   
+1403295b1 mov      rcx, rax                                      
+1403295b4 call     0x140003c54                                   
+1403295b9 mov      rcx, qword ptr [rbp + 0x80]                   
+1403295c0 xor      rcx, rsp                                      
+1403295c3 call     0x140589e90                                   
+1403295c8 mov      rbx, qword ptr [rsp + 0x1e0]                  
+1403295d0 add      rsp, 0x190                                    
+1403295d7 pop      r15                                           
+1403295d9 pop      r14                                           
+1403295db pop      r13                                           
+1403295dd pop      r12                                           
+1403295df pop      rdi                                           
+1403295e0 pop      rsi                                           
+1403295e1 pop      rbp                                           
+1403295e2 ret                                                    
+1403295e3 int3                                                   
+1403295e4 mov      rax, rsp                                      
+1403295e7 mov      qword ptr [rax + 0x10], rdx                   
+1403295eb mov      qword ptr [rax + 0x18], r8                    
+1403295ef mov      qword ptr [rax + 0x20], r9                    
+1403295f3 push     rbx                                           
+1403295f4 push     rsi                                           
+1403295f5 push     rdi                                           
+1403295f6 sub      rsp, 0x30                                     
+1403295fa mov      rdi, rdx                                      
+1403295fd lea      rsi, [rax + 0x18]                             
+140329601 mov      rbx, rcx                                      
+140329604 call     0x140003a40                                   
+140329609 mov      qword ptr [rsp + 0x28], rsi                   
+14032960e mov      r9, rdi                                       
+140329611 mov      r8d, 0x10000                                  
+140329617 mov      qword ptr [rsp + 0x20], 0                     
+140329620 mov      rdx, rbx                                      
+140329623 mov      rcx, qword ptr [rax]                          
+140329626 call     0x1405a0f6c                                   
+14032962b or       ecx, 0xffffffff                               
+14032962e test     eax, eax                                      
+140329630 cmovs    eax, ecx                                      
+140329633 add      rsp, 0x30                                     
+140329637 pop      rdi                                           
+140329638 pop      rsi                                           
+140329639 pop      rbx                                           
+14032963a ret                                                    
+14032963b int3                                                   
+14032963c int3                                                   
+14032963d int3                                                   
+14032963e int3                                                   
+14032963f int3                                                   
+140329640 mov      qword ptr [rsp + 0x18], r8                    
+140329645 mov      qword ptr [rsp + 0x20], r9                    
+14032964a push     rbx                                           
+14032964b push     rbp                                           
+14032964c push     rsi                                           
+14032964d push     rdi                                           
+14032964e sub      rsp, 0x38                                     
+140329652 mov      rsi, r8                                       
+140329655 lea      rbp, [rsp + 0x78]                             
+14032965a mov      rdi, rdx                                      
+14032965d mov      rbx, rcx                                      
+140329660 call     0x140003a40                                   

@@ -1,0 +1,47 @@
+[
+ {
+  "case": "control_nokey",
+  "key_len": 0,
+  "alive": true,
+  "kept": true,
+  "size_after": 78,
+  "same_bytes": true,
+  "reg": {}
+ },
+ {
+  "case": "fake_sample",
+  "key_len": 67,
+  "alive": true,
+  "kept": true,
+  "size_after": 486,
+  "same_bytes": true,
+  "reg": {}
+ },
+ {
+  "case": "plain_check",
+  "key_len": 184,
+  "alive": true,
+  "kept": true,
+  "size_after": 720,
+  "same_bytes": true,
+  "reg": {}
+ },
+ {
+  "case": "enc_check",
+  "key_len": 195,
+  "alive": true,
+  "kept": true,
+  "size_after": 742,
+  "same_bytes": true,
+  "reg": {}
+ },
+ {
+  "case": "skey_dummy",
+  "key_len": 175,
+  "alive": true,
+  "kept": true,
+  "size_after": 702,
+  "same_bytes": true,
+  "reg": {}
+ }
+]

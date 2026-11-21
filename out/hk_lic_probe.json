@@ -1,0 +1,1469 @@
+﻿[
+    {
+        "case":  "baseline_empty",
+        "bytes":  0,
+        "alive":  true,
+        "windows":  [
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "Error Message",
+                            "cls":  "#32770"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:8:0000000000010003:000000000010006E:0000000000000000"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "DiskGenius",
+                            "cls":  "Afx:0000000140000000:b:0000000000010003:0000000000000006:000000000095044F"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "ComboLBox"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "#32770"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "SoPY_Status"
+                        },
+                        {
+                            "title":  "MSCTFIME UI",
+                            "cls":  "MSCTFIME UI"
+                        },
+                        {
+                            "title":  "HintWnd",
+                            "cls":  "SoPY_Hint"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "SoPY_UI"
+                        },
+                        {
+                            "title":  "Sogou_TSF_UI",
+                            "cls":  "Sogou_TSF_UI"
+                        },
+                        {
+                            "title":  "Default IME",
+                            "cls":  "IME"
+                        },
+                        {
+                            "title":  "Default IME",
+                            "cls":  "IME"
+                        }
+                    ],
+        "changed":  false,
+        "before":  {
+                       "Reg":  {
+                                   "ShowLicense":  "6.2.0.1829",
+                                   "Improveplan":  "Y",
+                                   "license":  "bin[0]:"
+                               },
+                       "CReg":  {
+                                    "ShowLicense":  "6.2.0.1829",
+                                    "Improveplan":  "Y",
+                                    "license":  "bin[0]:"
+                                },
+                       "HKCU":  {
+
+                                },
+                       "iniSize":  78,
+                       "iniSha":  "DFEAA4BD9AC7C24C"
+                   },
+        "after":  {
+                      "Reg":  {
+                                  "ShowLicense":  "6.2.0.1829",
+                                  "Improveplan":  "Y",
+                                  "license":  "bin[0]:"
+                              },
+                      "CReg":  {
+                                   "ShowLicense":  "6.2.0.1829",
+                                   "Improveplan":  "Y",
+                                   "license":  "bin[0]:"
+                               },
+                      "HKCU":  {
+
+                               },
+                      "iniSize":  78,
+                      "iniSha":  "DFEAA4BD9AC7C24C"
+                  },
+        "end":  {
+                    "Reg":  {
+                                "ShowLicense":  "6.2.0.1829",
+                                "Improveplan":  "Y",
+                                "license":  "bin[0]:"
+                            },
+                    "CReg":  {
+                                 "ShowLicense":  "6.2.0.1829",
+                                 "Improveplan":  "Y",
+                                 "license":  "bin[0]:"
+                             },
+                    "HKCU":  {
+
+                             },
+                    "iniSize":  78,
+                    "iniSha":  "DFEAA4BD9AC7C24C"
+                }
+    },
+    {
+        "case":  "u16_1TEST",
+        "bytes":  10,
+        "alive":  true,
+        "windows":  [
+                        {
+                            "title":  "Error Message",
+                            "cls":  "#32770"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:8:0000000000010003:000000000010006E:0000000000000000"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "DiskGenius V6.2.0.1829 x64 ",
+                            "cls":  "Afx:0000000140000000:b:0000000000010003:0000000000000006:00000000007E0633"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "ComboLBox"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "SoPY_Status"
+                        },
+                        {
+                            "title":  "MSCTFIME UI",
+                            "cls":  "MSCTFIME UI"
+                        },
+                        {
+                            "title":  "Default IME",
+                            "cls":  "IME"
+                        },
+                        {
+                            "title":  "MSCTFIME UI",
+                            "cls":  "MSCTFIME UI"
+                        },
+                        {
+                            "title":  "HintWnd",
+                            "cls":  "SoPY_Hint"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "SoPY_UI"
+                        },
+                        {
+                            "title":  "Sogou_TSF_UI",
+                            "cls":  "Sogou_TSF_UI"
+                        },
+                        {
+                            "title":  "Default IME",
+                            "cls":  "IME"
+                        }
+                    ],
+        "changed":  false,
+        "before":  {
+                       "Reg":  {
+                                   "ShowLicense":  "6.2.0.1829",
+                                   "Improveplan":  "Y",
+                                   "license":  "bin[10]:31005400450053005400"
+                               },
+                       "CReg":  {
+                                    "ShowLicense":  "6.2.0.1829",
+                                    "Improveplan":  "Y",
+                                    "license":  "bin[10]:31005400450053005400"
+                                },
+                       "HKCU":  {
+
+                                },
+                       "iniSize":  78,
+                       "iniSha":  "DFEAA4BD9AC7C24C"
+                   },
+        "after":  {
+                      "Reg":  {
+                                  "ShowLicense":  "6.2.0.1829",
+                                  "Improveplan":  "Y",
+                                  "license":  "bin[10]:31005400450053005400"
+                              },
+                      "CReg":  {
+                                   "ShowLicense":  "6.2.0.1829",
+                                   "Improveplan":  "Y",
+                                   "license":  "bin[10]:31005400450053005400"
+                               },
+                      "HKCU":  {
+
+                               },
+                      "iniSize":  78,
+                      "iniSha":  "DFEAA4BD9AC7C24C"
+                  },
+        "end":  {
+                    "Reg":  {
+                                "ShowLicense":  "6.2.0.1829",
+                                "Improveplan":  "Y",
+                                "license":  "bin[10]:31005400450053005400"
+                            },
+                    "CReg":  {
+                                 "ShowLicense":  "6.2.0.1829",
+                                 "Improveplan":  "Y",
+                                 "license":  "bin[10]:31005400450053005400"
+                             },
+                    "HKCU":  {
+
+                             },
+                    "iniSize":  78,
+                    "iniSha":  "DFEAA4BD9AC7C24C"
+                }
+    },
+    {
+        "case":  "u16_9TEST",
+        "bytes":  10,
+        "alive":  true,
+        "windows":  [
+                        {
+                            "title":  "Error Message",
+                            "cls":  "#32770"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:8:0000000000010003:000000000010006E:0000000000000000"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "DiskGenius V6.2.0.1829 x64 ",
+                            "cls":  "Afx:0000000140000000:b:0000000000010003:0000000000000006:00000000005006FD"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "ComboLBox"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "SoPY_Status"
+                        },
+                        {
+                            "title":  "MSCTFIME UI",
+                            "cls":  "MSCTFIME UI"
+                        },
+                        {
+                            "title":  "Default IME",
+                            "cls":  "IME"
+                        },
+                        {
+                            "title":  "MSCTFIME UI",
+                            "cls":  "MSCTFIME UI"
+                        },
+                        {
+                            "title":  "HintWnd",
+                            "cls":  "SoPY_Hint"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "SoPY_UI"
+                        },
+                        {
+                            "title":  "Sogou_TSF_UI",
+                            "cls":  "Sogou_TSF_UI"
+                        },
+                        {
+                            "title":  "Default IME",
+                            "cls":  "IME"
+                        }
+                    ],
+        "changed":  false,
+        "before":  {
+                       "Reg":  {
+                                   "ShowLicense":  "6.2.0.1829",
+                                   "Improveplan":  "Y",
+                                   "license":  "bin[10]:39005400450053005400"
+                               },
+                       "CReg":  {
+                                    "ShowLicense":  "6.2.0.1829",
+                                    "Improveplan":  "Y",
+                                    "license":  "bin[10]:39005400450053005400"
+                                },
+                       "HKCU":  {
+
+                                },
+                       "iniSize":  78,
+                       "iniSha":  "DFEAA4BD9AC7C24C"
+                   },
+        "after":  {
+                      "Reg":  {
+                                  "ShowLicense":  "6.2.0.1829",
+                                  "Improveplan":  "Y",
+                                  "license":  "bin[10]:39005400450053005400"
+                              },
+                      "CReg":  {
+                                   "ShowLicense":  "6.2.0.1829",
+                                   "Improveplan":  "Y",
+                                   "license":  "bin[10]:39005400450053005400"
+                               },
+                      "HKCU":  {
+
+                               },
+                      "iniSize":  78,
+                      "iniSha":  "DFEAA4BD9AC7C24C"
+                  },
+        "end":  {
+                    "Reg":  {
+                                "ShowLicense":  "6.2.0.1829",
+                                "Improveplan":  "Y",
+                                "license":  "bin[10]:39005400450053005400"
+                            },
+                    "CReg":  {
+                                 "ShowLicense":  "6.2.0.1829",
+                                 "Improveplan":  "Y",
+                                 "license":  "bin[10]:39005400450053005400"
+                             },
+                    "HKCU":  {
+
+                             },
+                    "iniSize":  78,
+                    "iniSha":  "DFEAA4BD9AC7C24C"
+                }
+    },
+    {
+        "case":  "u16_0TEST",
+        "bytes":  10,
+        "alive":  true,
+        "windows":  [
+                        {
+                            "title":  "Error Message",
+                            "cls":  "#32770"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:8:0000000000010003:000000000010006E:0000000000000000"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "DiskGenius V6.2.0.1829 x64 ",
+                            "cls":  "Afx:0000000140000000:b:0000000000010003:0000000000000006:00000000003206BF"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "ComboLBox"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "SoPY_Status"
+                        },
+                        {
+                            "title":  "MSCTFIME UI",
+                            "cls":  "MSCTFIME UI"
+                        },
+                        {
+                            "title":  "Default IME",
+                            "cls":  "IME"
+                        },
+                        {
+                            "title":  "MSCTFIME UI",
+                            "cls":  "MSCTFIME UI"
+                        },
+                        {
+                            "title":  "HintWnd",
+                            "cls":  "SoPY_Hint"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "SoPY_UI"
+                        },
+                        {
+                            "title":  "Sogou_TSF_UI",
+                            "cls":  "Sogou_TSF_UI"
+                        },
+                        {
+                            "title":  "Default IME",
+                            "cls":  "IME"
+                        }
+                    ],
+        "changed":  false,
+        "before":  {
+                       "Reg":  {
+                                   "ShowLicense":  "6.2.0.1829",
+                                   "Improveplan":  "Y",
+                                   "license":  "bin[10]:30005400450053005400"
+                               },
+                       "CReg":  {
+                                    "ShowLicense":  "6.2.0.1829",
+                                    "Improveplan":  "Y",
+                                    "license":  "bin[10]:30005400450053005400"
+                                },
+                       "HKCU":  {
+
+                                },
+                       "iniSize":  78,
+                       "iniSha":  "DFEAA4BD9AC7C24C"
+                   },
+        "after":  {
+                      "Reg":  {
+                                  "ShowLicense":  "6.2.0.1829",
+                                  "Improveplan":  "Y",
+                                  "license":  "bin[10]:30005400450053005400"
+                              },
+                      "CReg":  {
+                                   "ShowLicense":  "6.2.0.1829",
+                                   "Improveplan":  "Y",
+                                   "license":  "bin[10]:30005400450053005400"
+                               },
+                      "HKCU":  {
+
+                               },
+                      "iniSize":  78,
+                      "iniSha":  "DFEAA4BD9AC7C24C"
+                  },
+        "end":  {
+                    "Reg":  {
+                                "ShowLicense":  "6.2.0.1829",
+                                "Improveplan":  "Y",
+                                "license":  "bin[10]:30005400450053005400"
+                            },
+                    "CReg":  {
+                                 "ShowLicense":  "6.2.0.1829",
+                                 "Improveplan":  "Y",
+                                 "license":  "bin[10]:30005400450053005400"
+                             },
+                    "HKCU":  {
+
+                             },
+                    "iniSize":  78,
+                    "iniSha":  "DFEAA4BD9AC7C24C"
+                }
+    },
+    {
+        "case":  "u16_2TEST",
+        "bytes":  10,
+        "alive":  true,
+        "windows":  [
+                        {
+                            "title":  "Error Message",
+                            "cls":  "#32770"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:8:0000000000010003:000000000010006E:0000000000000000"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "DiskGenius V6.2.0.1829 x64 ",
+                            "cls":  "Afx:0000000140000000:b:0000000000010003:0000000000000006:000000000005077D"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "ComboLBox"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "SoPY_Status"
+                        },
+                        {
+                            "title":  "MSCTFIME UI",
+                            "cls":  "MSCTFIME UI"
+                        },
+                        {
+                            "title":  "Default IME",
+                            "cls":  "IME"
+                        },
+                        {
+                            "title":  "MSCTFIME UI",
+                            "cls":  "MSCTFIME UI"
+                        },
+                        {
+                            "title":  "HintWnd",
+                            "cls":  "SoPY_Hint"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "SoPY_UI"
+                        },
+                        {
+                            "title":  "Sogou_TSF_UI",
+                            "cls":  "Sogou_TSF_UI"
+                        },
+                        {
+                            "title":  "Default IME",
+                            "cls":  "IME"
+                        }
+                    ],
+        "changed":  false,
+        "before":  {
+                       "Reg":  {
+                                   "ShowLicense":  "6.2.0.1829",
+                                   "Improveplan":  "Y",
+                                   "license":  "bin[10]:32005400450053005400"
+                               },
+                       "CReg":  {
+                                    "ShowLicense":  "6.2.0.1829",
+                                    "Improveplan":  "Y",
+                                    "license":  "bin[10]:32005400450053005400"
+                                },
+                       "HKCU":  {
+
+                                },
+                       "iniSize":  78,
+                       "iniSha":  "DFEAA4BD9AC7C24C"
+                   },
+        "after":  {
+                      "Reg":  {
+                                  "ShowLicense":  "6.2.0.1829",
+                                  "Improveplan":  "Y",
+                                  "license":  "bin[10]:32005400450053005400"
+                              },
+                      "CReg":  {
+                                   "ShowLicense":  "6.2.0.1829",
+                                   "Improveplan":  "Y",
+                                   "license":  "bin[10]:32005400450053005400"
+                               },
+                      "HKCU":  {
+
+                               },
+                      "iniSize":  78,
+                      "iniSha":  "DFEAA4BD9AC7C24C"
+                  },
+        "end":  {
+                    "Reg":  {
+                                "ShowLicense":  "6.2.0.1829",
+                                "Improveplan":  "Y",
+                                "license":  "bin[10]:32005400450053005400"
+                            },
+                    "CReg":  {
+                                 "ShowLicense":  "6.2.0.1829",
+                                 "Improveplan":  "Y",
+                                 "license":  "bin[10]:32005400450053005400"
+                             },
+                    "HKCU":  {
+
+                             },
+                    "iniSize":  78,
+                    "iniSha":  "DFEAA4BD9AC7C24C"
+                }
+    },
+    {
+        "case":  "u16_1TEST_nul",
+        "bytes":  12,
+        "alive":  true,
+        "windows":  [
+                        {
+                            "title":  "Error Message",
+                            "cls":  "#32770"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:8:0000000000010003:000000000010006E:0000000000000000"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "DiskGenius V6.2.0.1829 x64 ",
+                            "cls":  "Afx:0000000140000000:b:0000000000010003:0000000000000006:00000000013C0575"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "ComboLBox"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "SoPY_Status"
+                        },
+                        {
+                            "title":  "MSCTFIME UI",
+                            "cls":  "MSCTFIME UI"
+                        },
+                        {
+                            "title":  "Default IME",
+                            "cls":  "IME"
+                        },
+                        {
+                            "title":  "MSCTFIME UI",
+                            "cls":  "MSCTFIME UI"
+                        },
+                        {
+                            "title":  "HintWnd",
+                            "cls":  "SoPY_Hint"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "SoPY_UI"
+                        },
+                        {
+                            "title":  "Sogou_TSF_UI",
+                            "cls":  "Sogou_TSF_UI"
+                        },
+                        {
+                            "title":  "Default IME",
+                            "cls":  "IME"
+                        }
+                    ],
+        "changed":  false,
+        "before":  {
+                       "Reg":  {
+                                   "ShowLicense":  "6.2.0.1829",
+                                   "Improveplan":  "Y",
+                                   "license":  "bin[12]:310054004500530054000000"
+                               },
+                       "CReg":  {
+                                    "ShowLicense":  "6.2.0.1829",
+                                    "Improveplan":  "Y",
+                                    "license":  "bin[12]:310054004500530054000000"
+                                },
+                       "HKCU":  {
+
+                                },
+                       "iniSize":  78,
+                       "iniSha":  "DFEAA4BD9AC7C24C"
+                   },
+        "after":  {
+                      "Reg":  {
+                                  "ShowLicense":  "6.2.0.1829",
+                                  "Improveplan":  "Y",
+                                  "license":  "bin[12]:310054004500530054000000"
+                              },
+                      "CReg":  {
+                                   "ShowLicense":  "6.2.0.1829",
+                                   "Improveplan":  "Y",
+                                   "license":  "bin[12]:310054004500530054000000"
+                               },
+                      "HKCU":  {
+
+                               },
+                      "iniSize":  78,
+                      "iniSha":  "DFEAA4BD9AC7C24C"
+                  },
+        "end":  {
+                    "Reg":  {
+                                "ShowLicense":  "6.2.0.1829",
+                                "Improveplan":  "Y",
+                                "license":  "bin[12]:310054004500530054000000"
+                            },
+                    "CReg":  {
+                                 "ShowLicense":  "6.2.0.1829",
+                                 "Improveplan":  "Y",
+                                 "license":  "bin[12]:310054004500530054000000"
+                             },
+                    "HKCU":  {
+
+                             },
+                    "iniSize":  78,
+                    "iniSha":  "DFEAA4BD9AC7C24C"
+                }
+    },
+    {
+        "case":  "a_1TEST",
+        "bytes":  5,
+        "alive":  true,
+        "windows":  [
+                        {
+                            "title":  "Error Message",
+                            "cls":  "#32770"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:8:0000000000010003:000000000010006E:0000000000000000"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "DiskGenius V6.2.0.1829 x64 ",
+                            "cls":  "Afx:0000000140000000:b:0000000000010003:0000000000000006:000000000008077B"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "ComboLBox"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "SoPY_Status"
+                        },
+                        {
+                            "title":  "MSCTFIME UI",
+                            "cls":  "MSCTFIME UI"
+                        },
+                        {
+                            "title":  "Default IME",
+                            "cls":  "IME"
+                        },
+                        {
+                            "title":  "MSCTFIME UI",
+                            "cls":  "MSCTFIME UI"
+                        },
+                        {
+                            "title":  "HintWnd",
+                            "cls":  "SoPY_Hint"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "SoPY_UI"
+                        },
+                        {
+                            "title":  "Sogou_TSF_UI",
+                            "cls":  "Sogou_TSF_UI"
+                        },
+                        {
+                            "title":  "Default IME",
+                            "cls":  "IME"
+                        }
+                    ],
+        "changed":  false,
+        "before":  {
+                       "Reg":  {
+                                   "ShowLicense":  "6.2.0.1829",
+                                   "Improveplan":  "Y",
+                                   "license":  "bin[5]:3154455354"
+                               },
+                       "CReg":  {
+                                    "ShowLicense":  "6.2.0.1829",
+                                    "Improveplan":  "Y",
+                                    "license":  "bin[5]:3154455354"
+                                },
+                       "HKCU":  {
+
+                                },
+                       "iniSize":  78,
+                       "iniSha":  "DFEAA4BD9AC7C24C"
+                   },
+        "after":  {
+                      "Reg":  {
+                                  "ShowLicense":  "6.2.0.1829",
+                                  "Improveplan":  "Y",
+                                  "license":  "bin[5]:3154455354"
+                              },
+                      "CReg":  {
+                                   "ShowLicense":  "6.2.0.1829",
+                                   "Improveplan":  "Y",
+                                   "license":  "bin[5]:3154455354"
+                               },
+                      "HKCU":  {
+
+                               },
+                      "iniSize":  78,
+                      "iniSha":  "DFEAA4BD9AC7C24C"
+                  },
+        "end":  {
+                    "Reg":  {
+                                "ShowLicense":  "6.2.0.1829",
+                                "Improveplan":  "Y",
+                                "license":  "bin[5]:3154455354"
+                            },
+                    "CReg":  {
+                                 "ShowLicense":  "6.2.0.1829",
+                                 "Improveplan":  "Y",
+                                 "license":  "bin[5]:3154455354"
+                             },
+                    "HKCU":  {
+
+                             },
+                    "iniSize":  78,
+                    "iniSha":  "DFEAA4BD9AC7C24C"
+                }
+    },
+    {
+        "case":  "u16_1_payload",
+        "bytes":  292,
+        "alive":  true,
+        "windows":  [
+                        {
+                            "title":  "Error Message",
+                            "cls":  "#32770"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:8:0000000000010003:000000000010006E:0000000000000000"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "DiskGenius V6.2.0.1829 x64 ",
+                            "cls":  "Afx:0000000140000000:b:0000000000010003:0000000000000006:0000000000120779"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "ComboLBox"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "SoPY_Status"
+                        },
+                        {
+                            "title":  "MSCTFIME UI",
+                            "cls":  "MSCTFIME UI"
+                        },
+                        {
+                            "title":  "Default IME",
+                            "cls":  "IME"
+                        },
+                        {
+                            "title":  "MSCTFIME UI",
+                            "cls":  "MSCTFIME UI"
+                        },
+                        {
+                            "title":  "HintWnd",
+                            "cls":  "SoPY_Hint"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "SoPY_UI"
+                        },
+                        {
+                            "title":  "Sogou_TSF_UI",
+                            "cls":  "Sogou_TSF_UI"
+                        },
+                        {
+                            "title":  "Default IME",
+                            "cls":  "IME"
+                        }
+                    ],
+        "changed":  false,
+        "before":  {
+                       "Reg":  {
+                                   "ShowLicense":  "6.2.0.1829",
+                                   "Improveplan":  "Y",
+                                   "license":  "bin[292]:31006100700070006e0061006d0065003d004400690073006b00470065006e0069007500730026007600650072003d0036002e0032002e0030002e0031003800320039005f007800360034005f00700072006f005f0065006e006700260063006f00640065003d0051004b00370058002d004d003200500056002d005a004c00480044002d0057003800430054002d00520042004e00510026006e0061006d0065003d005a0061006b0061005400650073007400260065006d00610069006c003d007a0061006b00610040006500780061006d0070006c0065002e0063006f006d0026006d00690064003d00300030003000300030003000300030003000300030003000300030003000300026006100700070006c0061006e0067003d0045006e006700"
+                               },
+                       "CReg":  {
+                                    "ShowLicense":  "6.2.0.1829",
+                                    "Improveplan":  "Y",
+                                    "license":  "bin[292]:31006100700070006e0061006d0065003d004400690073006b00470065006e0069007500730026007600650072003d0036002e0032002e0030002e0031003800320039005f007800360034005f00700072006f005f0065006e006700260063006f00640065003d0051004b00370058002d004d003200500056002d005a004c00480044002d0057003800430054002d00520042004e00510026006e0061006d0065003d005a0061006b0061005400650073007400260065006d00610069006c003d007a0061006b00610040006500780061006d0070006c0065002e0063006f006d0026006d00690064003d00300030003000300030003000300030003000300030003000300030003000300026006100700070006c0061006e0067003d0045006e006700"
+                                },
+                       "HKCU":  {
+
+                                },
+                       "iniSize":  78,
+                       "iniSha":  "DFEAA4BD9AC7C24C"
+                   },
+        "after":  {
+                      "Reg":  {
+                                  "ShowLicense":  "6.2.0.1829",
+                                  "Improveplan":  "Y",
+                                  "license":  "bin[292]:31006100700070006e0061006d0065003d004400690073006b00470065006e0069007500730026007600650072003d0036002e0032002e0030002e0031003800320039005f007800360034005f00700072006f005f0065006e006700260063006f00640065003d0051004b00370058002d004d003200500056002d005a004c00480044002d0057003800430054002d00520042004e00510026006e0061006d0065003d005a0061006b0061005400650073007400260065006d00610069006c003d007a0061006b00610040006500780061006d0070006c0065002e0063006f006d0026006d00690064003d00300030003000300030003000300030003000300030003000300030003000300026006100700070006c0061006e0067003d0045006e006700"
+                              },
+                      "CReg":  {
+                                   "ShowLicense":  "6.2.0.1829",
+                                   "Improveplan":  "Y",
+                                   "license":  "bin[292]:31006100700070006e0061006d0065003d004400690073006b00470065006e0069007500730026007600650072003d0036002e0032002e0030002e0031003800320039005f007800360034005f00700072006f005f0065006e006700260063006f00640065003d0051004b00370058002d004d003200500056002d005a004c00480044002d0057003800430054002d00520042004e00510026006e0061006d0065003d005a0061006b0061005400650073007400260065006d00610069006c003d007a0061006b00610040006500780061006d0070006c0065002e0063006f006d0026006d00690064003d00300030003000300030003000300030003000300030003000300030003000300026006100700070006c0061006e0067003d0045006e006700"
+                               },
+                      "HKCU":  {
+
+                               },
+                      "iniSize":  78,
+                      "iniSha":  "DFEAA4BD9AC7C24C"
+                  },
+        "end":  {
+                    "Reg":  {
+                                "ShowLicense":  "6.2.0.1829",
+                                "Improveplan":  "Y",
+                                "license":  "bin[292]:31006100700070006e0061006d0065003d004400690073006b00470065006e0069007500730026007600650072003d0036002e0032002e0030002e0031003800320039005f007800360034005f00700072006f005f0065006e006700260063006f00640065003d0051004b00370058002d004d003200500056002d005a004c00480044002d0057003800430054002d00520042004e00510026006e0061006d0065003d005a0061006b0061005400650073007400260065006d00610069006c003d007a0061006b00610040006500780061006d0070006c0065002e0063006f006d0026006d00690064003d00300030003000300030003000300030003000300030003000300030003000300026006100700070006c0061006e0067003d0045006e006700"
+                            },
+                    "CReg":  {
+                                 "ShowLicense":  "6.2.0.1829",
+                                 "Improveplan":  "Y",
+                                 "license":  "bin[292]:31006100700070006e0061006d0065003d004400690073006b00470065006e0069007500730026007600650072003d0036002e0032002e0030002e0031003800320039005f007800360034005f00700072006f005f0065006e006700260063006f00640065003d0051004b00370058002d004d003200500056002d005a004c00480044002d0057003800430054002d00520042004e00510026006e0061006d0065003d005a0061006b0061005400650073007400260065006d00610069006c003d007a0061006b00610040006500780061006d0070006c0065002e0063006f006d0026006d00690064003d00300030003000300030003000300030003000300030003000300030003000300026006100700070006c0061006e0067003d0045006e006700"
+                             },
+                    "HKCU":  {
+
+                             },
+                    "iniSize":  78,
+                    "iniSha":  "DFEAA4BD9AC7C24C"
+                }
+    },
+    {
+        "case":  "u16_1_lic",
+        "bytes":  128,
+        "alive":  true,
+        "windows":  [
+                        {
+                            "title":  "Error Message",
+                            "cls":  "#32770"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:8:0000000000010003:000000000010006E:0000000000000000"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "Afx:0000000140000000:0"
+                        },
+                        {
+                            "title":  "DiskGenius V6.2.0.1829 x64 ",
+                            "cls":  "Afx:0000000140000000:b:0000000000010003:0000000000000006:00000000000F0777"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "tooltips_class32"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "ComboLBox"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "SoPY_Status"
+                        },
+                        {
+                            "title":  "MSCTFIME UI",
+                            "cls":  "MSCTFIME UI"
+                        },
+                        {
+                            "title":  "Default IME",
+                            "cls":  "IME"
+                        },
+                        {
+                            "title":  "MSCTFIME UI",
+                            "cls":  "MSCTFIME UI"
+                        },
+                        {
+                            "title":  "HintWnd",
+                            "cls":  "SoPY_Hint"
+                        },
+                        {
+                            "title":  "",
+                            "cls":  "SoPY_UI"
+                        },
+                        {
+                            "title":  "Sogou_TSF_UI",
+                            "cls":  "Sogou_TSF_UI"
+                        },
+                        {
+                            "title":  "Default IME",
+                            "cls":  "IME"
+                        }
+                    ],
+        "changed":  false,
+        "before":  {
+                       "Reg":  {
+                                   "ShowLicense":  "6.2.0.1829",
+                                   "Improveplan":  "Y",
+                                   "license":  "bin[128]:31006100700070006e0061006d0065003d004400690073006b00470065006e0069007500730026006c006900630065006e00730065003d00530049004700260075007300650072003d0042006f0073007300260065006d00610069006c003d0062006f007300730040006500780061006d0070006c0065002e0063006f006d00"
+                               },
+                       "CReg":  {
+                                    "ShowLicense":  "6.2.0.1829",
+                                    "Improveplan":  "Y",
+                                    "license":  "bin[128]:31006100700070006e0061006d0065003d004400690073006b00470065006e0069007500730026006c006900630065006e00730065003d00530049004700260075007300650072003d0042006f0073007300260065006d00610069006c003d0062006f007300730040006500780061006d0070006c0065002e0063006f006d00"
+                                },
+                       "HKCU":  {
+
+                                },
+                       "iniSize":  78,
+                       "iniSha":  "DFEAA4BD9AC7C24C"
+                   },
+        "after":  {
+                      "Reg":  {
+                                  "ShowLicense":  "6.2.0.1829",
+                                  "Improveplan":  "Y",
+                                  "license":  "bin[128]:31006100700070006e0061006d0065003d004400690073006b00470065006e0069007500730026006c006900630065006e00730065003d00530049004700260075007300650072003d0042006f0073007300260065006d00610069006c003d0062006f007300730040006500780061006d0070006c0065002e0063006f006d00"
+                              },
+                      "CReg":  {
+                                   "ShowLicense":  "6.2.0.1829",
+                                   "Improveplan":  "Y",
+                                   "license":  "bin[128]:31006100700070006e0061006d0065003d004400690073006b00470065006e0069007500730026006c006900630065006e00730065003d00530049004700260075007300650072003d0042006f0073007300260065006d00610069006c003d0062006f007300730040006500780061006d0070006c0065002e0063006f006d00"
+                               },
+                      "HKCU":  {
+
+                               },
+                      "iniSize":  78,
+                      "iniSha":  "DFEAA4BD9AC7C24C"
+                  },
+        "end":  {
+                    "Reg":  {
+                                "ShowLicense":  "6.2.0.1829",
+                                "Improveplan":  "Y",
+                                "license":  "bin[128]:31006100700070006e0061006d0065003d004400690073006b00470065006e0069007500730026006c006900630065006e00730065003d00530049004700260075007300650072003d0042006f0073007300260065006d00610069006c003d0062006f007300730040006500780061006d0070006c0065002e0063006f006d00"
+                            },
+                    "CReg":  {
+                                 "ShowLicense":  "6.2.0.1829",
+                                 "Improveplan":  "Y",
+                                 "license":  "bin[128]:31006100700070006e0061006d0065003d004400690073006b00470065006e0069007500730026006c006900630065006e00730065003d00530049004700260075007300650072003d0042006f0073007300260065006d00610069006c003d0062006f007300730040006500780061006d0070006c0065002e0063006f006d00"
+                             },
+                    "HKCU":  {
+
+                             },
+                    "iniSize":  78,
+                    "iniSha":  "DFEAA4BD9AC7C24C"
+                }
+    }
+]

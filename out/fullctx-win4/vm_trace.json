@@ -1,0 +1,1 @@
+{"n": 0, "mode": "table-fullctx", "rec_size": 80, "fmt": "[ip,[ip],[ip+8],[ip+16],[ip+24],tag,orig,rbp,tbl,rsp]", "dead_at": null, "n_ip": 0, "ring_layout": {"slot": 4096, "ctx": [0, 4096], "low": null, "low_va": 30408704, "stack": {"slot": 1024, "rsp_field": 72}}, "tables": [["0x1421080ab", 661, "abs"]], "tag_hist": {}, "trace": []}

@@ -1,0 +1,169 @@
+﻿func of 0x1403cc534 (5372691720, 5372692293)
+callers of func: ['0x1403cb5d5', '0x1403cb955', '0x1403cc78e']
+1403cc508 push     rbp                                       
+1403cc50a push     rbx                                       
+1403cc50b push     rsi                                       
+1403cc50c push     rdi                                       
+1403cc50d push     r14                                       
+1403cc50f mov      rbp, rsp                                  
+1403cc512 sub      rsp, 0x60                                 
+1403cc516 mov      rax, qword ptr [rip + 0x3f33e3]             ; 1407bf900 None
+1403cc51d xor      rax, rsp                                  
+1403cc520 mov      qword ptr [rbp - 0x10], rax               
+1403cc524 mov      r14, r9                                   
+1403cc527 mov      dword ptr [rbp - 0x34], 0x10325476        
+1403cc52e mov      ebx, r8d                                  
+1403cc531 xor      edi, edi                                  
+1403cc533 mov      ecx, 0x67452301                           
+1403cc538 mov      r8d, 0xefcdab89                           
+1403cc53e mov      r9d, 0x98badcfe                           
+1403cc544 mov      dword ptr [rbp - 0x40], ecx               
+1403cc547 mov      rsi, rdx                                  
+1403cc54a mov      dword ptr [rbp - 0x3c], r8d               
+1403cc54e lea      rax, [r14 + 9]                            
+1403cc552 mov      dword ptr [rbp - 0x38], r9d               
+1403cc556 mov      edx, edi                                  
+1403cc558 cmp      dword ptr [rax], edi                      
+1403cc55a jne      0x1403cc56b                               
+1403cc55c inc      rdx                                       
+1403cc55f add      rax, 4                                    
+1403cc563 cmp      rdx, 4                                    
+1403cc567 jl       0x1403cc558                               
+1403cc569 jmp      0x1403cc58a                               
+1403cc56b movups   xmm2, xmmword ptr [r14 + 9]               
+1403cc570 mov      r9d, dword ptr [r14 + 0x11]               
+1403cc574 movdqa   xmm1, xmm2                                
+1403cc578 movd     ecx, xmm2                                 
+1403cc57c psrldq   xmm1, 4                                   
+1403cc581 movd     r8d, xmm1                                 
+1403cc586 movups   xmmword ptr [rbp - 0x40], xmm2            
+1403cc58a movzx    edx, byte ptr [r14]                       
+1403cc58e test     edx, edx                                  
+1403cc590 je       0x1403cc6dd                               
+1403cc596 sub      edx, 1                                    
+1403cc599 je       0x1403cc69d                               
+1403cc59f sub      edx, 1                                    
+1403cc5a2 je       0x1403cc661                               
+1403cc5a8 sub      edx, 1                                    
+1403cc5ab je       0x1403cc625                               
+1403cc5ad sub      edx, 1                                    
+1403cc5b0 je       0x1403cc5f2                               
+1403cc5b2 cmp      edx, 1                                    
+1403cc5b5 je       0x1403cc5bf                               
+1403cc5b7 or       eax, 0xffffffff                           
+1403cc5ba jmp      0x1403cc72e                               
+1403cc5bf test     ebx, ebx                                  
+1403cc5c1 jle      0x1403cc698                               
+1403cc5c7 lea      r8, [rbp - 0x30]                          
+1403cc5cb mov      edx, ebx                                  
+1403cc5cd mov      rcx, rsi                                  
+1403cc5d0 call     0x1403ccec4                               
+1403cc5d5 lea      rdx, [rbp - 0x30]                         
+1403cc5d9 lea      rcx, [rbp - 0x40]                         
+1403cc5dd call     0x1403ca810                               
+1403cc5e2 sub      ebx, 0x10                                 
+1403cc5e5 add      rsi, 0x10                                 
+1403cc5e9 test     ebx, ebx                                  
+1403cc5eb jg       0x1403cc5c7                               
+1403cc5ed jmp      0x1403cc691                               
+1403cc5f2 test     ebx, ebx                                  
+1403cc5f4 jle      0x1403cc6d5                               
+1403cc5fa lea      r8, [rbp - 0x30]                          
+1403cc5fe mov      edx, ebx                                  
+1403cc600 mov      rcx, rsi                                  
+1403cc603 call     0x1403ccec4                               
+1403cc608 lea      rdx, [rbp - 0x30]                         
+1403cc60c lea      rcx, [rbp - 0x40]                         
+1403cc610 call     0x1403ca544                               
+1403cc615 sub      ebx, 0x20                                 
+1403cc618 add      rsi, 0x20                                 
+1403cc61c test     ebx, ebx                                  
+1403cc61e jg       0x1403cc5fa                               
+1403cc620 jmp      0x1403cc6cd                               
+1403cc625 mov      edx, 0x12a3fe2d                           
+1403cc62a mov      r8d, 0x37abe8f9                           
+1403cc630 test     ebx, ebx                                  
+1403cc632 je       0x1403cc710                               
+1403cc638 movzx    eax, byte ptr [rsi]                       
+1403cc63b inc      rsi                                       
+1403cc63e imul     eax, eax, 0x6d22f5                        
+1403cc644 xor      eax, edx                                  
+1403cc646 add      eax, r8d                                  
+1403cc649 mov      r8d, edx                                  
+1403cc64c test     eax, eax                                  
+1403cc64e lea      edx, [rax - 0x7fffffff]                   
+1403cc654 cmovns   edx, eax                                  
+1403cc657 sub      ebx, 1                                    
+1403cc65a jne      0x1403cc638                               
+1403cc65c jmp      0x1403cc710                               
+1403cc661 test     ebx, ebx                                  
+1403cc663 jle      0x1403cc698                               
+1403cc665 mov      r9d, 4                                    
+1403cc66b lea      r8, [rbp - 0x30]                          
+1403cc66f mov      edx, ebx                                  
+1403cc671 mov      rcx, rsi                                  
+1403cc674 call     0x1403cce14                               
+1403cc679 lea      rdx, [rbp - 0x30]                         
+1403cc67d lea      rcx, [rbp - 0x40]                         
+1403cc681 call     0x1403ca810                               
+1403cc686 sub      ebx, 0x10                                 
+1403cc689 add      rsi, 0x10                                 
+1403cc68d test     ebx, ebx                                  
+1403cc68f jg       0x1403cc665                               
+1403cc691 mov      r8d, dword ptr [rbp - 0x3c]               
+1403cc695 mov      ecx, dword ptr [rbp - 0x40]               
+1403cc698 mov      edi, r8d                                  
+1403cc69b jmp      0x1403cc713                               
+1403cc69d test     ebx, ebx                                  
+1403cc69f jle      0x1403cc6d5                               
+1403cc6a1 mov      r9d, 8                                    
+1403cc6a7 lea      r8, [rbp - 0x30]                          
+1403cc6ab mov      edx, ebx                                  
+1403cc6ad mov      rcx, rsi                                  
+1403cc6b0 call     0x1403cce14                               
+1403cc6b5 lea      rdx, [rbp - 0x30]                         
+1403cc6b9 lea      rcx, [rbp - 0x40]                         
+1403cc6bd call     0x1403ca544                               
+1403cc6c2 sub      ebx, 0x20                                 
+1403cc6c5 add      rsi, 0x20                                 
+1403cc6c9 test     ebx, ebx                                  
+1403cc6cb jg       0x1403cc6a1                               
+1403cc6cd mov      r9d, dword ptr [rbp - 0x38]               
+1403cc6d1 mov      r8d, dword ptr [rbp - 0x3c]               
+1403cc6d5 mov      edi, r9d                                  
+1403cc6d8 mov      ecx, r8d                                  
+1403cc6db jmp      0x1403cc713                               
+1403cc6dd mov      edx, 0x12a3fe2d                           
+1403cc6e2 mov      r8d, 0x37abe8f9                           
+1403cc6e8 test     ebx, ebx                                  
+1403cc6ea je       0x1403cc710                               
+1403cc6ec movsx    eax, byte ptr [rsi]                       
+1403cc6ef inc      rsi                                       
+1403cc6f2 imul     eax, eax, 0x6d22f5                        
+1403cc6f8 xor      eax, edx                                  
+1403cc6fa add      eax, r8d                                  
+1403cc6fd mov      r8d, edx                                  
+1403cc700 test     eax, eax                                  
+1403cc702 lea      edx, [rax - 0x7fffffff]                   
+1403cc708 cmovns   edx, eax                                  
+1403cc70b sub      ebx, 1                                    
+1403cc70e jne      0x1403cc6ec                               
+1403cc710 lea      ecx, [rdx + rdx]                          
+1403cc713 mov      edx, 0xfffffffe                           
+1403cc718 mov      dword ptr [r14 + 5], edi                  
+1403cc71c and      ecx, edx                                  
+1403cc71e mov      eax, 0xfffffffc                           
+1403cc723 cmp      ecx, edx                                  
+1403cc725 cmove    ecx, eax                                  
+1403cc728 xor      eax, eax                                  
+1403cc72a mov      dword ptr [r14 + 1], ecx                  
+1403cc72e mov      rcx, qword ptr [rbp - 0x10]               
+1403cc732 xor      rcx, rsp                                  
+1403cc735 call     0x140589e90                               
+1403cc73a add      rsp, 0x60                                 
+1403cc73e pop      r14                                       
+1403cc740 pop      rdi                                       
+1403cc741 pop      rsi                                       
+1403cc742 pop      rbx                                       
+1403cc743 pop      rbp                                       
+1403cc744 ret                                                

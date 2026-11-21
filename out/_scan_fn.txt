@@ -1,0 +1,315 @@
+﻿#### lic_cfg_a 1400d6a50-1400d7209
+1400d6a76 lea/mem rax, qword ptr [rip + 0x6e8e83] -> 1407bf900 None
+1400d6a8a call 14000aa10
+1400d6a8f lea/mem rbx, [rip + 0x5b7726] -> 14068e1bc None
+1400d6a9e call 14000494c
+1400d6aac call 14000494c
+1400d6aba call 14000494c
+1400d6adf jge 0x1400d6af2
+1400d6ae8 call 1400041c0
+1400d6af6 jl 0x1400d71fe
+1400d6b28 jge 0x1400d6b39
+1400d6b31 call 1400041c0
+1400d6b3c cmp dword ptr [r12 - 0xc], 0x40
+1400d6b42 jl 0x1400d71fe
+1400d6b78 jge 0x1400d6b87
+1400d6b7f call 1400041c0
+1400d6b93 jl 0x1400d71fe
+1400d6bc0 jge 0x1400d6bd7
+1400d6bca call 1400041c0
+1400d6bda cmp dword ptr [rcx - 0xc], 0x40
+1400d6bde jl 0x1400d71fe
+1400d6c04 call 1402521a4
+1400d6c12 jne 0x1400d6c19
+1400d6c1d call 1405a3260
+1400d6c24 js 0x1400d71fe
+1400d6c30 jg 0x1400d71fe
+1400d6c49 jne 0x1400d6c50
+1400d6c54 call 1405a3260
+1400d6c5b js 0x1400d71fe
+1400d6c67 jg 0x1400d71fe
+1400d6c80 jne 0x1400d6c87
+1400d6c8b call 1405a3260
+1400d6c92 js 0x1400d71fe
+1400d6c9e jg 0x1400d71fe
+1400d6cba call 1405a3260
+1400d6cc4 js 0x1400d71fe
+1400d6cd2 jg 0x1400d71fe
+1400d6ce8 lea/mem rcx, [rip + 0x6f44e1] -> 1407cb1d0 'https://internal.eassos.com/register/register.php'
+1400d6cef call 14058b4dc
+1400d6cfb lea/mem r12d, dword ptr [rip + 0x84b382] -> 140922084 None
+1400d6d02 cmp dword ptr [r14 + 0x5c8], 0
+1400d6d0a jne 0x1400d6d15
+1400d6d0f je 0x1400d6d9e
+1400d6d1f call 1401aa2c4
+1400d6d2c call 1403edb44
+1400d6d34 je 0x1400d6d43
+1400d6d3e call 1403ee814
+1400d6d4c call 1403ee888
+1400d6d59 call 1403edb44
+1400d6d61 je 0x1400d6d6d
+1400d6d68 call 1403ee888
+1400d6d70 jl 0x1400d6d9e
+1400d6d78 je 0x1400d6da1
+1400d6d81 je 0x1400d6da1
+1400d6d8a je 0x1400d6da1
+1400d6d93 je 0x1400d6da1
+1400d6dab je 0x1400d6dc0
+1400d6dad js 0x1400d71fe
+1400d6db3 cmp word ptr [rax], 0x74
+1400d6db7 jne 0x1400d6dc0
+1400d6dca lea/mem ecx, dword ptr [rip + 0x849ff8] -> 140920dc8 None
+1400d6dde je 0x1400d6de8
+1400d6de3 call 14017b1a8
+1400d6df7 je 0x1400d6e03
+1400d6dfe call 14017b550
+1400d6e0e je 0x1400d6e1a
+1400d6e15 call 14017b550
+1400d6e25 call 140042c10
+1400d6e33 call 14000f248
+1400d6e4c jg 0x1400d6e57
+1400d6e54 call qword ptr [rax + 8]
+1400d6e63 call 14000f248
+1400d6e70 cmp dword ptr [rip + 0x849f62], 0x3b6
+1400d6e84 call 140195d94
+1400d6ea3 call 140195d94
+1400d6eef call 1401a1f30
+1400d6ef7 call 1401a2a14
+1400d6efc call 1403f5344
+1400d6f07 je 0x1400d6f14
+1400d6f0c call qword ptr [rax + 0xe8]
+1400d6f1d call 1403e6128
+1400d6f25 call 1400d7a8c
+1400d6f32 call 1403ee888
+1400d6f3f call 1403edb44
+1400d6f4a je 0x1400d6fde
+1400d6f50 call 1403ef628
+1400d6f66 call qword ptr [rip + 0x558c5c]
+1400d6f78 call 140597484
+1400d6f80 lea/mem xmm0, xmmword ptr [rip + 0x5dc631] -> 1406b35b8 'OfflineReg.exe'
+1400d6f8b lea/mem xmm0, qword ptr [rip + 0x5dc635] -> 1406b35c8 'eg.exe'
+1400d6f98 lea/mem eax, dword ptr [rip + 0x5dc632] -> 1406b35d0 'xe'
+1400d6fa1 lea/mem eax, word ptr [rip + 0x5dc62c] -> 1406b35d4 None
+1400d6fb3 call qword ptr [rip + 0x558bd7]
+1400d6fc1 je 0x1400d6fd3
+1400d6fd1 jne 0x1400d6fd6
+1400d6fd9 call 1403eda40
+1400d6fe3 call 1403eb284
+1400d6fec call qword ptr [rip + 0x5592e6]
+1400d6ff6 call qword ptr [rip + 0x55923c]
+1400d7003 lea/mem eax, dword ptr [rip + 0x849ce7] -> 140920cf0 None
+1400d7009 test eax, 0xffff0000
+1400d700e je 0x1400d702d
+1400d7017 jne 0x1400d7107
+1400d7022 call 1400d77f8
+1400d7027 lea/mem eax, dword ptr [rip + 0x849cc3] -> 140920cf0 None
+1400d7034 je 0x1400d712b
+1400d703f call 140250148
+1400d704a je 0x1400d7114
+1400d7063 lea/mem r13, [rip + 0x5b7152] -> 14068e1bc None
+1400d706d lea/mem r8, [rip + 0x5dc564] -> 1406b35d8 'VerifyDate'
+1400d7074 lea/mem rdx, [rip + 0x5dc575] -> 1406b35f0 'license'
+1400d707e call 1402aeacc
+1400d7088 je 0x1400d70ce
+1400d708e call qword ptr [rip + 0x558b14]
+1400d70a9 lea/mem r8, [rip + 0x5dc550] -> 1406b3600 '%04d%02d%02d'
+1400d70b6 call 14003ed4c
+1400d70c3 call 1405a1210
+1400d70ce lea/mem r9, [rip + 0x5dc547] -> 1406b361c 't'
+1400d70db lea/mem r8, [rip + 0x5d189e] -> 1406a8980 'key'
+1400d70e2 lea/mem rdx, [rip + 0x5dc507] -> 1406b35f0 'license'
+1400d70ec call 1402aecd0
+1400d70f7 call 140250428
+1400d70fe je 0x1400d7114
+1400d7102 call 140252e70
+1400d710a call 1403f4334
+1400d7123 call qword ptr [rip + 0x55940f]
+1400d7130 jne 0x1400d7168
+1400d7139 jne 0x1400d7168
+1400d713d je 0x1400d7168
+1400d714a jne 0x1400d7168
+1400d7151 jne 0x1400d7168
+1400d7161 call qword ptr [rip + 0x559241]
+1400d717f jg 0x1400d718b
+1400d7187 call qword ptr [rax + 8]
+1400d719f jg 0x1400d71ab
+1400d71a7 call qword ptr [rax + 8]
+1400d71bf jg 0x1400d71cb
+1400d71c7 call qword ptr [r8 + 8]
+1400d71d8 call 140589e90
+1400d7203 call 140004328
+#### small1 140113c80-140113ccc
+140113c88 call 140250148
+140113c93 je 0x140113cc6
+140113c95 lea/mem r9, [rip + 0x57a520] -> 14068e1bc None
+140113c9f lea/mem r8, [rip + 0x594cda] -> 1406a8980 'key'
+140113ca6 lea/mem rdx, [rip + 0x59f943] -> 1406b35f0 'license'
+140113cad call 1402aecd0
+140113cba call 140250428
+140113cc1 call 140252e70
+#### small2 140159cfc-140159e84
+140159d16 lea/mem rax, qword ptr [rip + 0x665be3] -> 1407bf900 None
+140159d3e lea/mem rcx, [rip + 0x5755eb] -> 1406cf330 'Improveplan'
+140159d45 call 14025004c
+140159d4c je 0x140159d62
+140159d60 je 0x140159d67
+140159d6c call 1400c9138
+140159d7b call 140195948
+140159da9 call 1403f3f94
+140159dae cmp rax, 1
+140159db2 jne 0x140159e3f
+140159dc8 lea/mem rcx, [rip + 0x576539] -> 1406d0308 'ShowLicense'
+140159dcf call 14024feec
+140159dda lea/mem dword ptr [rip + 0x7bfaa4], eax -> 140919884 None
+140159de0 lea/mem r8, [rip + 0x5354d9] -> 14068f2c0 'Y'
+140159de7 lea/mem rdx, [rip + 0x534712] -> 14068e500 'N'
+140159dfa lea/mem rcx, [rip + 0x57552f] -> 1406cf330 'Improveplan'
+140159e01 call 14024feec
+140159e0b call 140250148
+140159e16 je 0x140159e3f
+140159e1f lea/mem r8, [rip + 0x5764fa] -> 1406d0320 'Show'
+140159e26 lea/mem rdx, [rip + 0x559773] -> 1406b35a0 'LicenseInfo'
+140159e30 call 1402aecd0
+140159e3a call 140250428
+140159e3f lea/mem r8, [rip + 0x534376] -> 14068e1bc None
+140159e50 call 14004653c
+140159e5b call 1400c9230
+140159e6a call 140589e90
+#### skey_fn 1400d8168-1400d85b7
+1400d8187 lea/mem rax, qword ptr [rip + 0x6e7772] -> 1407bf900 None
+1400d81aa lea/mem r12, [rip + 0x5db583] -> 1406b3734 None
+1400d81b7 call 1400539f4
+1400d81c2 call 1400d988c
+1400d81d4 call 1400539f4
+1400d81df call 1400d988c
+1400d81f1 call 1400539f4
+1400d81fc call 1400d988c
+1400d8213 call 1405c5c10
+1400d8224 call 1405c5c10
+1400d823c call 1405a3aa0
+1400d824e call 1405a3aa0
+1400d825a call 140041e60
+1400d8269 call 140041ef4
+1400d8273 call 140042124
+1400d8294 jne 0x1400d8283
+1400d82b0 jg 0x1400d82bb
+1400d82b8 call qword ptr [rax + 8]
+1400d82bf call 140250888
+1400d82cb call 140041ef4
+1400d82d8 call 140597484
+1400d82f2 lea/mem rax, [rip + 0x5db447] -> 1406b3740 'Eng'
+1400d82fe lea/mem rax, [rip + 0x84154b] -> 140919850 'DiskGenius'
+1400d833f lea/mem rdx, [rip + 0x5db4ca] -> 1406b3810 '%s%cver=%s&code=%s&name=%s&email=%s&mid=%s&appname=%s&applang=%s'
+1400d8349 call 140003b98
+1400d834e lea/mem rdx, [rip + 0x5db35b] -> 1406b36b0 'eassos@eassos.cn'
+1400d8358 call 1405a1210
+1400d835f jne 0x1400d836d
+1400d836b jne 0x1400d8370
+1400d837e call 14000e1dc
+1400d838a lea/mem r15, [rip + 0x5b5e2b] -> 14068e1bc None
+1400d8395 jne 0x1400d84bf
+1400d83a9 call 14000e1dc
+1400d83b0 jne 0x1400d84bf
+1400d83bd jne 0x1400d84bf
+1400d83ce je 0x1400d84bf
+1400d83d4 lea/mem dword ptr [rip + 0x848911], r12d -> 140920cec None
+1400d83db je 0x1400d84bf
+1400d83e6 call 1400421cc
+1400d83f4 call 14000494c
+1400d8404 call 1401aa2c4
+1400d841a call 1400d518c
+1400d841f cmp eax, 6
+1400d8422 je 0x1400d847c
+1400d842d call 140003eb8
+1400d8449 jg 0x1400d8455
+1400d8451 call qword ptr [rax + 8]
+1400d846b jg 0x1400d8477
+1400d8473 call qword ptr [rax + 8]
+1400d8492 jg 0x1400d849e
+1400d849a call qword ptr [rax + 8]
+1400d84b4 jg 0x1400d84bf
+1400d84bc call qword ptr [rax + 8]
+1400d84ca jne 0x1400d84fd
+1400d84d7 jne 0x1400d84fd
+1400d84e8 jne 0x1400d84e0
+1400d84ed jne 0x1400d84fd
+1400d84f8 call 140003eb8
+1400d84ff je 0x1400d856e
+1400d8507 lea/mem rdx, [rip + 0x5db38a] -> 1406b3898 '&skey='
+1400d8511 call 14000e1dc
+1400d8520 jle 0x1400d856e
+1400d852d lea/mem rdx, [rip + 0x5bf92c] -> 140697e60 '%%%02X'
+1400d8539 call 1400049ec
+1400d854e jne 0x1400d8546
+1400d855c call 14000e1dc
+1400d856c jl 0x1400d8529
+1400d8582 jg 0x1400d858d
+1400d858a call qword ptr [rax + 8]
+1400d8597 call 140589e90
+#### dat_fn 1400d85b8-1400d8983
+1400d85d7 lea/mem rax, qword ptr [rip + 0x6e7322] -> 1407bf900 None
+1400d8604 je 0x1400d8957
+1400d8616 jne 0x1400d860e
+1400d8624 je 0x1400d863c
+1400d8632 jne 0x1400d862a
+1400d8634 lea/mem eax, dword ptr [rip + 0x5b6cb2] -> 14068f2ec '\\'
+1400d8648 jne 0x1400d8640
+1400d864a lea/mem xmm0, xmmword ptr [rip + 0x5db257] -> 1406b38a8 'OfflineReg.dat'
+1400d8654 lea/mem xmm0, qword ptr [rip + 0x5db25c] -> 1406b38b8 'eg.dat'
+1400d8661 lea/mem eax, dword ptr [rip + 0x5db259] -> 1406b38c0 'at'
+1400d866a lea/mem eax, word ptr [rip + 0x5db253] -> 1406b38c4 None
+1400d8675 call 1403ef628
+1400d8689 call qword ptr [rip + 0x557539]
+1400d86b2 call qword ptr [rip + 0x557578]
+1400d86bb cmp rax, -1
+1400d86bf je 0x1400d8947
+1400d86ca call 14000cbe4
+1400d86d5 je 0x1400d893e
+1400d86e6 call 1401fd294
+1400d86f2 cmp r15d, 0x80
+1400d86f9 jb 0x1400d86e3
+1400d8700 call 1400421cc
+1400d870f call 1401dd688
+1400d8725 call 1401dd688
+1400d8734 call 140597484
+1400d873e je 0x1400d8743
+1400d874e jne 0x1400d8747
+1400d8765 call 1401dd688
+1400d8771 cmp byte ptr [r14 + rax], 0
+1400d8776 jne 0x1400d876e
+1400d878d call 1401dd688
+1400d8799 cmp byte ptr [r14 + rax], 0
+1400d879e jne 0x1400d8796
+1400d87b5 call 1401dd688
+1400d87c1 cmp byte ptr [r14 + rax], 0
+1400d87c6 jne 0x1400d87be
+1400d87da call 1401dd688
+1400d8800 jl 0x1400d87ee
+1400d881d call qword ptr [rip + 0x5572e5]
+1400d8825 je 0x1400d882e
+1400d882c je 0x1400d8831
+1400d8834 call 140003c54
+1400d884a jne 0x1400d8842
+1400d884c lea/mem xmm0, xmmword ptr [rip + 0x5db075] -> 1406b38c8 '\\OfflineReg.exe'
+1400d8856 lea/mem xmm1, xmmword ptr [rip + 0x5db07b] -> 1406b38d8 'Reg.exe'
+1400d886d call 140597484
+1400d8872 lea/mem xmm0, xmmword ptr [rip + 0x5dad3f] -> 1406b35b8 'OfflineReg.exe'
+1400d887d lea/mem xmm0, qword ptr [rip + 0x5dad43] -> 1406b35c8 'eg.exe'
+1400d888a lea/mem ecx, dword ptr [rip + 0x5dad40] -> 1406b35d0 'xe'
+1400d8893 lea/mem ecx, word ptr [rip + 0x5dad3a] -> 1406b35d4 None
+1400d88a9 call qword ptr [rip + 0x5571e9]
+1400d88b7 call 140597484
+1400d88bc lea/mem xmm0, xmmword ptr [rip + 0x5c8a65] -> 1406a1328 'Options.ini'
+1400d88c7 lea/mem xmm0, qword ptr [rip + 0x5c8a69] -> 1406a1338 'ini'
+1400d88d9 call qword ptr [rip + 0x5572b1]
+1400d88df cmp eax, -1
+1400d88e2 je 0x1400d891f
+1400d88ea call 140597484
+1400d88ef lea/mem xmm0, xmmword ptr [rip + 0x5c8a32] -> 1406a1328 'Options.ini'
+1400d88fa lea/mem xmm0, qword ptr [rip + 0x5c8a36] -> 1406a1338 'ini'
+1400d8912 call qword ptr [rip + 0x557180]
+1400d8933 jg 0x1400d893e
+1400d893b call qword ptr [rax + 8]
+1400d8941 call qword ptr [rip + 0x5572d9]
+1400d894d call 140597484
+1400d8963 call 140589e90

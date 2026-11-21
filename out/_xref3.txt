@@ -1,0 +1,147 @@
+﻿1400805cb  adc byte ptr [rip + 0x620cf7], al          -> 1406a12c8 'arm64'
+1400805d6  mov eax, dword ptr [rip + 0x620cf4]        -> 1406a12d0 '4'
+14008068e  lea edx, [rip + 0x620c44]                  -> 1406a12d8 '\\DiskGenius\\'
+14008075f  lea edx, [rip + 0x620b93]                  -> 1406a12f8 '.zip'
+140080810  lea eax, [rip + 0x620b02]                  -> 1406a1318 ' - ('
+140080836  lea eax, [rip + 0x620acc]                  -> 1406a1308 ' ...)'
+140080b49  lea eax, [rip + 0x6207d9]                  -> 1406a1328 'Options.ini'
+140080bad  lea edx, [rip + 0x620725]                  -> 1406a12d8 '\\DiskGenius\\'
+140080bbc  lea eax, [rip + 0x620766]                  -> 1406a1328 'Options.ini'
+140080f9b  lea edx, [rip + 0x62039f]                  -> 1406a1340 '_WinPE\\'
+14008139e  lea eax, [rip + 0x620044]                  -> 1406a13e8 None
+140081436  lea eax, [rip + 0x61ffac]                  -> 1406a13e8 None
+14008146d  lea eax, [rip + 0x61fef5]                  -> 1406a1368 None
+1400d2069  lea edx, [rip + 0x5e0fc5]                  -> 1406b3034 ' B'
+1400d2171  lea edx, [rip + 0x5e0ebd]                  -> 1406b3034 ' B'
+1400d262c  lea edx, [rip + 0x5e0a0e]                  -> 1406b3040 '%.2fKB'
+1400d271d  lea edx, [rip + 0x5e091d]                  -> 1406b3040 '%.2fKB'
+1400d2809  lea edx, [rip + 0x5e0831]                  -> 1406b3040 '%.2fKB'
+1400d2e05  adc byte ptr [rip + 0x5e027d], cl          -> 1406b3088 'ted'
+1400d2e0c  adc byte ptr [rip + 0x5e0266], dl          -> 1406b3078 'Unallocated'
+1400d2e1f  adc byte ptr [rip + 0x5e022b], al          -> 1406b3050 'Merge'
+1400d2e2a  mov eax, dword ptr [rip + 0x5e0228]        -> 1406b3058 'e'
+1400d2e36  adc byte ptr [rip + 0x5e0224], al          -> 1406b3060 'CreateNew'
+1400d2e40  mov eax, dword ptr [rip + 0x5e022a]        -> 1406b3070 'w'
+1400d2e7d  adc byte ptr [rip + 0x5e01cd], al          -> 1406b3050 'Merge'
+1400d2e88  mov eax, dword ptr [rip + 0x5e01ca]        -> 1406b3058 'e'
+1400d2e94  adc byte ptr [rip + 0x5e01c6], al          -> 1406b3060 'CreateNew'
+1400d2e9e  mov eax, dword ptr [rip + 0x5e01cc]        -> 1406b3070 'w'
+1400d2eab  adc byte ptr [rip + 0x5e01d7], cl          -> 1406b3088 'ted'
+1400d2eb2  adc byte ptr [rip + 0x5e01c0], dl          -> 1406b3078 'Unallocated'
+1400d2f70  lea edx, [rip + 0x5e011a]                  -> 1406b3090 "'isxtent'=>%s,'isAdjacent'=>%s,'ismerger'=>%s,'isfreespace'=>%s,"
+1400d3507  lea eax, [rip + 0x5dfd3b]                  -> 1406b3248 None
+1400d3561  lea ecx, [rip + 0x5dfc79]                  -> 1406b31e0 None
+1400d3666  lea eax, [rip + 0x5dfbdc]                  -> 1406b3248 None
+1400d36bb  lea eax, [rip + 0x5dfb1f]                  -> 1406b31e0 None
+1400d3749  lea eax, [rip + 0x5dfaa1]                  -> 1406b31f0 None
+1400d393c  lea edx, [rip + 0x5df87e]                  -> 1406b31c0 '(%lus)'
+1400d3d7d  mov eax, dword ptr [rip + 0x5df44d]        -> 1406b31d0 'OK'
+1400d3d87  movzx eax, word ptr [rip + 0x5df446]       -> 1406b31d4 None
+1400d4a4d  lea edx, [rip + 0x5de76d]                  -> 1406b31c0 '(%lus)'
+1400d58f6  lea eax, [rip + 0x5dd8e4]                  -> 1406b31e0 None
+1400d5925  lea eax, [rip + 0x5dd8b5]                  -> 1406b31e0 None
+1400d6418  lea edx, [rip + 0x5dd152]                  -> 1406b3570 None
+1400d647f  lea edx, [rip + 0x5dd0f3]                  -> 1406b3578 '%s_%s_%lld'
+1400d65e0  lea eax, [rip + 0x5dd532]                  -> 1406b3b18 None
+1400d6905  lea eax, [rip + 0x5dd0cd]                  -> 1406b39d8 None
+1400d69af  lea eax, [rip + 0x5dcbdb]                  -> 1406b3590 'Remind'
+1400d69b6  lea edx, [rip + 0x5dcbe4]                  -> 1406b35a0 'LicenseInfo'
+1400d6a26  lea eax, [rip + 0x5dcb64]                  -> 1406b3590 'Remind'
+1400d6a2d  lea edx, [rip + 0x5dcb6d]                  -> 1406b35a0 'LicenseInfo'
+1400d6f81  adc byte ptr [rip + 0x5dc631], al          -> 1406b35b8 'OfflineReg.exe'
+1400d6f8d  adc byte ptr [rip + 0x5dc635], al          -> 1406b35c8 'eg.exe'
+1400d6f98  mov eax, dword ptr [rip + 0x5dc632]        -> 1406b35d0 'xe'
+1400d6fa1  movzx eax, word ptr [rip + 0x5dc62c]       -> 1406b35d4 None
+1400d706e  lea eax, [rip + 0x5dc564]                  -> 1406b35d8 'VerifyDate'
+1400d7075  lea edx, [rip + 0x5dc575]                  -> 1406b35f0 'license'
+1400d70aa  lea eax, [rip + 0x5dc550]                  -> 1406b3600 '%04d%02d%02d'
+1400d70cf  lea ecx, [rip + 0x5dc547]                  -> 1406b361c 't'
+1400d70e3  lea edx, [rip + 0x5dc507]                  -> 1406b35f0 'license'
+1400d742a  lea eax, [rip + 0x5dc1f0]                  -> 1406b3620 '-'
+1400d744f  lea edx, [rip + 0x5dc1d3]                  -> 1406b3628 None
+1400d745e  lea edx, [rip + 0x5dc1d4]                  -> 1406b3638 None
+1400d747d  lea edx, [rip + 0x5dc1bd]                  -> 1406b3640 None
+1400d74e6  lea edx, [rip + 0x5dc13c]                  -> 1406b3628 None
+1400d74f5  lea edx, [rip + 0x5dc12d]                  -> 1406b3628 None
+1400d7514  lea edx, [rip + 0x5dc13e]                  -> 1406b3658 None
+1400d7664  adc byte ptr [rip + 0x5dbf86], al          -> 1406b35f0 'license'
+1400d766b  lea eax, [rip + 0x5dbf67]                  -> 1406b35d8 'VerifyDate'
+1400d7699  lea eax, [rip + 0x5dbfc1]                  -> 1406b3660 'appname'
+1400d76ad  lea eax, [rip + 0x5dbfbd]                  -> 1406b3670 'user'
+1400d76c1  lea eax, [rip + 0x5dbfb9]                  -> 1406b3680 'email'
+1400d76d5  lea eax, [rip + 0x5dbfb5]                  -> 1406b3690 'regcode'
+1400d76e9  lea eax, [rip + 0x5dbfb1]                  -> 1406b36a0 'regver'
+1400d78c5  adc byte ptr [rip + 0x5dbced], al          -> 1406b35b8 'OfflineReg.exe'
+1400d78d1  adc byte ptr [rip + 0x5dbcf1], al          -> 1406b35c8 'eg.exe'
+1400d78dc  mov ecx, dword ptr [rip + 0x5dbcee]        -> 1406b35d0 'xe'
+1400d78e5  movzx ecx, word ptr [rip + 0x5dbce8]       -> 1406b35d4 None
+1400d79df  lea edx, [rip + 0x5dbccb]                  -> 1406b36b0 'eassos@eassos.cn'
+1400d7b48  lea edx, [rip + 0x5dbb8a]                  -> 1406b36d8 '&diskinfo%ld=%s'
+1400d7bd8  lea eax, [rip + 0x5dbb1a]                  -> 1406b36f8 '%04X'
+1400d7c4f  lea edx, [rip + 0x5dbab3]                  -> 1406b3708 '&otherinfo=%s&tmp=%s'
+1400d7cd3  lea esp, [rip + 0x5dba5b]                  -> 1406b3734 None
+1400d7dfb  lea eax, [rip + 0x5db93f]                  -> 1406b3740 'Eng'
+1400d7e32  lea edx, [rip + 0x5db918]                  -> 1406b3750 'ver=%s&code=%s&name=%s&email=%s&mid=%s&applang=%s%s'
+1400d7e45  lea edx, [rip + 0x5db865]                  -> 1406b36b0 'eassos@eassos.cn'
+1400d806b  adc byte ptr [rip + 0x5db747], al          -> 1406b37b8 '&check='
+1400d810f  lea edx, [rip + 0x5db6b3]                  -> 1406b37c8 '%s%cencryption=%s&appname=%s'
+1400d81ab  lea esp, [rip + 0x5db583]                  -> 1406b3734 None
+1400d82f3  lea eax, [rip + 0x5db447]                  -> 1406b3740 'Eng'
+1400d8340  lea edx, [rip + 0x5db4ca]                  -> 1406b3810 '%s%cver=%s&code=%s&name=%s&email=%s&mid=%s&appname=%s&applang=%s'
+1400d834f  lea edx, [rip + 0x5db35b]                  -> 1406b36b0 'eassos@eassos.cn'
+1400d8508  lea edx, [rip + 0x5db38a]                  -> 1406b3898 '&skey='
+1400d864b  adc byte ptr [rip + 0x5db257], al          -> 1406b38a8 'OfflineReg.dat'
+1400d8656  adc byte ptr [rip + 0x5db25c], al          -> 1406b38b8 'eg.dat'
+1400d8661  mov eax, dword ptr [rip + 0x5db259]        -> 1406b38c0 'at'
+1400d866a  movzx eax, word ptr [rip + 0x5db253]       -> 1406b38c4 None
+1400d884d  adc byte ptr [rip + 0x5db075], al          -> 1406b38c8 '\\OfflineReg.exe'
+1400d8857  adc byte ptr [rip + 0x5db07b], cl          -> 1406b38d8 'Reg.exe'
+1400d8873  adc byte ptr [rip + 0x5dad3f], al          -> 1406b35b8 'OfflineReg.exe'
+1400d887f  adc byte ptr [rip + 0x5dad43], al          -> 1406b35c8 'eg.exe'
+1400d888a  mov ecx, dword ptr [rip + 0x5dad40]        -> 1406b35d0 'xe'
+1400d8893  movzx ecx, word ptr [rip + 0x5dad3a]       -> 1406b35d4 None
+1400d88bd  adc byte ptr [rip + 0x5c8a65], al          -> 1406a1328 'Options.ini'
+1400d88c9  adc byte ptr [rip + 0x5c8a69], al          -> 1406a1338 'ini'
+1400d88f0  adc byte ptr [rip + 0x5c8a32], al          -> 1406a1328 'Options.ini'
+1400d88fc  adc byte ptr [rip + 0x5c8a36], al          -> 1406a1338 'ini'
+1400d8cde  lea eax, [rip + 0x5dac04]                  -> 1406b38e8 'ini'
+1400d8db3  adc byte ptr [rip + 0x5c856f], al          -> 1406a1328 'Options.ini'
+1400d8dbf  adc byte ptr [rip + 0x5c8573], al          -> 1406a1338 'ini'
+1400d912f  lea edx, [rip + 0x5da7bb]                  -> 1406b38f0 None
+1400d92e6  lea edx, [rip + 0x5da624]                  -> 1406b3910 None
+1400f7137  lea edx, [rip + 0x5bc7ab]                  -> 1406b38e8 'ini'
+140113ca7  lea edx, [rip + 0x59f943]                  -> 1406b35f0 'license'
+140159e27  lea edx, [rip + 0x559773]                  -> 1406b35a0 'LicenseInfo'
+1401972d2  lea eax, [rip + 0x509fe8]                  -> 1406a12c0 'x64'
+140197407  lea edx, [rip + 0x51c16b]                  -> 1406b3578 '%s_%s_%lld'
+140197509  lea eax, [rip + 0x51c1e9]                  -> 1406b36f8 '%04X'
+140199d84  lea edx, [rip + 0x519816]                  -> 1406b35a0 'LicenseInfo'
+140199db0  lea eax, [rip + 0x5198ca]                  -> 1406b3680 'email'
+140199db7  lea edx, [rip + 0x519833]                  -> 1406b35f0 'license'
+140199df3  lea edx, [rip + 0x5197f7]                  -> 1406b35f0 'license'
+14019a04e  lea edx, [rip + 0x51954c]                  -> 1406b35a0 'LicenseInfo'
+14019b47d  lea ecx, [rip + 0x505e3d]                  -> 1406a12c0 'x64'
+140218e42  lea edx, [rip + 0x49aaa0]                  -> 1406b38e8 'ini'
+14021e3ed  mov eax, dword ptr [rip + 0x49522d]        -> 1406b3620 '-'
+14021e74e  mov eax, dword ptr [rip + 0x494ecc]        -> 1406b3620 '-'
+14021eade  mov eax, dword ptr [rip + 0x494b3c]        -> 1406b3620 '-'
+14021ee52  mov eax, dword ptr [rip + 0x4947c8]        -> 1406b3620 '-'
+14021f30f  mov eax, dword ptr [rip + 0x49430b]        -> 1406b3620 '-'
+140328752  lea edx, [rip + 0x38b190]                  -> 1406b38e8 'ini'
+1403293fb  lea eax, [rip + 0x38a1ef]                  -> 1406b35f0 'license'
+14032942c  lea eax, [rip + 0x38a1be]                  -> 1406b35f0 'license'
+140329540  lea eax, [rip + 0x38a0aa]                  -> 1406b35f0 'license'
+14034b0c1  lea edx, [rip + 0x3684a9]                  -> 1406b3570 None
+14058cb7a  lea ebx, [rip + 0x126a70]                  -> 1406b35f0 'license'
+14058cd86  lea ebx, [rip + 0x126864]                  -> 1406b35f0 'license'
+1405a67ee  lea esp, [rip + 0x10ce2c]                  -> 1406b3620 '-'
+1405a6c38  lea esp, [rip + 0x10c9e2]                  -> 1406b3620 '-'
+1406ac53f  add byte ptr [rip + 0x7300], ah            -> 1406b3845 None
+1406ad743  add byte ptr [rip + 0x6400], ah            -> 1406b3b49 None
+1406b2fa1  add byte ptr [rip + 0xa00], cl             -> 1406b39a7 None
+1406b320f  add byte ptr [rip], dl                     -> 1406b3215 None
+1406b3539  cmp cl, byte ptr [rip + 0x140]             -> 1406b367f None
+1406b361f  add byte ptr [rip], ch                     -> 1406b3625 None
+1406b38a1  add byte ptr [rip], bh                     -> 1406b38a7 None
+1406b3a69  mov word ptr [rip + 0x140], cs             -> 1406b3baf None
+1406b3adf  add byte ptr [rip], dl                     -> 1406b3ae5 None
