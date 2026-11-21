@@ -1,0 +1,169 @@
+
+######## 140250148 func=(5371134280, 5371135015)
+==== fn 140250148-140250427
+140250148 mov      rax, rsp                                      
+14025014b mov      qword ptr [rax + 0x10], rbx                   
+14025014f mov      qword ptr [rax + 0x18], rsi                   
+140250153 mov      qword ptr [rax + 0x20], rdi                   
+140250157 push     rbp                                           
+140250158 push     r12                                           
+14025015a push     r13                                           
+14025015c push     r14                                           
+14025015e push     r15                                           
+140250160 lea      rbp, [rax - 0x408]                            
+140250167 sub      rsp, 0x4e0                                    
+14025016e mov      rax, qword ptr [rip + 0x56f78b]                  ; 1407bf900 None
+140250175 xor      rax, rsp                                      
+140250178 mov      qword ptr [rbp + 0x3d0], rax                  
+14025017f mov      rax, qword ptr [rip + 0x6d967a]                  ; 140929800 None
+140250186 xor      r14d, r14d                                    
+140250189 mov      edi, ecx                                      
+14025018b test     rax, rax                                      
+14025018e jne      0x1402503f7                                   
+140250194 jmp      0x14256487e                                   
+140250199 push     rax                                           
+14025019a popfq                                                  
+
+######## 14025004c func=(5371134028, 5371134277)
+==== fn 14025004c-140250145
+14025004c mov      rax, rsp                                      
+14025004f mov      qword ptr [rax + 8], rbx                      
+140250053 mov      qword ptr [rax + 0x10], rsi                   
+140250057 mov      dword ptr [rax + 0x18], r8d                   
+14025005b push     rdi                                           
+14025005c sub      rsp, 0x30                                     
+140250060 xor      edi, edi                                      
+140250062 mov      rbx, rdx                                      
+140250065 mov      rsi, rcx                                      
+140250068 mov      qword ptr [rax + 0x20], rdi                   
+14025006c lea      rcx, [rip + 0x43db95]                            ; 14068dc08 'SeBackupPrivilege'
+140250073 lea      edx, [rdi + 1]                                
+140250076 call     0x140142830                                   
+14025007b lea      edx, [rdi + 1]                                
+14025007e lea      rcx, [rip + 0x43dbab]                            ; 14068dc30 'SeRestorePrivilege'
+140250085 call     0x140142830                                   
+14025008a lea      rax, [rsp + 0x58]                             
+14025008f mov      r9d, 0x20119                                  
+140250095 xor      r8d, r8d                                      
+140250098 mov      qword ptr [rsp + 0x20], rax                   
+14025009d lea      rdx, [rip + 0x58ce7c]                            ; 1407dcf20 'SOFTWARE\\Eassos\\DiskGenius\\Reg\\'
+1402500a4 mov      rcx, 0xffffffff80000002                       
+1402500ab call     qword ptr [rip + 0x3def77]                       ; 14062f028 None
+1402500b1 test     eax, eax                                      
+1402500b3 je       0x1402500e0                                   
+1402500b5 lea      rax, [rsp + 0x58]                             
+1402500ba mov      r9d, 0x20119                                  
+1402500c0 xor      r8d, r8d                                      
+1402500c3 mov      qword ptr [rsp + 0x20], rax                   
+1402500c8 lea      rdx, [rip + 0x58ce51]                            ; 1407dcf20 'SOFTWARE\\Eassos\\DiskGenius\\Reg\\'
+1402500cf mov      rcx, 0xffffffff80000001                       
+1402500d6 call     qword ptr [rip + 0x3def4c]                       ; 14062f028 None
+1402500dc test     eax, eax                                      
+1402500de jne      0x140250117                                   
+1402500e0 mov      rcx, qword ptr [rsp + 0x58]                   
+1402500e5 lea      rax, [rsp + 0x50]                             
+1402500ea mov      qword ptr [rsp + 0x28], rax                   
+1402500ef xor      r9d, r9d                                      
+1402500f2 xor      r8d, r8d                                      
+1402500f5 mov      qword ptr [rsp + 0x20], rbx                   
+1402500fa mov      rdx, rsi                                      
+1402500fd call     qword ptr [rip + 0x3df015]                       ; 14062f118 None
+140250103 mov      rcx, qword ptr [rsp + 0x58]                   
+140250108 mov      ebx, eax                                      
+14025010a call     qword ptr [rip + 0x3deef8]                       ; 14062f008 None
+140250110 test     ebx, ebx                                      
+140250112 cmove    edi, dword ptr [rsp + 0x50]                   
+140250117 xor      edx, edx                                      
+140250119 lea      rcx, [rip + 0x43dae8]                            ; 14068dc08 'SeBackupPrivilege'
+140250120 call     0x140142830                                   
+140250125 xor      edx, edx                                      
+140250127 lea      rcx, [rip + 0x43db02]                            ; 14068dc30 'SeRestorePrivilege'
+14025012e call     0x140142830                                   
+140250133 mov      rbx, qword ptr [rsp + 0x40]                   
+140250138 mov      eax, edi                                      
+14025013a mov      rsi, qword ptr [rsp + 0x48]                   
+14025013f add      rsp, 0x30                                     
+140250143 pop      rdi                                           
+140250144 ret                                                    
+
+######## 1402aeacc func=(5371521740, 5371521857)
+==== fn 1402aeacc-1402aeb41
+1402aeacc mov      qword ptr [rsp + 8], rbx                      
+1402aead1 mov      qword ptr [rsp + 0x10], rbp                   
+1402aead6 mov      qword ptr [rsp + 0x18], rsi                   
+1402aeadb push     rdi                                           
+1402aeadc sub      rsp, 0x30                                     
+1402aeae0 cmp      qword ptr [rip + 0x67b080], 0                    ; 140929b68 None
+1402aeae8 mov      rdi, r9                                       
+1402aeaeb mov      rsi, r8                                       
+1402aeaee mov      rbp, rdx                                      
+1402aeaf1 mov      rbx, rcx                                      
+1402aeaf4 je       0x1402aeb29                                   
+1402aeaf6 mov      rdx, rcx                                      
+1402aeaf9 call     0x1402ae974                                   
+1402aeafe test     eax, eax                                      
+1402aeb00 je       0x1402aeb29                                   
+1402aeb02 mov      rax, qword ptr [rsp + 0x68]                   
+1402aeb07 mov      r9, rdi                                       
+1402aeb0a mov      qword ptr [rsp + 0x28], rax                   
+1402aeb0f mov      r8, rsi                                       
+1402aeb12 mov      rax, qword ptr [rsp + 0x60]                   
+1402aeb17 mov      rdx, rbp                                      
+1402aeb1a mov      rcx, rbx                                      
+1402aeb1d mov      qword ptr [rsp + 0x20], rax                   
+1402aeb22 call     0x1402ad2f4                                   
+1402aeb27 jmp      0x1402aeb2c                                   
+1402aeb29 or       eax, 0xffffffff                               
+1402aeb2c mov      rbx, qword ptr [rsp + 0x40]                   
+1402aeb31 mov      rbp, qword ptr [rsp + 0x48]                   
+1402aeb36 mov      rsi, qword ptr [rsp + 0x50]                   
+1402aeb3b add      rsp, 0x30                                     
+1402aeb3f pop      rdi                                           
+1402aeb40 ret                                                    
+
+######## 140250428 func=(5371135016, 5371136133)
+==== fn 140250428-140250885
+140250428 mov      rax, rsp                                      
+14025042b mov      qword ptr [rax + 0x10], rbx                   
+14025042f mov      qword ptr [rax + 0x18], rsi                   
+140250433 mov      qword ptr [rax + 0x20], rdi                   
+140250437 push     rbp                                           
+140250438 push     r12                                           
+14025043a push     r13                                           
+14025043c push     r14                                           
+14025043e push     r15                                           
+140250440 lea      rbp, [rax - 0x638]                            
+140250447 sub      rsp, 0x710                                    
+14025044e mov      rax, qword ptr [rip + 0x56f4ab]                  ; 1407bf900 None
+140250455 xor      rax, rsp                                      
+140250458 mov      qword ptr [rbp + 0x600], rax                  
+14025045f xor      r12d, r12d                                    
+140250462 mov      edi, edx                                      
+140250464 mov      r15d, r12d                                    
+140250467 mov      dword ptr [rsp + 0x30], r12d                  
+14025046c mov      rbx, rcx                                      
+14025046f jmp      0x14260ac1e                                   
+140250474 push     rax                                           
+140250475 sti                                                    
+140250476 test     al, 0xa3                                      
+140250478 and      esp, edi                                      
+14025047a sub      al, cl                                        
+14025047c xor      edx, dword ptr [rdx + 0x34f166ef]             
+140250482 cmp      eax, 0xbe8db22                                
+140250487 push     rbp                                           
+140250488 xchg     edx, eax                                      
+140250489 imul     eax, dword ptr [rbx - 0x44dc29a], 0x8bc4bb10  
+140250493 wait                                                   
+140250494 push     rdi                                           
+
+######## 140252e70 func=(5371145840, 5371146273)
+==== fn 140252e70-140253021
+140252e70 mov      qword ptr [rsp + 8], rbx                      
+140252e75 mov      qword ptr [rsp + 0x18], rbp                   
+140252e7a push     rsi                                           
+140252e7b push     rdi                                           
+140252e7c push     r14                                           
+140252e7e sub      rsp, 0x40                                     
+140252e82 mov      edi, ecx                                      
+140252e84 jmp      0x1425128ac                                   
+140252e89 push     rax                                           

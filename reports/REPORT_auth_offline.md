@@ -310,3 +310,118 @@ xor ax, 0x0e             → 逐字符混淆
 离线请求构建器 `0x1400d8168` 再把该数组按 `%%%02X` 百分号编码，追加成 `&skey=`。
 下一步：找 `0x1400d95f8` 的调用者与 HKLM `license` 的读写点，直接写这个二进制
 blob 做接受/拒绝实验。
+
+---
+
+## 10. 配置存储与本地 key 解析（2026-11-21 追加）
+
+### 10.1 安装态配置存储 = HKLM 注册表，不是 exe 目录的 Options.ini
+
+`0x14025004c`（读一个“平面值”）的反汇编给出了决定性证据：
+
+```
+0x14025009d lea rdx, 'SOFTWARE\\Eassos\\DiskGenius\\Reg\\'
+0x1402500a4 mov rcx, 0xffffffff80000002        ; 原生 RegOpenKey：Machine 根
+0x1402500ab call [0x14062f028]                 ; 打开
+...失败...
+0x1402500c8 lea rdx, 同上
+0x1402500cf mov rcx, 0xffffffff80000001        ; 回退：User 根
+```
+
+* 读取顺序：**HKLM 优先、HKCU 回退**（只在“打开键失败”时回退）。
+* 本机 `HKLM\SOFTWARE\Eassos\DiskGenius\Reg`（以及 `CReg`）恒存在，所以
+  程序永远读 HKLM，**exe 同目录的 Options.ini 不会被消费**——这正是 §9.6
+  五组 ini 实验“全部无效果”的真实原因。
+* 值名是“平面”的：`ShowLicense`(REG_SZ)、`Improveplan`(REG_SZ)、`license`(REG_BINARY)。
+  `[license] key` 对应 `Reg\license`（REG_BINARY，二进制 → 宽字符串）。
+* 验证实验：删掉 exe 目录 `Options.ini` 后启动 12 s，文件**不会重建**；而注册表
+  `ShowLicense=6.2.0.1829` 与旧 ini 的 `[LicenseInfo] Show` 同值 —— 证明 ini 只是残留。
+
+→ 要做接受/拒绝实验，必须写 `HKLM\...\Reg\license` 的 REG_BINARY，且程序自身
+需要管理员权限（manifest 要求 `requireAdministrator`，非提权 `CreateProcess` 直接
+返回 WinError 740）。
+
+### 10.2 客户端 MD5 只有一个调用者：只用于“发出去”的注册串
+
+对全模块做 E8 交叉引用：`0x1400d62fc`（MD5）**唯一调用点**是 `0x1400d8045`，
+即注册请求负载构建器内部；`0x1400d59e1` 的 64 个 K 常量、`0x1400d631b` 的 IV
+也只被这一个函数使用。
+
+结论：**本地校验不复用 `check=MD5(...)`**。§9.5 提出的“自算 check 让客户端放行”
+不成立——`check` 只给服务端看，客户端收到的 `key` 走的是另一套（见 10.3/10.4）。
+
+### 10.3 key 字符串的三段处理（消息映射表 0x1406b3a08 起）
+
+`0x1406b3a08..` 是一张 32 字节步长的消息表：`{handler, msgId, 0, type}`，其中
+
+| handler | msgId | 语义（静态推断） |
+|---|---|---|
+| `0x1400d94d8` | 0x6be | 设置“原始 key 数据”：长度 <3 直接失败；否则清空 skey blob（`+0x5cc=0`） |
+| `0x1400d92b4` | 0x471 | 设置“key 文本”：校验文本格式后整串拷贝到对象 `+0x208`，清空 skey blob |
+
+`0x1400d92b4` 的格式校验（逐条对应）：
+
+```
+cmp word [len], 0xBBEF ; cmp byte [len+2], 0xBF   ; UTF-8 BOM → 跳过 3 字节
+cmp byte [key], 'E'   (0x45)                      ; 'E' 分支：UTF-8→宽字符后走提示/失败
+al = key[0] - '0'
+bt 0xE0000000003FF, al                            ; 允许 (al ∈ 0..9) ∪ (61,62,63)
+cmp byte [key], 't'    (0x74)                     ; 也允许 't'
+```
+
+即 **key 首字符合法集合 = 数字 `0-9`、`m`/`n`/`o`、`t`**；其余首字符直接当无效。
+
+skey blob（16 字节上限）由回调 `0x1400d95f8` 填充：它按 `{type, tag, len}` 结构
+（`[rdx+8]==0x100`、`[rdx+0x10]` 为标记）解析，跳过标记 `0x11`/`0xE5`，遇 `'Q'`(0x51)
+复位，遇 `'#'`(0x23) 触发一次 3 字节节拍，其余字节写入 `+0x5d4`，最多 `0x10` 个。
+`0x1400d8168` 随后把这 16 字节按 `%%%02X` 编码，作为 `&skey=` 追加到请求串尾部。
+→ `skey` 是 key 文本里携带的一段 **≤16 字节二进制**，随离线/在线请求原样上报。
+
+### 10.4 运行时消费 `[license] key`（0x140199be0）
+
+顺序：
+
+1. `[LicenseInfo] Show`（0x20）、`[license] email`（0x54）、`[license] key`（0x1000）
+   由配置对象读出（安装态即上面的 HKLM 值）。
+2. 取 key 首字符，**只有 `'9'` 或 `'0'..'2'`** 才执行
+   `SendMessage(hwnd, 0x479, key[0], 0)`（`call [0x140630538]`，`rcx=[obj+0x40]` 是窗口句柄）。
+   注意这是一条**窗口自定义消息**，由 VMP 的窗口过程处理——不是本地的 MD5 校验。
+3. 之后构造 HTTP 对象（`0x1400c9138`，含 WinHTTP 句柄 `+0x2f0`、请求子对象 `+0x208`），
+   由 `0x1403f3f94` 执行；返回 1 时把 `ShowLicense`、`Improveplan`、
+   `[LicenseInfo] Show` 落盘。
+
+同一函数附近还会调用 `0x14019708c`（调试断言串 `CMainFrame::SendUpgradeInfo`）：
+
+```
+https://internal.eassos.com/update/diskgenius/update.php
+  ?<ver=%s_%s_%s_%s>&winver=%d%%2e%d%%2e%d%%2esp%d%%2e%d%%2e%08lX
+  &winbits=%d&reslang=%s&syslang=%s&cpu=%d&mid=%s&lid=%s
+  &code=%s&disk%ld=%s&otherinfo=%s&iplan=%C&appname=DiskGenius&appcs=%lu&again=yes
+```
+
+其中 `%s_%s_%lld` 的磁盘标识、`otherinfo` 仍按 `xor 0x0E` 混淆（`0x140197440`、
+`0x140197539`、`0x140197550`）。即：**本地状态最终仍要和服务端对账**
+（`lid`/`mid`/`code` 上报），这也解释了为什么服务端签发的 `key` 无法凭空自造。
+
+### 10.5 本轮实验的阻塞点与交付脚本
+
+本沙箱内无法完成 HKLM 写入实验：
+
+* 当前进程为 Medium 完整性（管理员组 deny-only），`winreg` 写 HKLM 返回 WinError 5；
+* `Start-Process -Verb RunAs` 触发 UAC 被取消；
+* `schtasks /create ... /rl highest` 被拒绝（Access denied）；
+* 无 WSL/Wine 可用于便携态复现。
+
+因此把实验做成可直接执行的提权脚本：
+[out/_hk_lic_probe.ps1](file:///c:/Users/tfvtd/Desktop/项目/disk-patch/out/_hk_lic_probe.ps1)
+
+* 备份并最终还原 `HKLM\SOFTWARE\Eassos\DiskGenius\{Reg,CReg}` 全部值 + exe 目录 ini；
+* 依次写入 9 组候选 `license`（空 / UTF-16LE 的 `1TEST`、`9TEST`、`0TEST`、`2TEST`、
+  带 NUL、ASCII、`1appname=...` 等）；
+* 每组启动 DiskGenius 12 s，记录**主窗口标题**、启动前后注册表快照、ini 哈希；
+* 结果写 `out/_hk_lic_probe.log` 与 `out/hk_lic_probe.json`。
+
+判定标准（跑完后按此读结果）：
+若某组出现 `ShowLicense`/`Improveplan`/`license` 的值变化，或窗口标题出现
+“Registered/授权给 …”，则该首字符类别被接受；若 9 组全部与 baseline 一致，
+则本地除了“首字符网关”之外还依赖 VMP 消息 0x479 的判定，需要回到 VM handler 语义。

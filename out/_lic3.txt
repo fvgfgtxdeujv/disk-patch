@@ -1,0 +1,216 @@
+
+######## lic_ref_113ca7 func=(5369838720, 5369838796)
+==== lic_ref_113ca7 140113be7-140113d27
+140113be7 cmp      rax, -3                                       
+140113beb ja       0x140113bf4                                      ; imm 140113bf4 None
+140113bed call     0x140113ddc                                      ; imm 140113ddc None
+140113bf2 jmp      0x140113c29                                      ; imm 140113c29 None
+140113bf4 mov      edx, 5                                        
+140113bf9 call     0x1403ee888                                      ; imm 1403ee888 None
+140113bfe mov      edx, esi                                      
+140113c00 mov      rcx, rbx                                      
+140113c03 call     0x1403edb44                                      ; imm 1403edb44 None
+140113c08 test     rax, rax                                      
+140113c0b je       0x140113c17                                      ; imm 140113c17 None
+140113c0d xor      edx, edx                                      
+140113c0f mov      rcx, rax                                      
+140113c12 call     0x1403eda40                                      ; imm 1403eda40 None
+140113c17 mov      rcx, qword ptr [rbx + 0x240]                  
+140113c1e mov      dword ptr [rbx + 0x368], esi                  
+140113c24 call     0x14058d2b8                                      ; imm 14058d2b8 None
+140113c29 mov      rcx, rbx                                      
+140113c2c call     0x140114020                                      ; imm 140114020 None
+140113c31 call     0x1403f5344                                      ; imm 1403f5344 None
+140113c36 test     rax, rax                                      
+140113c39 je       0x140113c4d                                      ; imm 140113c4d None
+140113c3b mov      rcx, qword ptr [rax]                          
+140113c3e mov      rdx, qword ptr [rcx + 0xe8]                   
+140113c45 mov      rcx, rax                                      
+140113c48 call     rdx                                           
+140113c4a mov      rdi, rax                                      
+140113c4d mov      rdx, rdi                                      
+140113c50 mov      rcx, rbx                                      
+140113c53 call     0x1403e6128                                      ; imm 1403e6128 None
+140113c58 mov      eax, esi                                      
+140113c5a mov      rcx, qword ptr [rsp + 0x440]                  
+140113c62 xor      rcx, rsp                                      
+140113c65 call     0x140589e90                                      ; imm 140589e90 None
+140113c6a lea      r11, [rsp + 0x450]                            
+140113c72 mov      rbx, qword ptr [r11 + 0x18]                   
+140113c76 mov      rsi, qword ptr [r11 + 0x20]                   
+140113c7a mov      rsp, r11                                      
+140113c7d pop      rdi                                           
+140113c7e ret                                                    
+140113c7f int3                                                   
+140113c80 push     rbx                                           
+140113c82 sub      rsp, 0x30                                     
+140113c86 xor      ecx, ecx                                      
+140113c88 call     0x140250148                                      ; imm 140250148 None
+140113c8d mov      rbx, rax                                      
+140113c90 test     rax, rax                                      
+140113c93 je       0x140113cc6                                      ; imm 140113cc6 None
+140113c95 lea      r9, [rip + 0x57a520]                             ; 14068e1bc None
+140113c9c mov      rcx, rax                                      
+140113c9f lea      r8, [rip + 0x594cda]                             ; 1406a8980 'key'
+140113ca6 lea      rdx, [rip + 0x59f943]                            ; 1406b35f0 'license'
+140113cad call     0x1402aecd0                                      ; imm 1402aecd0 None
+140113cb2 mov      edx, 1                                        
+140113cb7 mov      rcx, rbx                                      
+140113cba call     0x140250428                                      ; imm 140250428 None
+140113cbf xor      ecx, ecx                                      
+140113cc1 call     0x140252e70                                      ; imm 140252e70 None
+140113cc6 add      rsp, 0x30                                     
+140113cca pop      rbx                                           
+140113ccb ret                                                    
+140113ccc push     rbx                                           
+140113cce sub      rsp, 0x20                                     
+140113cd2 shl      r8, 0x20                                      
+140113cd6 mov      rbx, rcx                                      
+140113cd9 lea      rax, [r8 + rdx]                               
+140113cdd cmp      rax, -0x3e7                                   
+140113ce3 jne      0x140113d8e                                      ; imm 140113d8e None
+140113ce9 call     0x140113c80                                      ; imm 140113c80 None
+140113cee call     0x1403f5344                                      ; imm 1403f5344 None
+140113cf3 mov      rcx, rax                                      
+140113cf6 test     rax, rax                                      
+140113cf9 je       0x140113d04                                      ; imm 140113d04 None
+140113cfb mov      rax, qword ptr [rax]                          
+140113cfe call     qword ptr [rax + 0xe8]                        
+140113d04 mov      rcx, rax                                      
+140113d07 call     0x14019a594                                      ; imm 14019a594 None
+140113d0c mov      edx, 1                                        
+140113d11 mov      rcx, rbx                                      
+140113d14 call     0x1403eb284                                      ; imm 1403eb284 None
+140113d19 mov      edx, 0xefa0                                   
+140113d1e lea      rcx, [rbx + 0x360]                            
+
+######## lic_ref_58cb7a func=(5374528072, 5374529613)
+==== lic_ref_58cb7a 14058cada-14058cbda
+14058cada or       al, byte ptr [rax]                            
+14058cadc add      al, ch                                        
+14058cade out      dx, al                                        
+
+######## lic_ref_58cd86 func=(5374528072, 5374529613)
+==== lic_ref_58cd86 14058cce6-14058cde6
+14058cce6 and      al, 0xf                                       
+
+######## caller_326438 func=(5372010336, 5372012435)
+==== caller_326438 1403263b8-140326478
+1403263b8 push     rax                                           
+1403263b9 mov      rcx, rbx                                      
+1403263bc lea      rdx, [rbp - 0x10]                             
+1403263c0 call     qword ptr [rip + 0x309742]                       ; 14062fb08 None
+1403263c6 mov      rcx, rbx                                      
+1403263c9 call     qword ptr [rip + 0x309851]                       ; 14062fc20 None
+1403263cf mov      rdx, rsi                                      
+1403263d2 call     0x140324668                                      ; imm 140324668 None
+1403263d7 mov      edi, dword ptr [rsp + 0x44]                   
+1403263db mov      dword ptr [rsp + 0x40], eax                   
+1403263df test     eax, eax                                      
+1403263e1 je       0x140326616                                      ; imm 140326616 None
+1403263e7 mov      rbx, qword ptr [rsp + 0x68]                   
+1403263ec mov      r9d, edi                                      
+1403263ef mov      r8, qword ptr [rsp + 0x48]                    
+1403263f4 mov      rcx, rbx                                      
+1403263f7 mov      rdx, rsi                                      
+1403263fa call     0x140323f90                                      ; imm 140323f90 None
+1403263ff test     eax, eax                                      
+140326401 je       0x14032660a                                      ; imm 14032660a None
+140326407 mov      r8, qword ptr [rsp + 0x48]                    
+14032640c mov      r9d, edi                                      
+14032640f mov      rdx, rsi                                      
+140326412 mov      rcx, rbx                                      
+140326415 call     0x1403241f8                                      ; imm 1403241f8 None
+14032641a mov      rax, qword ptr [rsp + 0x48]                   
+14032641f mov      rdx, rsi                                      
+140326422 mov      r9d, dword ptr [rsp + 0x70]                   
+140326427 mov      rcx, rbx                                      
+14032642a mov      r8, qword ptr [rsp + 0x78]                    
+14032642f mov      dword ptr [rsp + 0x28], edi                   
+140326433 mov      qword ptr [rsp + 0x20], rax                   
+140326438 call     0x1403291bc                                      ; imm 1403291bc None
+14032643d xor      edx, edx                                      
+14032643f mov      dword ptr [rsp + 0x40], 1                     
+140326447 cmp      qword ptr [rbx + 0x10], rdx                   
+14032644b je       0x140326602                                      ; imm 140326602 None
+140326451 mov      dword ptr [rsp + 0x44], edx                   
+140326455 mov      rcx, rsi                                      
+140326458 movzx    eax, word ptr [rcx]                           
+14032645b mov      word ptr [rcx + r13], ax                      
+140326460 lea      rcx, [rcx + 2]                                
+140326464 test     ax, ax                                        
+140326467 jne      0x140326458                                      ; imm 140326458 None
+140326469 lea      rax, [r14 - 2]                                
+14032646d lea      rax, [rax + 2]                                
+140326471 cmp      word ptr [rax], dx                            
+140326474 jne      0x14032646d                                      ; imm 14032646d None
+
+######## caller_326dbc func=(5372012436, 5372014780)
+==== caller_326dbc 140326d3c-140326dfc
+140326d3c ror      byte ptr [rcx + rcx*4 + 0x74], 0x24           
+140326d41 and      byte ptr [rbp + rcx*4 + 0x4c], cl             
+140326d45 and      al, 0x44                                      
+140326d47 mov      rcx, rbx                                      
+140326d4a lea      rdx, [rbp - 0x80]                             
+140326d4e call     qword ptr [rip + 0x308db4]                       ; 14062fb08 None
+140326d54 mov      rcx, rbx                                      
+140326d57 call     qword ptr [rip + 0x308ec3]                       ; 14062fc20 None
+140326d5d mov      rdx, rsi                                      
+140326d60 call     0x140324668                                      ; imm 140324668 None
+140326d65 xor      ebx, ebx                                      
+140326d67 mov      r15d, eax                                     
+140326d6a test     eax, eax                                      
+140326d6c je       0x140326f22                                      ; imm 140326f22 None
+140326d72 mov      rcx, qword ptr [rsp + 0x50]                   
+140326d77 xor      r9d, r9d                                      
+140326d7a xor      r8d, r8d                                      
+140326d7d mov      rdx, rsi                                      
+140326d80 call     0x140323f90                                      ; imm 140323f90 None
+140326d85 test     eax, eax                                      
+140326d87 je       0x140326f22                                      ; imm 140326f22 None
+140326d8d mov      r15, qword ptr [rsp + 0x50]                   
+140326d92 xor      r9d, r9d                                      
+140326d95 mov      rcx, r15                                      
+140326d98 xor      r8d, r8d                                      
+140326d9b mov      rdx, rsi                                      
+140326d9e call     0x1403241f8                                      ; imm 1403241f8 None
+140326da3 mov      r9d, dword ptr [rsp + 0x40]                   
+140326da8 mov      rdx, rsi                                      
+140326dab mov      r8, qword ptr [rsp + 0x68]                    
+140326db0 mov      rcx, r15                                      
+140326db3 mov      dword ptr [rsp + 0x28], ebx                   
+140326db7 mov      qword ptr [rsp + 0x20], rbx                   
+140326dbc call     0x1403291bc                                      ; imm 1403291bc None
+140326dc1 cmp      qword ptr [r15 + 0x10], rbx                   
+140326dc5 je       0x140326f1b                                      ; imm 140326f1b None
+140326dcb mov      dword ptr [rsp + 0x40], ebx                   
+140326dcf mov      rcx, rsi                                      
+140326dd2 mov      rbx, qword ptr [rsp + 0x78]                   
+140326dd7 xor      edx, edx                                      
+140326dd9 movzx    eax, word ptr [rcx]                           
+140326ddc mov      word ptr [rcx + rbx], ax                      
+140326de0 lea      rcx, [rcx + 2]                                
+140326de4 test     ax, ax                                        
+140326de7 jne      0x140326dd9                                      ; imm 140326dd9 None
+140326de9 lea      rax, [r13 - 2]                                
+140326ded lea      rax, [rax + 2]                                
+140326df1 cmp      word ptr [rax], dx                            
+140326df4 jne      0x140326ded                                      ; imm 140326ded None
+
+#### CALLEES OF 140323884 func=(5372000388, 5372000523)
+   callers(13): ['0x1403239e3', '0x140323a1d', '0x140323a50', '0x140323a7b', '0x140328129', '0x14032815e', '0x140328d53', '0x140328e92', '0x140328fdd', '0x140329404', '0x140329435', '0x14032944c', '0x140329468']
+
+#### CALLEES OF 1401a0b84 func=(5370416004, 5370416181)
+   callers(14): ['0x14019fdd4', '0x1401a0254', '0x1401a02c8', '0x1401a042e', '0x1401a0482', '0x1401a04fd', '0x1401a05a9', '0x1401a06ed', '0x1401a0764', '0x1401a07af', '0x1401a0f08', '0x1401a106f', '0x140329551', '0x140329579']
+
+#### CALLEES OF 14025004c func=(5371134028, 5371134277)
+   callers(4): ['0x14013a5ee', '0x140159d45', '0x140199d14', '0x140199efb']
+
+#### CALLEES OF 140250148 func=(5371134280, 5371135015)
+   callers(20): ['0x14000eb69', '0x140045f75', '0x1400b8715', '0x1400b8b81', '0x1400b9487', '0x1400c0b7c', '0x1400c1486', '0x1400d6985', '0x1400d6a01', '0x1400d703f', '0x1400d7652', '0x1400fdcd5', '0x1400fe1c5', '0x140113c88', '0x140139e47', '0x140159e0b', '0x14019869f', '0x140199d4c', '0x14019a031', '0x1401aa4bc']
+
+#### CALLEES OF 1402aeacc func=(5371521740, 5371521857)
+   callers(105): ['0x14000eba8', '0x14003c085', '0x14003c29c', '0x14003c331', '0x14003c39f', '0x14003c408', '0x14003c489', '0x14003c4cc', '0x14003c4f2', '0x14003c51c', '0x14003c546', '0x14003c5aa', '0x14003c612', '0x14003c742', '0x14003c7db', '0x14003c834', '0x14003c894', '0x14003c937', '0x14003c95f', '0x14003cb15', '0x14003cbc9', '0x14003cc23', '0x14003cd6e', '0x14003ce04', '0x14003ce3f', '0x14003ce7f', '0x14003cfb9', '0x14003d153', '0x14003d35f', '0x14003d45f', '0x14003d4c4', '0x14003d511', '0x14003d5b0', '0x14003d777', '0x14003d9c4', '0x14003dac6', '0x14003db1d', '0x14003dbbb', '0x14003dbf2', '0x14003dc82', '0x14003ddc3', '0x14003dfd6', '0x14003e06c', '0x14003e0c7', '0x14003e10e', '0x14003e24a', '0x14003e3e4', '0x14003e5fc', '0x14003e673', '0x14003e696', '0x14003e6fa', '0x14003e840', '0x14003ea85', '0x14003eb14', '0x140045fac', '0x14004637d', '0x1400b8bc6', '0x1400b8c43', '0x1400b8c9a', '0x1400b8cf1']
+
+#### CALLEES OF 1402aecd0 func=(5371522256, 5371522352)
+   callers(83): ['0x1400b875a', '0x1400b87e4', '0x1400b8804', '0x1400b8824', '0x1400b885d', '0x1400b89e3', '0x1400b8a0f', '0x1400c1614', '0x1400d6a33', '0x1400d70ec', '0x1400fdcf7', '0x14011250c', '0x140113cad', '0x1401484c1', '0x140148500', '0x14014855b', '0x1401485cb', '0x1401485e2', '0x140148646', '0x140148663', '0x140148788', '0x1401487fa', '0x14014aa09', '0x14014aa47', '0x14014aaa0', '0x14014ab10', '0x14014ab8f', '0x14014b115', '0x14014b155', '0x14014b1af', '0x14014b234', '0x14014b24d', '0x14014b2e4', '0x14014b770', '0x14014b78d', '0x14014b815', '0x14014ba4c', '0x14014bacb', '0x14014bd5a', '0x14014be69', '0x14014bf50', '0x14014ded1', '0x14014df55', '0x14014dfcf', '0x14014dfe6', '0x14014e031', '0x14014e05a', '0x14014e164', '0x14014e269', '0x14014e9fe', '0x14014ea36', '0x14014ea96', '0x14014ec66', '0x14014ec83', '0x14014eeda', '0x14014f068', '0x14014f7b8', '0x14014f846', '0x14014fa59', '0x14014fa89']
