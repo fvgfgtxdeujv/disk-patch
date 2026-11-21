@@ -2440,6 +2440,8 @@ def table_hook_fullctx(exe, seconds, out_dir='.', markers=None):
         return None
     lo, hi = base + VMP_RVA, base + VMP_RVA + len(vmp)
     print('[*] .vmp %d 字节，范围 [%#x, %#x)' % (len(vmp), lo, hi), flush=True)
+    with open(os.path.join(out_dir, 'vmp_unpacked_6201829.bin'), 'wb') as f2:
+        f2.write(vmp)
 
     KNOWN = [0x1421080ab]
     tables = []
@@ -2744,7 +2746,7 @@ def table_hook_fullctx(exe, seconds, out_dir='.', markers=None):
     tags = {}
     for e in out:
         if e[0]:
-            tags[e[3] & 0xFFFFF] = tags.get(e[3] & 0xFFFFF, 0) + 1
+            tags[e[5]] = tags.get(e[5], 0) + 1
     print('[*] 轨迹 %d 条（不同 IP %d），tag %d 种 top10 %s'
           % (n, len(ips), len(tags),
              sorted(tags.items(), key=lambda x: -x[1])[:10]), flush=True)

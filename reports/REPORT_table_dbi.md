@@ -336,3 +336,61 @@ SxS Activation Context 结构（含 shell32/Common-Controls manifest 路径）�
   或原生侧 free）。下一步：v43 把热区采样间隔降到 0.5s（去掉 tick%4 门控）+
   0x1b0000-0x2000000 每帧全量；或在重放中对 0x13fff28 写值时刻做 unicorn 内存
   hook 直接跟指针。
+
+## §15 真实 Windows 同轮 fullctx + VMP 重放（2026-11-21）
+
+### 15.1 采集与自洽性
+
+- 目标仍为官方 DiskGenius 6.2.0.1829；管理员权限运行 `table_hook_fullctx`，产物在
+  `out/fullctx-win2/`。本轮新增同轮 `vmp_unpacked_6201829.bin`（14,336,000 字节，
+  SHA256 `5b6d04f9a60d522d61a3ff8182427c2b64cb7e989da38c0d479a5b16050a5f48`），
+  消除旧 decoder 使用跨轮/硬编码 VMP 路径的缺口。
+- 共 2510 条不同 IP、2510 份 4KB ctx、66 种 tag。逐条验证：2510/2510 的
+  `ctx+0xBC == 记录 IP`、`ctx+0xF5 == 表地址`、ctx 非零，且 32B 包窗口四个 qword
+  全部与 `bc_window_1s.bin` 一致。
+- fullctx 的 tag 统计字段由误用 `e[3]` 修正为真实 tag `e[5]`。
+
+### 15.2 decoder 修复与逐步结果
+
+- 路径可移植：`artdir`、`--dump`、`--out`、`--runtime-script` 均可在本机工作区运行，
+  默认读取 `out/fullctx-win` 和同轮 VMP，不再依赖 `/workspace/dgwork`。
+- 每轮 unicorn hook 现在会删除；旧版累积 hook 会使运行时间近似平方增长，且重复计算
+  `n_reads/n_writes`。修复前后控制流统计一致，但读写计数以后才可用于语义分析。
+- 初始结果：ok 2465 / nomatch 4 / err 40（共 2509 次转移）。
+- 写回全部低区堆 region（包括 `<0x13E0000`）及 `heap_snap` 后：ok 2471 / nomatch 4 /
+  err 34。修复的是 op406、317、442 的 6 次低堆未映射访问，没有引入新的 nomatch。
+- 增加最小 TEB（`gs:[0x30]` 为 TEB 自指针）后：ok 2481 / nomatch 8 / err 20。
+  原先所谓 `0x30` 空指针实际是 Windows TEB 读取；没有先前成功记录转为失败。
+
+### 15.3 剩余非命中已收窄到原生边界
+
+- op27 共 11 条，全部不命中（5 err + 6 nomatch）。handler 尾部明确是保存现场恢复后
+  `ret` 的原生 epilogue；独立重放使用合成栈，不能期待它直接走到下一条 VM 桩。
+- op574 是原生 API 调用 wrapper；14 次 fetch-unmapped 的目标经真实 Windows 模块基址
+  和 PE export 双重解析为：
+
+| 记录 ri | API |
+|---|---|
+| 76 / 145 / 222 / 372 | `KERNEL32!IsBadReadPtr` |
+| 299 | `KERNEL32!lstrcmpiA` |
+| 455 | `KERNEL32!VirtualFree` |
+| 676 / 1664 | `KERNEL32!VirtualAlloc` |
+| 793 | `KERNEL32!GetProcAddress` |
+| 867 | `ntdll!ZwQuerySystemInformation` |
+| 966 / 1268 | `KERNEL32!GetProcessHeap` |
+| 1040 | `ntdll!RtlAllocateHeap` |
+| 1335 | `ntdll!RtlFreeHeap` |
+
+  这些地址位于未映射的系统 DLL，不应靠“跳到下一桩”伪造成命中；后续应建模为带明确
+  输入/输出和副作用的 native intrinsic。`ZwQuerySystemInformation` 与机器信息采集
+  相关，是授权路径后续语义还原的重点观测点，但本轮尚未证明其具体信息类别。
+- op574 另有 2 条 nomatch；op46 的 ri1497 尚有 1 次 `0x3e3b3e6f` invalid-fetch，
+  原因未定。最终原始统计保持为 **2481 ok / 8 nomatch / 20 err**，不隐藏这些边界。
+
+复现：
+
+```powershell
+# 管理员权限；--out 的目录即 fullctx 产物目录
+python winactions\dump_runtime.py --exe out\runtime\DiskGenius\DiskGenius.exe --trace-vm fullctx --trace-seconds 10 --out out\fullctx-win2\vm_trace.json
+python tools_local\record_decoder.py out\fullctx-win2
+```

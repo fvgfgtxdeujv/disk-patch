@@ -4,18 +4,19 @@
 （表=桩指针、桩区可执行）执行每条记录的 handler，从真实密钥的自然解密中
 得到 packet 语义。
 
-输入：art26/（vm_trace.json, ctx_ring.bin, bc_window_1s.bin ...）
-输出：decoded.json（每条记录：读写日志、截断点、next_op 反查）
-验证：执行流截断于下一记录的桩入口 → 解码正确性自证（2504/2504 命中率）。
+输入：artdir（vm_trace.json, ctx_ring.bin, bc_window_1s.bin 及同轮 VMP 快照）
+输出：默认 artdir/decoded.json（读写日志、截断点、next_op 反查）
+验证：执行流截断于下一记录的桩入口；原生 API / ret 边界需结合 err、hit_next、stop 分析。
 """
-import json, struct, sys, os, re
+import argparse, json, struct, os, re
 from unicorn import *
 from unicorn.x86_const import *
 from capstone import Cs, CS_ARCH_X86, CS_MODE_64
 
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 VBASE = 0x1419d4000
-DUMP = open('/workspace/dgwork/out/vmp_unpacked_6201829.bin', 'rb').read()
-DEND = VBASE + len(DUMP)
+DUMP = b''
+DEND = VBASE
 MD = Cs(CS_ARCH_X86, CS_MODE_64)
 
 WIN_LO = 0x142140000           # bc_window 快照起 VA（主模块 base+0x2140000）
@@ -34,9 +35,10 @@ LOW_LO = 0x13E0000         # VM 低区工作区：7 位 hex！bad 地址 0x13FFE
 LOW_HI = 0x1400000         # ∈ [0x13FE0000, 0x1400000)≈20-21MB；v28 起误写成 8 位
 
 
-def _load_stub_builder():
+def _load_stub_builder(runtime_script):
     """从 dump_runtime.py 提取 _build_stub12（依赖 struct/STUB12_SZ）。"""
-    src = open('/workspace/dgwork/tools_local/dump_runtime.py').read()
+    with open(runtime_script, encoding='utf-8') as f:
+        src = f.read()
     i0 = src.index('def _build_stub12')
     i1 = src.index('def _build_stub11')
     ns = {'struct': struct, 'STUB12_SZ': STUB12_SZ, 'REC12_MAX': REC12_MAX}
@@ -56,8 +58,16 @@ def follow_chain(va):
             return va
 
 
-def main(artdir):
-    tr = json.load(open(os.path.join(artdir, 'vm_trace.json')))
+def main(artdir, dump_path=None, out_path=None, runtime_script=None):
+    global DUMP, DEND
+    dump_path = dump_path or os.path.join(artdir, 'vmp_unpacked_6201829.bin')
+    out_path = out_path or os.path.join(artdir, 'decoded.json')
+    runtime_script = runtime_script or os.path.join(ROOT, 'winactions', 'dump_runtime.py')
+    with open(dump_path, 'rb') as f:
+        DUMP = f.read()
+    DEND = VBASE + len(DUMP)
+    with open(os.path.join(artdir, 'vm_trace.json'), encoding='utf-8') as f:
+        tr = json.load(f)
     t = tr['trace']
     ring = open(os.path.join(artdir, 'ctx_ring.bin'), 'rb').read()
     nrec = tr['n']
@@ -90,7 +100,7 @@ def main(artdir):
     tbl_off = TBL_VA - VBASE
     n_ent = 661
     table = list(struct.unpack_from('<%dQ' % n_ent, DUMP, tbl_off))
-    stub_builder = _load_stub_builder()
+    stub_builder = _load_stub_builder(runtime_script)
     # 桩 blob（tag 传 0：不影响 VM 语义）
     stub_blob = bytearray()
     for ei in range(n_ent):
@@ -114,9 +124,12 @@ def main(artdir):
     uc.mem_map(SEEN_VA, 0x80000)              # seen 512KB
     uc.mem_map(BUF_VA, 0x100000)              # buf 1MB
     uc.mem_map(RING_VA, ((nrec + 1) * 0x1000 + 0xFFF) & ~0xFFF)  # ring
+    uc.mem_map(0x100000, LOW_LO - 0x100000)  # 原生侧低区堆
     uc.mem_map(LOW_LO, 0x14000000 - LOW_LO)  # VM 低区工作区
     if low_data:
         uc.mem_write(LOW_VA, low_data)
+    if heap_data:
+        uc.mem_write(0x1b0000, heap_data)
     # v42：逐 region 堆快照写回（heapr_<s>_<0xVA>.bin / hotr_<ts>_<0xVA>.bin）
     heap_regions = []
     for pat in ('heapr_*.bin', 'hotr_*.bin'):
@@ -132,7 +145,7 @@ def main(artdir):
             heap_regions.append((va, blob))
     if heap_regions:
         for va, blob in heap_regions:
-            if va >= LOW_LO and va + len(blob) <= 0x14000000:
+            if va >= 0x100000 and va + len(blob) <= 0x14000000:
                 uc.mem_write(va, blob)
         print('堆 region 写回 %d 块（%s）' % (
             len(heap_regions),
@@ -140,6 +153,9 @@ def main(artdir):
             flush=True)
     uc.mem_map(0x50000000, 0x100000)          # 栈
     uc.reg_write(UC_X86_REG_RSP, 0x50080000)
+    uc.mem_map(0x70000000, 0x2000)            # 最小 TEB（gs:[0x30] = TEB 自指针）
+    uc.mem_write(0x70000030, struct.pack('<Q', 0x70000000))
+    uc.reg_write(UC_X86_REG_GS_BASE, 0x70000000)
 
     out = []
     stats = {'ok': 0, 'nomatch': 0, 'err': 0, 'skip': 0}
@@ -222,10 +238,11 @@ def main(artdir):
             bad.append((access, address, size))
             uc.emu_stop()
 
-        uc.hook_add(UC_HOOK_CODE, hk_code)
-        uc.hook_add(UC_HOOK_MEM_READ | UC_HOOK_MEM_WRITE, hk_mem)
-        uc.hook_add(UC_HOOK_MEM_READ_UNMAPPED | UC_HOOK_MEM_WRITE_UNMAPPED |
-                    UC_HOOK_MEM_FETCH_UNMAPPED, hk_unmapped)
+        h_code = uc.hook_add(UC_HOOK_CODE, hk_code)
+        h_mem = uc.hook_add(UC_HOOK_MEM_READ | UC_HOOK_MEM_WRITE, hk_mem)
+        h_unmapped = uc.hook_add(
+            UC_HOOK_MEM_READ_UNMAPPED | UC_HOOK_MEM_WRITE_UNMAPPED |
+            UC_HOOK_MEM_FETCH_UNMAPPED, hk_unmapped)
         reads, writes = [], []
         err = None
         try:
@@ -233,11 +250,14 @@ def main(artdir):
         except UcError as ex:
             err = '%s@%#x' % (ex, uc.reg_read(UC_X86_REG_RIP))
         rip = uc.reg_read(UC_X86_REG_RIP)
+        uc.hook_del(h_code)
+        uc.hook_del(h_mem)
+        uc.hook_del(h_unmapped)
         hit = stop_ip[0] == next_stub
         nop = stub2op.get(rip)
         rec = {'ri': ri, 'ip': ip, 'tag': tag, 'orig': orig, 'body': body,
                'n_reads': len(reads), 'n_writes': len(writes),
-               'err': err, 'hit_next': bool(hit), 'rip': rip,
+               'err': err, 'hit_next': bool(hit), 'rip': rip, 'stop': stop_ip[0],
                'next_op_by_tbl': nop, 'tag_next': nxt[5],
                'bad': bad[:8],
                'reads': reads[:80], 'writes': writes[:80]}
@@ -251,10 +271,19 @@ def main(artdir):
         if ri % 200 == 0:
             print('  %d/%d %s' % (ri, nrec, stats), flush=True)
     print('统计:', stats)
-    with open('/workspace/dgwork/out/sem/decoded.json', 'w') as f:
+    out_parent = os.path.dirname(os.path.abspath(out_path))
+    os.makedirs(out_parent, exist_ok=True)
+    with open(out_path, 'w', encoding='utf-8') as f:
         json.dump({'stats': stats, 'records': out}, f)
-    print('已写 out/sem/decoded.json')
+    print('已写 %s' % out_path)
 
 
 if __name__ == '__main__':
-    main(sys.argv[1] if len(sys.argv) > 1 else '/workspace/dgwork/art26')
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument('artdir', nargs='?',
+                    default=os.path.join(ROOT, 'out', 'fullctx-win'))
+    ap.add_argument('--dump', help='同轮解密的 VMP 快照路径')
+    ap.add_argument('--out', help='decoded.json 输出路径')
+    ap.add_argument('--runtime-script', help='提供 _build_stub12 的 dump_runtime.py 路径')
+    args = ap.parse_args()
+    main(args.artdir, args.dump, args.out, args.runtime_script)
