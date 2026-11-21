@@ -476,3 +476,83 @@ https://internal.eassos.com/update/diskgenius/update.php
 VM handler 语义提取（已有 VM 插桩与 ctx 快照），或在提权下对
 `0x140630538`（消息投递包装）与 `0x1403f3f94`（请求对象执行）下断点，
 比较真实授权 key 与伪造 key 的分支差异。
+
+---
+
+## 12. 真假 key 分支对比 + 启动期联网实测（2026-11-21）
+
+### 12.1 调试器方案：被 VMP 反调试挡住
+
+`out/_dg_dbg.py`（ctypes + Debug API，PEB 反调试标记清零，断点设在
+`0x140199e71 / 0x1403f3f94 / 0x14058d684 / 0x1400d8045`，等目标页解密后再写 `0xCC`）。
+
+实测结果：**目标页在调试器下始终是密文**。轮询 `0x140199e71` 的 16 字节，
+直到进程结束仍是磁盘上的密文（`3faefff3da967bbf…`），而同一地址在正常启动的
+运行期 dump 里是明文（`ff15c16649000f…`）。
+
+→ DiskGenius 的 VMP 在检测到调试器后走了不同路径（不解密/延迟解密），
+软件断点在该进程里不可用。此路线判定为不可行，改用**无调试器的差分内存**。
+
+### 12.2 差分内存：key 的全部本地影响只有 1 个字节
+
+`out/_mem_diff.py`（不附加调试器）以管理员启动、等 12 s 后整模块落盘
+（`SizeOfImage = 0x2FF3000`，12275 页全可读），共跑四组：
+`empty`、`empty2`（对照）、`1TEST`、`aTEST`。
+
+按 4 KB 页比较：
+
+| 对比 | 差异页 | 与“同 key 噪声”重合 | key 特有 |
+|---|---|---|---|
+| empty vs empty2（纯噪声） | 60 | — | — |
+| empty vs `1TEST` | 53 | 52 | **1** |
+| `1TEST` vs `aTEST` | 50 | 49 | **1** |
+
+唯一的 key 特有差异在 **`0x141AD7F2D`（.vmp 段内）一个字节**：
+
+| key | 该字节 |
+|---|---|
+| 空 | `AC` |
+| `1TEST` | `B0` |
+| `aTEST` | `A8` |
+
+也就是说：**自造 key 既没有改变任何原生代码路径，也没有改变任何数据全局**
+（包括 `0x140919884`、`0x14091E9C0` 处的请求串），只在 VMP 内部留下一个状态字节。
+这与 §11 的“静默忽略”完全一致。
+
+### 12.3 启动期联网：与 key 无关，固定上报 mid/disk/otherinfo
+
+同一批运行里采样 `netstat -ano`（进程 PID）：
+
+* 每次启动固定建立 **3 条 443 连接**，对端为 Cloudflare 的
+  `172.67.72.232` 与 `104.26.4.131`（`empty` / `1TEST` / `aTEST` 三组一致）。
+* `ipconfig /displaydns` 同时出现 **`internal.eassos.com`、`www.eassos.com`**。
+
+运行期内存里直接拿到了**拼好的完整请求 URL**（`0x14091E9C0`，UTF-16）：
+
+```
+https://internal.eassos.com/update/diskgenius/update.php
+  ?ver=6.2.0.1829_x64_pro_chs
+  &winver=10%2e0%2e19045%2esp0%2e0%2e00000000&winbits=64
+  &reslang=eng&syslang=chs&cpu=64
+  &mid=mOD_CDOcD^OFHLOHLHLL%1A%1A%1A%1E%1A%1CO%19      ← XOR 0x0E 后百分号编码
+  &lid=                                               ← 伪造 key 时为空
+  &disk1=Zkmbo}z%3C;8ILO6;%3EQ886...                  ← XOR 0x0E + 百分号编码
+  &otherinfo=L4JkbbG`m%23:JCTI9%3CM%40...             ← 同上
+  &iplan=Y&appname=DiskGenius&appcs=328649950&again=yes
+```
+
+三组 key 下这个 URL **逐字节相同**（`lid=` 都为空），说明：
+
+1. 启动时上报 `mid/disk1/otherinfo/iplan` 与 key 无关，属于常规统计/升级检查；
+2. `lid=` 才是授权标识，只有拿到**服务端签发的有效 key** 才会被填上；
+3. 因此本地伪造 key → `lid` 空 → 服务端无从认可，功能自然保持未授权。
+
+### 12.4 最终结论
+
+* **算法层**：客户端只有“出站请求完整性信封”（`XOR0x0E` + `MD5(check)`），
+  该信封无密钥、可任意构造；真正的授权判定与 `lid` 签发都在服务端。
+* **本地层**：自造 key 的全部影响是 VMP 内部 1 个状态字节，不产生任何可观测的
+  授权效果；安装态也不会回写/清空 `Reg\license`。
+* 想继续，只有两条路：拿到**服务端签发的真实 key**（或服务端接口的合法响应），
+  或者把 `internal.eassos.com/register/register.php` 与
+  `update.php` 的响应处理逐字节还原（VMP handler 语义）。

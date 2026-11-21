@@ -1,0 +1,5 @@
+{"ev": "start", "pid": 5800, "key": "1TEST", "t": 0.0}
+{"ev": "expect", "count": 4, "t": 0.029}
+{"ev": "create", "base": "0x140000000", "t": 0.031}
+{"ev": "poll", "bp": "vmcall_0x479", "got": "3faefff3da967bbf1aebae3c0e20c0a4", "exp": "ff15c16649000fb78424f01400006683", "t": 0.031}
+{"ev": "end", "hits": {}, "t": 18.243}
