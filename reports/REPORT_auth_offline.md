@@ -293,3 +293,20 @@ xor ax, 0x0e             → 逐字符混淆
   启动后看 Options.ini 是否保留、`HKCU\…\Reg\license` 是否写入。若保留，则
   客户端只做**完整性**校验，授权可自造；若仍删除，则服务端还加了本地未知的
   盐/密钥，需要回到 VM handler 语义提取。
+
+### 9.6 Windows 实验：ini 路径不生效（2026-11-21）
+
+按 §9.5 跑了 5 组（control 无 key / fake / plain+check / encryption+check / skey），
+写 exe 同目录 `Options.ini`，提权启动，分别观察 11 s 与"发 F5、观察到 26 s"：
+
+* 5 组文件**全部保留**，字节未变；`HKCU\Software\Eassos\DiskGenius` 始终不存在。
+* 原因不是"校验通过"，而是这台机器是**安装态**：
+  `HKLM\Software\Eassos\DiskGenius\{Reg,CReg}` 已存在（`license` 为 REG_BINARY 空值）。
+  Wine 实验是非提权/便携态，才走 exe 同目录 ini。提权后程序读的是 HKLM 的二进制
+  license，不消费 ini 里的 `key`。
+
+二进制 license 的形态在代码里已露出：对象 `+0x5cc` 是长度、`+0x5d4` 是字节数组；
+`0x1400d95f8` 以 `cmp [rbx+0x5cc],3` 为节拍把字符串（`%XX` 形式）解码进该数组；
+离线请求构建器 `0x1400d8168` 再把该数组按 `%%%02X` 百分号编码，追加成 `&skey=`。
+下一步：找 `0x1400d95f8` 的调用者与 HKLM `license` 的读写点，直接写这个二进制
+blob 做接受/拒绝实验。
