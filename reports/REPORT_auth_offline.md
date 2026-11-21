@@ -159,8 +159,10 @@ python3 -m pyauth offline-ini "appname=DiskGenius&license=SIG&user=a&email=b@c" 
 1. **dat 里 user/email/regcode 的偏移还没定位**：扫了 0x00–0xA0 的单点、��了 32 字节步长的短串网格，
    OfflineReg 界面仍显示 `n/a`。说明它们不是明文的裸 CString（可能带长度前缀/结构体头，或在
    `+0x64` 那套 CString 之外的另一块）。不定位也不影响发包（URL 就能决定 body）。
-2. **key 的签名算法**：这是唯一挡住"自己造授权"的东西。已知入口是主程序读 Options.ini 之后那段
-   验证，在 VM 壳里；要打就得先做 handler 的符号化执行（见 `REPORT_dispatch_v2.md` 的路线）。
+2. **key 的签名算法**：见 §9。已确认客户端自带 **MD5**，注册负载用
+   `ver=…&code=…&name=…&email=…&mid=…&applang=…` 作为 MD5 输入，摘要拼成 `&check=<hex>`，
+   整串再按 UTF-16 逐字符 XOR `0x0E` 后塞进 `encryption=`；本地"读 key → 判定"的分支仍在
+   VMP 字节码里（Wine 删除栈 0x142161e81 / 0x142166167），尚未语义还原。
 3. 响应里是否还有其它必需字段（比如 `skey=` / `check=`）没被我们触发出来 —— 真服务器被拒时
    不会告诉我们缺哪个，只能靠 VM 里的验证逻辑反推。
 
@@ -173,3 +175,121 @@ python3 -m pyauth offline-ini "appname=DiskGenius&license=SIG&user=a&email=b@c" 
 | Options.ini 段名 `[LicenseInfo]`，只有 `Show` 键 | 段名 `[license]`，6 个字段，`key` 存响应原文 |
 | `license` 注册表值有三套候选 codec 需要试 | 不需要：`key` 明文保存，注册表值由主程序自己写 |
 | 本地"只判有无授权" | 本地还要验签（读 Options.ini → 验不过就丢弃） |
+
+---
+
+## 9. 授权算法：MD5 + `check=` + XOR 0x0E（2026-11-21 静态定位）
+
+### 9.1 方法：解密后主模块 dump
+
+提权启动目标，`EnumProcessModulesEx` 找到 `DiskGenius.exe`，`GetModuleInformation`
+取 `SizeOfImage`，逐页 `ReadProcessMemory` 落盘：
+
+```
+out/moddump_140000000.bin   0x140000000 + 0x2FF3000（~50 MB，12275 页）
+```
+
+结果 **全部页可读**；`Options.ini`(0x1406a1328)、`license`(0x1406b35f0)、
+`appname`(0x1406b3660)、`regver`(0x1406b36a0) 均为明文，说明 12 s 时 .rdata 已完全解密。
+原始 exe 文件里这些字符串 **一个都搜不到**（段名也被清零），所以此前静态扫不出来。
+
+有了这份镜像，用 capstone 做 RIP-relative 交叉引用（按 ModRM `mod=00,rm=101` 向量化筛选，
+再从候选位置回退 1–6 字节验证指令长度与 `mem.base==RIP`），函数边界用 `.pdata` 的
+`RUNTIME_FUNCTION` 表。以下地址都是 VA（模块基址 0x140000000）。
+
+### 9.2 授权字符串池与原生消费者
+
+| 字符串 | 地址 | 引用点 / 函数 | 语义 |
+|---|---|---|---|
+| `Options.ini` | 0x1406a1328 | 0x140080b49 / 0x140080bbc | 拼配置路径 |
+| `[license] email` | 0x1406b3680 | 0x140199ddb | 读 email（缺省 `license@eassos.com`） |
+| `[license] key` | `key`@0x1406a8980 | 0x140199e00（`0x1402aeacc`） | 读 key 到栈上 0x1000 缓冲 |
+| 六字段写入 | appname/user/email/regcode/regver | 0x1400d7699…0x1400d76e9 | 写 Options.ini 的 `[license]` |
+| `VerifyDate` | 0x1406b35d8 | 0x1400d706e | 在线续期/日期校验 |
+| `license`/`ShowLicense` | — | 0x1403291bc | 注册表 `SOFTWARE\Eassos\DiskGenius` 读写 |
+| `&check=` | 0x1406b37b8 | 0x1400d806a | 注册负载摘要字段 |
+| `offlineReg.dat` | — | 0x1400d88xx | 离线注册文件 |
+
+`key` 的消费函数（0x140199be0–0x14019a25a）流程：
+
+1. 读 `[license] email`、`[license] key`（`0x1402aeacc`，通用配置读取器）；
+2. `0x1405a3260` 取长度后看 key 的**首字符**：只有 `'0'`、`'1'`、`'2'`、`'9'` 才走
+   `call [0x140630538]`（槽值 `0x1420c7945` → `jmp 0x141e2c625`，.vmp 内）；
+3. 再读注册表 `ShowLicense`，走 `0x1403291bc` 的注册表分支。
+
+失败删除出口仍是 `0x14020b2a4`（`mov rax,[rcx]; call [rax+0x48]`），Wine 里 patch 掉
+这条 call 就不再删 Options.ini。
+
+### 9.3 注册负载格式（代码级，决定性）
+
+函数 `0x1400d7c88–0x1400d8165` 先把注册字段格式化成一段字符串（0x1400d7e38，
+目标缓冲 `rbp+0x590`，格式串 0x1406b3750）：
+
+```
+ver=%s&code=%s&name=%s&email=%s&mid=%s&applang=%s%s
+```
+
+随后：
+
+```
+0x1400d8019  mov dword [rsp+0x70], 0x67452301      ; MD5 IV A
+0x1400d8021  mov dword [rsp+0x74], 0xefcdab89      ; B
+0x1400d8029  mov dword [rsp+0x78], 0x98badcfe      ; C
+0x1400d8031  mov dword [rsp+0x7c], 0x10325476      ; D
+0x1400d8045  call 0x1400d62fc                      ; MD5(上面那段 UTF-16→字节串)
+```
+
+`0x1400d62fc` 是客户端**自带 MD5**：
+
+* 初始化常量同上；内部块函数 `0x1400d623c`；
+* 标准 MD5 的 64 个 K 常量唯一出现在 `0x1400d59e1` 起（`d76aa478 e8c7b756 242070db …`）；
+* 填充按 `0x38 / 0x78`、块长 `0x40` —— 与 MD5 完全一致。
+
+摘要经 `0x1401dd748` 转成十六进制后，追加 `&check=<hex>`（0x1400d806a 的
+`movups xmm0,[0x1406b37b8]`），然后 **对整串 UTF-16 逐字符 `xor 0x0E`**：
+
+```
+0x1400d80af  xor ax, 0x0e
+0x1400d80b3  mov [rcx], ax
+0x1400d80b6  add rcx, 2
+0x1400d80c0  jne …
+```
+
+最后套格式串 0x1406b37c8：
+
+```
+%s%cencryption=%s&appname=%s
+```
+
+即：`check = MD5("ver=…&code=…&name=…&email=…&mid=…&applang=…")`，
+`encryption = XOR0E(原串 + "&check=" + hex(check))`。
+
+0x1400d7fe5–0x1400d7ff7 有一个分支：当 `otherinfo` 为空时**跳过** MD5/check/加密，
+直接发明文（这就是抓包里看到无 `encryption=` 的那种请求的来源）。
+
+### 9.4 机器指纹（mid 的来源）
+
+函数 `0x1400d7a8c–0x1400d7c85` 遍历磁盘信息，逐项格式化：
+
+```
+&diskinfo%ld=%s          (0x1406b36d8)
+%04X                     (0x1406b36f8)  → 16 位值转 4 位十六进制
+xor ax, 0x0e             → 逐字符混淆
+&otherinfo=%s&tmp=%s     (0x1400d7c4e)
+```
+
+所以 `mid` 由本机磁盘信息派生，并作为 MD5 输入的一部分，即授权与机器绑定。
+
+### 9.5 结论与未闭合的一步
+
+* 客户端没有 CNG/CryptoAPI 导入，**不是 RSA/ECC**；它自带 MD5，授权协议是
+  "MD5 摘要 + 固定 XOR 0x0E 混淆" 的对称方案。
+* 线上注册：`encryption=XOR0E(payload&check=MD5(payload))`；服务端反向解混淆、
+  重算 MD5 即可校验，再把带授权的响应写回。
+* 离线 `key` 由服务端签发，客户端只做本地校验；**"读 key → 判定" 的决定分支落在
+  VMP 字节码**（Wine 删除栈 0x142161e81 / 0x142166167），还没有逐指令语义还原。
+* 因此下一步不是找 RSA 公钥，而是证明本地校验是否复用同一套
+  `check=MD5(…)`：用 §9.3 的 payload 自算 check，构造 `key = appname=DiskGenius&…`，
+  启动后看 Options.ini 是否保留、`HKCU\…\Reg\license` 是否写入。若保留，则
+  客户端只做**完整性**校验，授权可自造；若仍删除，则服务端还加了本地未知的
+  盐/密钥，需要回到 VM handler 语义提取。
