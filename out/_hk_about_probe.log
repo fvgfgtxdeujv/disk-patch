@@ -1,0 +1,127 @@
+﻿start 2026-11-21T14:40:02.4063819+08:00
+===== CASE empty main=2491810 title=DiskGenius V6.2.0.1829 x64 
+TOP DiskGenius V6.2.0.1829 x64  (cls=)
+   CHILD text=
+   CHILD text=Tab1
+   CHILD text=
+   CHILD text=
+   CHILD text=
+   CHILD text=
+   CHILD text=Analyze
+   CHILD text=
+   CHILD text=
+   CHILD text=
+   CHILD text=ShareOnFacebookTwitterControl
+   CHILD text=
+   CHILD text=
+   CHILD text=
+   CHILD text=Disk Bar
+   CHILD text=
+   CHILD text=
+   CHILD text=
+   CHILD text=
+   CHILD text=Basic
+GPT
+   CHILD text=Disk 0 Adapter:SATA  Model:Teclast256GBA850  S/N:6680693304101609532  Capacity:238.5GB(244198MB)  Cylinders:31130  Heads:255  Sectors per Track:63  Total Sectors:500118192
+   CHILD text=
+   CHILD text=
+   CHILD text=Partition Bar
+   CHILD text=Partition Bar
+   CHILD text=
+   CHILD text=
+   CHILD text=
+===== CASE u16_1 main=2622000 title=DiskGenius V6.2.0.1829 x64 
+TOP DiskGenius V6.2.0.1829 x64  (cls=)
+   CHILD text=
+   CHILD text=Tab1
+   CHILD text=
+   CHILD text=
+   CHILD text=
+   CHILD text=
+   CHILD text=Analyze
+   CHILD text=
+   CHILD text=
+   CHILD text=
+   CHILD text=ShareOnFacebookTwitterControl
+   CHILD text=
+   CHILD text=
+   CHILD text=
+   CHILD text=Disk Bar
+   CHILD text=
+   CHILD text=
+   CHILD text=
+   CHILD text=
+   CHILD text=Basic
+GPT
+   CHILD text=Disk 0 Adapter:SATA  Model:Teclast256GBA850  S/N:6680693304101609532  Capacity:238.5GB(244198MB)  Cylinders:31130  Heads:255  Sectors per Track:63  Total Sectors:500118192
+   CHILD text=
+   CHILD text=
+   CHILD text=Partition Bar
+   CHILD text=Partition Bar
+   CHILD text=
+   CHILD text=
+   CHILD text=
+===== CASE u16_9 main=1901988 title=DiskGenius V6.2.0.1829 x64 
+TOP DiskGenius V6.2.0.1829 x64  (cls=)
+   CHILD text=
+   CHILD text=Tab1
+   CHILD text=
+   CHILD text=
+   CHILD text=
+   CHILD text=
+   CHILD text=Analyze
+   CHILD text=
+   CHILD text=
+   CHILD text=
+   CHILD text=ShareOnFacebookTwitterControl
+   CHILD text=
+   CHILD text=
+   CHILD text=
+   CHILD text=Disk Bar
+   CHILD text=
+   CHILD text=
+   CHILD text=
+   CHILD text=
+   CHILD text=Basic
+GPT
+   CHILD text=Disk 0 Adapter:SATA  Model:Teclast256GBA850  S/N:6680693304101609532  Capacity:238.5GB(244198MB)  Cylinders:31130  Heads:255  Sectors per Track:63  Total Sectors:500118192
+   CHILD text=
+   CHILD text=
+   CHILD text=Partition Bar
+   CHILD text=Partition Bar
+   CHILD text=
+   CHILD text=
+   CHILD text=
+===== CASE u16_1payload main=1967560 title=DiskGenius V6.2.0.1829 x64 
+TOP DiskGenius V6.2.0.1829 x64  (cls=)
+   CHILD text=
+   CHILD text=Tab1
+   CHILD text=
+   CHILD text=
+   CHILD text=
+   CHILD text=
+   CHILD text=Analyze
+   CHILD text=
+   CHILD text=
+   CHILD text=
+   CHILD text=ShareOnFacebookTwitterControl
+   CHILD text=
+   CHILD text=
+   CHILD text=
+   CHILD text=Disk Bar
+   CHILD text=
+   CHILD text=
+   CHILD text=
+   CHILD text=
+   CHILD text=Basic
+GPT
+   CHILD text=Disk 0 Adapter:SATA  Model:Teclast256GBA850  S/N:6680693304101609532  Capacity:238.5GB(244198MB)  Cylinders:31130  Heads:255  Sectors per Track:63  Total Sectors:500118192
+   CHILD text=
+   CHILD text=
+   CHILD text=Partition Bar
+   CHILD text=Partition Bar
+   CHILD text=
+   CHILD text=
+   CHILD text=
+RESTORED
+DONE

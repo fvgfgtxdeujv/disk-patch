@@ -425,3 +425,54 @@ https://internal.eassos.com/update/diskgenius/update.php
 若某组出现 `ShowLicense`/`Improveplan`/`license` 的值变化，或窗口标题出现
 “Registered/授权给 …”，则该首字符类别被接受；若 9 组全部与 baseline 一致，
 则本地除了“首字符网关”之外还依赖 VMP 消息 0x479 的判定，需要回到 VM handler 语义。
+
+---
+
+## 11. HKLM 二进制 license 接受/拒绝实验（2026-11-21 已执行）
+
+以管理员权限运行 [out/_hk_lic_probe.ps1](file:///c:/Users/tfvtd/Desktop/项目/disk-patch/out/_hk_lic_probe.ps1)，
+写入 `HKLM\SOFTWARE\Eassos\DiskGenius\{Reg,CReg}\license`（REG_BINARY），
+每组启动 DiskGenius 12 s，结束后还原。九组候选与结果：
+
+| 组 | 写入字节 | 程序存活 | 主窗口标题 | 注册表 `license` | ini |
+|---|---|---|---|---|---|
+| baseline | 空 | 是 | DiskGenius | 仍为空 | 未变 |
+| u16 `1TEST` | `31 00 54 00 45 00 53 00 54 00` | 是 | DiskGenius V6.2.0.1829 x64 | **原样保留** | 未变 |
+| u16 `9TEST` | 同上首字 39 | 是 | 同上 | 原样保留 | 未变 |
+| u16 `0TEST` / `2TEST` | 同上 | 是 | 同上 | 原样保留 | 未变 |
+| u16 `1TEST\0` | 多 2 字节 0 | 是 | 同上 | 原样保留 | 未变 |
+| ascii `1TEST` | `31 54 45 53 54` | 是 | 同上 | 原样保留 | 未变 |
+| u16 `1appname=DiskGenius&ver=…&code=…` | 292 B | 是 | 同上 | 原样保留 | 未变 |
+| u16 `1appname=DiskGenius&license=SIG&…` | 128 B | 是 | 同上 | 原样保留 | 未变 |
+
+9 组的 `ShowLicense=6.2.0.1829`、`Improveplan=Y`、以及 `license` 的字节数
+（包括我们写进去的 292/128 字节）**全部没有变化**；程序既不回写、也不清空。
+另外两组补充实验：
+
+* 菜单全量对比（`File/Disk/Partition/Tools/View/Help` 全部条目与 id）在
+  `empty` / `1TEST` / `9TEST` / `aTEST` 四种情况下**完全一致**，都仍带
+  `Help → Buy License Code (0x58c)`、`Register (0x4f4)`。
+* 尝试用 `PostMessage(hwnd, WM_COMMAND, 0xa5, 0)` 打开 About 对话框，未弹出
+  （该窗口类不受 `WM_COMMAND` 驱动），因此没能拿到“Licensed to …”文本。
+
+### 11.1 结论
+
+1. 安装态下 `Reg\license` 的 REG_BINARY **确实被读取**（否则四组 `0/1/2/9TEST`
+   不会与空值产生任何差异；实测程序对非空值不做回写），但**任何自造内容都不会被
+   采纳，也不会报错** —— 属于“静默忽略”。
+2. 结合 §10.2（MD5 只有出站一个调用者）与 §10.4（本地只把首字符通过
+   `SendMessage(hwnd, 0x479, key[0], 0)` 交给 VMP 窗口过程），可以得到：
+   **客户端对 `key` 没有本地签名校验**，它只是一个不透明缓存；真正判定在
+   VMP 消息 0x479 的处理器里，并且/或者依赖随后对
+   `internal.eassos.com/update/diskgenius/update.php` 的 `mid/lid/code` 对账。
+3. 因此“离线注册”的响应 `key` 无法用 §9.3 的 `check=MD5(payload)` 自造：
+   那套 MD5+XOR0x0E 只是**出站请求的完整性信封**（无密钥，谁都能算），
+   不是授权凭证的签名。
+
+### 11.2 下一步（若要继续）
+
+唯一还没打通的是 **VMP 消息 0x479 的处理器语义**：`key[0]` 进入后如何设置
+`0x140919884` 等全局标志、是否触发联网对账、失败回退第几档功能。路线仍是
+VM handler 语义提取（已有 VM 插桩与 ctx 快照），或在提权下对
+`0x140630538`（消息投递包装）与 `0x1403f3f94`（请求对象执行）下断点，
+比较真实授权 key 与伪造 key 的分支差异。

@@ -1,4 +1,4 @@
-#Requires -RunAsAdministrator
+﻿#Requires -RunAsAdministrator
 # HKLM 二进制 license 接受/拒绝实验（需以管理员身份运行）
 #
 # 背景：
@@ -12,7 +12,7 @@
 #   powershell -NoProfile -ExecutionPolicy Bypass -File out\_hk_lic_probe.ps1
 
 $ErrorActionPreference = 'Stop'
-$root = 'C:\Users\tfvtd\Desktop\项目\disk-patch'
+$root = Split-Path -Parent $PSScriptRoot
 $game = Join-Path $root 'out\runtime\DiskGenius'
 $exe  = Join-Path $game 'DiskGenius.exe'
 $ini  = Join-Path $game 'Options.ini'
