@@ -1,0 +1,164 @@
+1400d8984 mov      qword ptr [rsp + 8], rbx                    
+1400d8989 push     rbp                                         
+1400d898a push     rsi                                         
+1400d898b push     rdi                                         
+1400d898c mov      rbp, rsp                                    
+1400d898f sub      rsp, 0x60                                   
+1400d8993 mov      rbx, rcx                                    
+1400d8996 mov      edx, 1                                      
+1400d899b call     0x1403eb284                                    ; 1403eb284 '@SH'
+1400d89a0 mov      rcx, rbx                                    
+1400d89a3 call     0x1400d72d8                                    ; 1400d72d8 'H'
+1400d89a8 xor      edi, edi                                    
+1400d89aa test     eax, eax                                    
+1400d89ac je       0x1400d8bee                                    ; 1400d8bee 'H'
+1400d89b2 lea      rcx, [rbp - 0x20]                           
+1400d89b6 call     0x1400421cc                                    ; 1400421cc 'H'
+1400d89bb nop                                                  
+1400d89bc lea      rdx, [rip + 0x5b57f9]                          ; 14068e1bc None None
+1400d89c3 lea      rcx, [rbp + 0x30]                           
+1400d89c7 call     0x14000494c                                    ; 14000494c 'H'
+1400d89cc nop                                                  
+1400d89cd mov      edx, 0xea70                                 
+1400d89d2 lea      rcx, [rbp + 0x30]                           
+1400d89d6 call     0x1401aa2c4                                    ; 1401aa2c4 'H'
+1400d89db lea      r9d, [rdi + 1]                              
+1400d89df mov      r8, qword ptr [rbp - 0x20]                  
+1400d89e3 mov      rdx, qword ptr [rbp + 0x30]                 
+1400d89e7 mov      rcx, rbx                                    
+1400d89ea call     0x1400d518c                                    ; 1400d518c '@USVWATAUAWH'
+1400d89ef or       rsi, 0xffffffffffffffff                     
+1400d89f3 cmp      eax, 1                                      
+1400d89f6 jne      0x1400d8bb1                                    ; 1400d8bb1 'H'
+1400d89fc mov      rcx, rbx                                    
+1400d89ff call     0x1400d75e8                                    ; 1400d75e8 '@SH'
+1400d8a04 test     eax, eax                                    
+1400d8a06 je       0x1400d8bb1                                    ; 1400d8bb1 'H'
+1400d8a0c xor      edx, edx                                    
+1400d8a0e mov      rcx, rbx                                    
+1400d8a11 call     0x1400d77f8                                    ; 1400d77f8 'H'
+1400d8a16 lea      rdx, [rip + 0x5b579f]                          ; 14068e1bc None None
+1400d8a1d lea      rcx, [rbp + 0x28]                           
+1400d8a21 call     0x14000494c                                    ; 14000494c 'H'
+1400d8a26 nop                                                  
+1400d8a27 lea      rdx, [rip + 0x6f2742]                          ; 1407cb170 'https://www.eassos.com/register/browserreg.php' 'h'
+1400d8a2e mov      r8, rsi                                     
+1400d8a31 inc      r8                                          
+1400d8a34 cmp      word ptr [rdx + r8*2], di                   
+1400d8a39 jne      0x1400d8a31                                    ; 1400d8a31 'I'
+1400d8a3b lea      rcx, [rbp + 0x28]                           
+1400d8a3f call     0x140003eb8                                    ; 140003eb8 'H'
+1400d8a44 lea      rax, [rbp + 0x38]                           
+1400d8a48 mov      qword ptr [rbp - 0x28], rax                 
+1400d8a4c mov      rcx, qword ptr [rbp + 0x28]                 
+1400d8a50 add      rcx, -0x18                                  
+1400d8a54 call     0x140006cb4                                    ; 140006cb4 'H'
+1400d8a59 add      rax, 0x18                                   
+1400d8a5d mov      qword ptr [rbp + 0x38], rax                 
+1400d8a61 lea      rdx, [rbp + 0x38]                           
+1400d8a65 mov      rcx, rbx                                    
+1400d8a68 call     0x1400d7c88                                    ; 1400d7c88 'H'
+1400d8a6d mov      r8, qword ptr [rbx + 0x200]                 
+1400d8a74 cmp      dword ptr [r8 - 0x10], edi                  
+1400d8a78 je       0x1400d8b92                                    ; 1400d8b92 'H'
+1400d8a7e mov      dword ptr [rsp + 0x28], 5                   
+1400d8a86 mov      qword ptr [rsp + 0x20], rdi                 
+1400d8a8b xor      r9d, r9d                                    
+1400d8a8e lea      rdx, [rip + 0x5c1cd3]                          ; 14069a768 'open' 'o'
+1400d8a95 xor      ecx, ecx                                    
+1400d8a97 call     qword ptr [rip + 0x5573c3]                     ; 14062fe60 None 'T'
+1400d8a9d cmp      rax, 0x20                                   
+1400d8aa1 jbe      0x1400d8b92                                    ; 1400d8b92 'H'
+1400d8aa7 mov      rcx, qword ptr [rbx + 0x5b0]                
+1400d8aae test     rcx, rcx                                    
+1400d8ab1 je       0x1400d8abe                                 
+1400d8ab3 mov      rax, qword ptr [rcx]                        
+1400d8ab6 mov      edx, 1                                      
+1400d8abb call     qword ptr [rax + 8]                         
+1400d8abe mov      ecx, 0x228                                  
+1400d8ac3 call     0x1403f3008                                    ; 1403f3008 'H'
+1400d8ac8 mov      qword ptr [rbp + 0x38], rax                 
+1400d8acc test     rax, rax                                    
+1400d8acf je       0x1400d8adb                                    ; 1400d8adb 'H'
+1400d8ad1 mov      rcx, rax                                    
+1400d8ad4 call     0x1400550b8                                    ; 1400550b8 'H'
+1400d8ad9 jmp      0x1400d8ade                                    ; 1400d8ade 'H'
+1400d8adb mov      rax, rdi                                    
+1400d8ade mov      qword ptr [rbx + 0x5b0], rax                
+1400d8ae5 test     rax, rax                                    
+1400d8ae8 je       0x1400d8b92                                    ; 1400d8b92 'H'
+1400d8aee lea      rax, [rbp + 0x38]                           
+1400d8af2 mov      qword ptr [rbp - 0x18], rax                 
+1400d8af6 lea      rax, [rbp - 0x30]                           
+1400d8afa mov      qword ptr [rbp - 0x10], rax                 
+1400d8afe lea      rax, [rbp - 0x28]                           
+1400d8b02 mov      qword ptr [rbp - 8], rax                    
+1400d8b06 mov      rcx, qword ptr [rbx + 0x308]                
+1400d8b0d sub      rcx, 0x18                                   
+1400d8b11 call     0x140006cb4                                    ; 140006cb4 'H'
+1400d8b16 add      rax, 0x18                                   
+1400d8b1a mov      qword ptr [rbp + 0x38], rax                 
+1400d8b1e mov      rcx, qword ptr [rbx + 0x300]                
+1400d8b25 sub      rcx, 0x18                                   
+1400d8b29 call     0x140006cb4                                    ; 140006cb4 'H'
+1400d8b2e add      rax, 0x18                                   
+1400d8b32 mov      qword ptr [rbp - 0x30], rax                 
+1400d8b36 mov      rcx, qword ptr [rbx + 0x2f8]                
+1400d8b3d sub      rcx, 0x18                                   
+1400d8b41 call     0x140006cb4                                    ; 140006cb4 'H'
+1400d8b46 add      rax, 0x18                                   
+1400d8b4a mov      qword ptr [rbp - 0x28], rax                 
+1400d8b4e mov      rcx, qword ptr [rbx + 0x5b0]                
+1400d8b55 lea      rax, [rbp + 0x38]                           
+1400d8b59 mov      qword ptr [rsp + 0x20], rax                 
+1400d8b5e lea      r9, [rbp - 0x30]                            
+1400d8b62 lea      r8, [rbp - 0x28]                            
+1400d8b66 mov      rdx, rbx                                    
+1400d8b69 call     0x140055608                                    ; 140055608 'H'
+1400d8b6e mov      rcx, qword ptr [rbx + 0x5b0]                
+1400d8b75 mov      rax, qword ptr [rcx]                        
+1400d8b78 call     qword ptr [rax + 0x2e8]                     
+1400d8b7e cmp      rax, 1                                      
+1400d8b82 je       0x1400d8b92                                    ; 1400d8b92 'H'
+1400d8b84 mov      edx, 1                                      
+1400d8b89 mov      rcx, rbx                                    
+1400d8b8c call     0x1400d77f8                                    ; 1400d77f8 'H'
+1400d8b91 nop                                                  
+1400d8b92 mov      rdx, qword ptr [rbp + 0x28]                 
+1400d8b96 add      rdx, -0x18                                  
+1400d8b9a mov      eax, esi                                    
+1400d8b9c lock xadd dword ptr [rdx + 0x10], eax                 
+1400d8ba1 add      eax, esi                                    
+1400d8ba3 test     eax, eax                                    
+1400d8ba5 jg       0x1400d8bb1                                    ; 1400d8bb1 'H'
+1400d8ba7 mov      rcx, qword ptr [rdx]                        
+1400d8baa mov      rax, qword ptr [rcx]                        
+1400d8bad call     qword ptr [rax + 8]                         
+1400d8bb0 nop                                                  
+1400d8bb1 mov      rdx, qword ptr [rbp + 0x30]                 
+1400d8bb5 add      rdx, -0x18                                  
+1400d8bb9 mov      eax, esi                                    
+1400d8bbb lock xadd dword ptr [rdx + 0x10], eax                 
+1400d8bc0 add      eax, esi                                    
+1400d8bc2 test     eax, eax                                    
+1400d8bc4 jg       0x1400d8bd0                                    ; 1400d8bd0 'H'
+1400d8bc6 mov      rcx, qword ptr [rdx]                        
+1400d8bc9 mov      rax, qword ptr [rcx]                        
+1400d8bcc call     qword ptr [rax + 8]                         
+1400d8bcf nop                                                  
+1400d8bd0 mov      rdx, qword ptr [rbp - 0x20]                 
+1400d8bd4 add      rdx, -0x18                                  
+1400d8bd8 mov      eax, esi                                    
+1400d8bda lock xadd dword ptr [rdx + 0x10], eax                 
+1400d8bdf add      eax, esi                                    
+1400d8be1 test     eax, eax                                    
+1400d8be3 jg       0x1400d8bee                                    ; 1400d8bee 'H'
+1400d8be5 mov      rcx, qword ptr [rdx]                        
+1400d8be8 mov      rax, qword ptr [rcx]                        
+1400d8beb call     qword ptr [rax + 8]                         
+1400d8bee mov      rbx, qword ptr [rsp + 0x80]                 
+1400d8bf6 add      rsp, 0x60                                   
+1400d8bfa pop      rdi                                         
+1400d8bfb pop      rsi                                         
+1400d8bfc pop      rbp                                         
+1400d8bfd ret                                                  

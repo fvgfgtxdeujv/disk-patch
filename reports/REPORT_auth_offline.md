@@ -556,3 +556,99 @@ https://internal.eassos.com/update/diskgenius/update.php
 * 想继续，只有两条路：拿到**服务端签发的真实 key**（或服务端接口的合法响应），
   或者把 `internal.eassos.com/register/register.php` 与
   `update.php` 的响应处理逐字节还原（VMP handler 语义）。
+
+---
+
+## 13. register.php / update.php 的响应处理（逐指令还原，2026-11-21）
+
+结论先行：**这两条响应都不经过 VMP，都是原生代码，而且处理极简。**
+
+### 13.1 update.php：响应被直接丢弃
+
+`CMainFrame::SendUpgradeInfo`（`0x14019708c`）：
+
+```
+1401976a6  rdx = [rsp+0xe40]        ; 响应缓冲区
+1401976ad  r8  = r13                ; 拼好的 URL
+1401976b2  call 0x14058d684         ; 同步 GET
+1401976b7  xor ecx,ecx
+1401976ba  call 0x14058d2b8         ; 收尾（句柄/缓冲清理）
+1401976bf  ...
+1401976c8  lea r13, [得到 URL 的末尾]
+1401976d9  lea rdx, [rip+..]        ; '&again=yes'
+1401976e9  call 0x14000e1dc         ; 仅往 URL 串尾部追加
+```
+
+调用返回后**没有任何对 `rsp+0xe40` 的读取/比较/解析**，只把 `&again=yes` 追到 URL 上
+然后返回。即 `update.php`（升级/统计接口）的响应对授权状态没有任何影响。
+
+### 13.2 register.php：只用于生成 `OfflineReg.dat`，不在本机解析响应
+
+离线注册导出函数 `0x1400d8c00`（菜单“离线注册”）：
+
+```
+1400d8ebf  rdx = 0x1407cb1d0   ; 'https://internal.eassos.com/register/register.php'
+1400d8ec9..                          ; wcslen 并拷贝到串对象
+1400d8f06  call 0x1400d7c88    ; 生成 query：ver/code/name/email/mid/appname/applang
+                                    ;   + &check=<MD5 hex> + XOR0x0E(encryption=…)
+1400d8f03  call 0x1400d8168    ; 追加 &skey=<16 字节 blob 的 %XX 编码>
+1400d8fa8  call 0x140149158    ; 选择保存路径（文件对话框）
+1400d90bf  call 0x1400d85b8    ; 真正写 OfflineReg.dat
+```
+
+写文件的 `0x1400d85b8`：
+
+```
+1400d864a..  path = <选择目录> + "OfflineReg.dat"
+1400d86b2    CreateFileW(path, GENERIC_WRITE, share=0, …CREATE_ALWAYS, …)
+1400d86c5    ecx = 0x800                        ; 2048 字节
+1400d86e3..  循环 0x80 次（每次 16 字节，0x1401fd294）对缓冲区逐块处理
+1400d8706    写入 +0x64 的字段
+1400d8714    写入 +0xc0 的 URL（即上面拼好的 register.php?…&skey=…）
+1400d8750..  依次写入 +0xc1…、+0x300、+0x308 的字段
+```
+
+这与 §1（2048 = 64 字节 key + 1984 字节 XOR 明文，明文 +0x80 是 URL）
+是同一个容器的两端。**响应侧完全不在主程序里**：POST 与响应判定都在
+`OfflineReg.exe`（§2/§3），它只要求响应以 `appname=DiskGenius` 开头，
+然后把响应原文写进 `Options.ini` 的 `[license] key`。
+
+另有一条分支（`0x1400d8cc4 → 0x1400d8cca..0x1400d8de5`）：若命令/参数不匹配，
+则定位 exe 同目录 `Options.ini`，存在就调 `0x1403f4334` 删除它——这是便携态
+导入后的清理动作，也解释了为什么 ini 不会长期留存。
+
+### 13.3 browserreg.php：打开浏览器注册，本地不解析
+
+`0x1400d8984`（“浏览器注册”）：
+
+```
+1400d89a3  call 0x1400d72d8    ; 校验/规整 code（1d=29 字符，'-' 分组）
+1400d89ea  call 0x1400d518c    ; 确认对话框（id 0xea70），必须点“是”
+1400d89ff  call 0x1400d75e8    ; 落盘 [license] 字段
+1400d8a68  call 0x1400d7c88    ; 生成 query（同上，含 check + XOR0x0E）
+1400d8a97  call ShellExecuteW  ; "open" → https://www.eassos.com/register/browserreg.php?…
+1400d8b69  call 0x140055608    ; 创建 0x228 字节的等待/进度对象（挂在 +0x5b0）
+1400d8b78  call [vtable+0x2e8] ; 模态等待，返回 1 才继续
+1400d8b8c  call 0x1400d77f8    ; 否则复位状态
+```
+
+`0x1400d75e8` 写入的字段（配置对象 `0x140250148`，安装态即 HKLM）：
+
+```
+VerifyDate / appname / user / email / regcode / regver   （0x1402aeb44）
+```
+
+同样：**没有解析浏览器注册的任何“响应”**；浏览器侧注册完成后是否生效，
+仍然只能靠下一次启动时服务端（§12.3 的 `update.php` 对账）或本地 key 来体现。
+
+### 13.4 结论
+
+| 接口 | 谁发 | 响应谁处理 | 是否 VMP |
+|---|---|---|---|
+| `update.php`（升级/统计） | 主程序 `0x14019708c` | **无人处理（丢弃）** | 否 |
+| `register.php`（离线注册请求） | 主程序只写进 `OfflineReg.dat` | `OfflineReg.exe` → 写入 `Options.ini [license] key` | 否 |
+| `browserreg.php`（浏览器注册） | 主程序 `ShellExecuteW` | 浏览器/服务端；主程序只等待 | 否 |
+
+所以“还原 VMP 对响应的处理”这件事实际上**没有对象**：VMP 只出现在
+①`key` 首字符经 `SendMessage(hwnd,0x479,…)` 进入窗口过程后写入的 1 个状态字节（§12.2），
+②以及 `Options.ini`/注册表里 `key` 被读取时的外壳。授权真值始终在服务端。
