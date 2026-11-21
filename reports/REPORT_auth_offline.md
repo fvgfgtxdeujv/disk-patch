@@ -652,3 +652,75 @@ VerifyDate / appname / user / email / regcode / regver   （0x1402aeb44）
 所以“还原 VMP 对响应的处理”这件事实际上**没有对象**：VMP 只出现在
 ①`key` 首字符经 `SendMessage(hwnd,0x479,…)` 进入窗口过程后写入的 1 个状态字节（§12.2），
 ②以及 `Options.ini`/注册表里 `key` 被读取时的外壳。授权真值始终在服务端。
+
+---
+
+## 14. Hosts 劫持 + 本地 TLS 伪装服务器实测（2026-11-21）
+
+### 14.1 方法
+
+`out/_hosts_mitm.py`（管理员运行，结束自动还原）：
+
+1. 生成临时 CA + `internal.eassos.com / www.eassos.com / eassos.com / activate.eassos.com`
+   的服务器证书（cryptography，SAN + SERVER_AUTH）；
+2. `certutil -addstore -f Root` 把 CA 临时装进本机根存储；
+3. hosts 末尾加 `127.0.0.1 <四个域名>`，`ipconfig /flushdns`；
+4. 本地 443 起 Python TLS 服务器，记录请求行/头/体，并统一回
+   `appname=DiskGenius&license=SIG&user=Boss&email=boss@example.com`；
+5. 写入 `HKLM\...\{Reg,CReg}\license = "1TEST"`，启动 DiskGenius 16 s；
+6. finally：还原 hosts、`certutil -delstore` 删除 CA、还原 `license`。
+
+### 14.2 抓到的真实请求（16 s 内，t≈7.09 s 同时发出）
+
+三条请求的公共头：`User-Agent: Eassos Net App/1.2`、`Authorization: Basic`（空）、
+`Cache-Control: no-cache`、`Content-Type: application/x-www-form-urlencoded`。
+
+```http
+GET /share/getshareinfo.php?app=dg&ver=6.2.0.1829_x64_pro_chs&code=&shareinfo=N HTTP/1.1
+Host: internal.eassos.com
+
+GET /partitionguru/adbar/adconfig.php?ver=6%2e2%2e0%2e1829prochs HTTP/1.1
+Host: www.eassos.com
+
+POST /update/diskgenius/update.php HTTP/1.1
+Host: internal.eassos.com
+Content-Length: 472
+
+ver=6.2.0.1829_x64_pro_chs&winver=10%2e0%2e19045%2esp0%2e0%2e00000000&winbits=64
+&reslang=eng&syslang=chs&cpu=64
+&mid=mOD_CDOcD^OFHLOHLHLL%1A%1A%1A%1E%1A%1CO%19
+&lid=
+&disk1=Zkmbo}z%3C;8ILO6;%3EQ886%3E87%3D%3D%3E:%3F%3E%3F8%3E7;%3D%3CQ;%3E%3E%3F%3F6%3F7%3C
+&otherinfo=L4JkbbG`m%23:JCTI9%3CM%40%3F%3C78%3D8%3F7%3E%3E68QC4]EFw`gv%23...
+&iplan=Y&appname=DiskGenius&appcs=328649950
+```
+
+要点：
+
+* 与 §12.3 从内存里读到的 URL **逐字节一致**（`lid=` 仍为空），说明 `update.php` 是
+  POST，且 **body 就是那条 query**；`&again=yes` 只出现在重试路径，本次没有。
+* 新增两个此前没记录的接口：`getshareinfo.php`（`shareinfo=N`、`code=` 空）和
+  `adbar/adconfig.php`（广告配置，走 `www.eassos.com`）。
+* 启动阶段**没有** `register.php` 请求 —— 印证 §13.2：它只在“导出 OfflineReg.dat”时使用。
+
+### 14.3 服务端返回合法形态后，本地状态没有任何变化
+
+服务器对三条请求都返回了
+`appname=DiskGenius&license=SIG&user=Boss&email=boss@example.com`
+（就是 §3 里能让 `OfflineReg.exe` 写出 Options.ini 的那条）。运行结束后：
+
+```
+HKLM\SOFTWARE\Eassos\DiskGenius\Reg
+    ShowLicense    REG_SZ     6.2.0.1829      （未变）
+    Improveplan    REG_SZ     Y               （未变）
+    license        REG_BINARY （已还原为空）
+```
+
+即 **`update.php` 的响应被完全忽略**，与 §13.1 的静态结论一致；
+真正把响应落地成授权的只有 `OfflineReg.exe → Options.ini [license] key` 这一条链路。
+
+### 14.4 清理核验
+
+* hosts 末尾无残留（最后几行仍是系统默认注释）；
+* `certutil -store Root` 中已无 `DGProbe Local CA`；
+* `Reg` / `CReg` 的 `license` 已恢复为空 REG_BINARY，`ShowLicense/Improveplan` 未动。

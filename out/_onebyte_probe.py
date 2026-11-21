@@ -14,11 +14,32 @@ def setlic(v):
                            winreg.KEY_SET_VALUE)
         winreg.SetValueEx(k, 'license', 0, winreg.REG_BINARY, v); k.Close()
 
+def baklic():
+    d = {}
+    for sub in ('Reg', 'CReg'):
+        k = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r'SOFTWARE\Eassos\DiskGenius\%s' % sub, 0,
+                           winreg.KEY_READ)
+        try: d[sub] = winreg.QueryValueEx(k, 'license')
+        except OSError: d[sub] = (None, None)
+        k.Close()
+    return d
+
+def restorelic(d):
+    for sub, (v, t) in d.items():
+        k = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r'SOFTWARE\Eassos\DiskGenius\%s' % sub, 0,
+                           winreg.KEY_SET_VALUE)
+        if v is None:
+            try: winreg.DeleteValue(k, 'license')
+            except OSError: pass
+        else: winreg.SetValueEx(k, 'license', 0, t, v)
+        k.Close()
+
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument('--key', default=None)
     a = ap.parse_args()
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     exe = os.path.join(root, 'out', 'runtime', 'DiskGenius', 'DiskGenius.exe')
+    bak = baklic()
     setlic(b'' if a.key is None else a.key.encode('utf-16-le'))
     p = subprocess.Popen([exe], cwd=os.path.dirname(exe))
     try:
@@ -30,6 +51,7 @@ def main():
         print('%-8s %s' % (a.key or 'empty', buf.raw[:64].hex() if ok else 'READFAIL'))
     finally:
         p.terminate()
+        restorelic(bak)
     return 0
 if __name__ == '__main__':
     sys.exit(main())
